@@ -8,9 +8,13 @@
             a.brand(href='#') Sony's NewsRoom
             .nav-collapse.collapse
                 p.navbar-text.pull-right
-                    a.navbar-link(href='/signin') Sign in
-                    | Logged in as
-                    a.navbar-link(href='#') Username
+                    if user === null
+                        a.navbar-link(href='/auth/signin') Sign in
+                    else
+                        | Logged in as
+                        |
+                        a.navbar-link(href='#') #{user.name}
+                        a.btn.btn-secondary(href='/auth/logout') Logout
                 ul.nav
                     li.active
                         a(href='#') Home

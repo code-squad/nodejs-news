@@ -37,6 +37,10 @@ html(lang='en')
       margin-bottom: 15px;
       padding: 7px 9px;
       }
+
+      .btn.btn-large.btn-success {
+        margin-bottom: 10px
+      }
     link(href='/css/bootstrap-responsive.css', rel='stylesheet')
     link(rel='apple-touch-icon-precomposed', sizes='144x144', href='/ico/apple-touch-icon-144-precomposed.png')
     link(rel='apple-touch-icon-precomposed', sizes='114x114', href='/ico/apple-touch-icon-114-precomposed.png')
@@ -45,17 +49,19 @@ html(lang='en')
     link(rel='shortcut icon', href='/ico/favicon.png')
   body
     .container
-      form.form-signin
+      form.form-signin(action='/auth/signup' method='post')
         h2.form-signin-heading Please sign in
-        input.input-block-level(type='text', placeholder='Email address')
-        input.input-block-level(type='password', placeholder='Password')
-        input.input-block-level(type='number', placeholder='Age')
-        label.checkbox
-          input(type='checkbox', value='male')
-          | male
-        label.checkbox
-          input(type='checkbox', value='female')
-          | female
+        include ../partials/messages
+        input.input-block-level(type='text', name='email' placeholder='Email address')
+        input.input-block-level(type='text', name='name' placeholder='Name')
+        input.input-block-level(type='password', name='password' placeholder='Password')
+        input.input-block-level(type='password', name='password2' placeholder='Confirm Password')
         button.btn.btn-large.btn-success(type='submit') Sign up
+        p
+          | Have An Account?
+          a(href='/auth/signin') Sign in
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
 
   include ../partials/scripts

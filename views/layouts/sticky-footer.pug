@@ -16,14 +16,6 @@ html(lang='en')
       height: 100%;
       /* The html and body elements cannot have any padding or margin. */
       }
-      /* Wrapper for page content to push down footer */
-      #wrap {
-      min-height: 100%;
-      height: auto !important;
-      height: 100%;
-      /* Negative indent footer by it's height */
-      margin: 0 auto -60px;
-      }
       /* Set the fixed height of the footer here */
       #push,
       #footer {
@@ -58,13 +50,6 @@ html(lang='en')
     link(rel='apple-touch-icon-precomposed', href='../assets/ico/apple-touch-icon-57-precomposed.png')
     link(rel='shortcut icon', href='../assets/ico/favicon.png')
   body
-    #wrap
-      .container
-        .page-header
-          h1 Sticky footer
-        p.lead
-          | Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.
-      #push
     #footer
       .container
         p.muted.credit Example courtesy

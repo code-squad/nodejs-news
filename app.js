@@ -6,18 +6,20 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const favicon = require("serve-favicon");
 const session = require('express-session');
+const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport');
-// const passportCongif = require('./passport');
-const GitHubStrategy = require('passport-github').Strategy;
-const githubConfig = require('./github-config');
+const passportConfig = require('./passport');
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
 
 const app = express();
 app.use(helmet());
+passportConfig(passport);
 
+mongoose.connect('mongodb://localhost/newsApp')
+    .then(() => console.log('Connected to MongoDB...'))
+    .catch(err => console.error('Could not connect to MongoDB...'));
 
 //   ----- Passport config ----
 app.use(session({
@@ -28,20 +30,17 @@ app.use(session({
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new GitHubStrategy(githubConfig,
-    function (accessToken, refreshToken, profile, cb) {
-        // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-        //     return cb(err, user);
-        // });
-        cb(null, profile);
-    }
-));
-passport.serializeUser((user, cb) => {
-    cb(null, user);
+
+
+// Global Vars
+app.use((req,res,next) =>  {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    res.locals.user = req.user || null;
+    next();
 });
-passport.deserializeUser((user, cb) => {
-    cb(null, user)
-});
+
 // ------ passport config ------
 
 // view engine setup
@@ -61,38 +60,15 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get("/", function (req, res) {
-    res.render("default");
-});
 
-app.get("/fluid", function (req, res) {
-    console.log(req.user);
+app.get("/", function (req, res) {
     res.render("layouts/fluid");
 });
-
-app.get("/signin", function (req, res) {
-    res.render("layouts/signin");
-});
-
-// github login
-app.get("/github-login", passport.authenticate('github'));
-
-app.get("/auth/github/callback", passport.authenticate('github', {
-    successRedirect: '/fluid',
-    successFlash: 'Welcome!',
-    failureRedirect: '/signin',
-    failureFlash: true
-}));
-
-app.get("/signup", function (req, res) {
-    res.render("layouts/signup");
-});
+app.use('/auth', authRouter);
 
 app.get("/sticky", function (req, res) {
     res.render("layouts/sticky-footer");
 });
-
-
 
 app.get("/marketing-alternate", function (req, res) {
     res.render("layouts/marketing-alternate");

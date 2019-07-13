@@ -1,0 +1,15 @@
+if signUpError !== undefined
+    .alert.alert-warning.alert-dismissible.show(role='alert')
+        p= signUpError
+
+if success_msg != ''
+    .alert.alert-success.alert-dismissible.show(role='alert')
+        p= success_msg
+
+if error_msg != ''
+    .alert.alert-warning.alert-dismissible.show(role='alert')
+        p= error_msg
+
+if error != ''
+    .alert.alert-warning.alert-dismissible.show(role='alert')
+        p= error
