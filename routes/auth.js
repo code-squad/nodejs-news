@@ -28,16 +28,16 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
 
     if (!email || !name || !password || !password2){
         req.flash('error_msg', '모든 필드에 정보를 입력해주세요');
-        return res.render("layouts/signup", {error_msg: req.flash('error_msg')});
+        return res.redirect("signup");
     }
     if (password !== password2){
         req.flash('error_msg', '비밀번호가 일치하지 않습니다.');
-        return res.render("layouts/signup", {error_msg: req.flash('error_msg')});
+        return res.redirect("signup");
     }
 
     if (password.length < 6) {
         req.flash('error_msg', '비밀번호는 최소 6글자 이상어야 합니다.');
-        return res.render("layouts/signup", {error_msg: req.flash('error_msg')});
+        return res.redirect("signup");
     }
 
     try {
@@ -55,7 +55,7 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
             user = await user.save();
             if (user) {
                 req.flash('success_msg', '회원가입이 완료되었습니다. 로그인 해주세요 :)');
-                return res.redirect('/auth/signin');
+                return res.redirect('signin');
             }
         }
 
