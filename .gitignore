@@ -61,7 +61,7 @@ typings/
 .next
 
 # login config file
-github-config.js
+# github-config.js
 
 # .history
 .history
