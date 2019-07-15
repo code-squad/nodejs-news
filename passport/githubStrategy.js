@@ -1,5 +1,5 @@
 const GitHubStrategy = require('passport-github').Strategy;
-const githubConfig = require('../github-config');
+const githubConfig = require('../config/github-config');
 const {User, validateUser} = require('../model/user');
 
 
