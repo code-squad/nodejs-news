@@ -15,17 +15,16 @@ router.get("/github/callback", passport.authenticate('github', {
     failureFlash   : true
 }));
 
-router.get("/signin", function (req, res) {
+router.get("/signin", isNotLoggedIn,  function (req, res) {
     res.render("layouts/signin");
 });
 
-router.get("/signup", function (req, res) {
+router.get("/signup", isNotLoggedIn, function (req, res) {
     res.render("layouts/signup");
 });
 
 router.post('/signup', isNotLoggedIn, async (req, res, next) => {
     const {email, name, password, password2} = req.body;
-
     if (!email || !name || !password || !password2){
         req.flash('error_msg', '모든 필드에 정보를 입력해주세요');
         return res.redirect("signup");
@@ -76,7 +75,7 @@ router.post('/signin', isNotLoggedIn, (req, res, next) => {
 
 
 // 로그 아웃
-router.get('/logout', function (req, res) {
+router.get('/logout', isLoggedIn, function (req, res) {
     req.logout();
     req.flash('success_msg', 'You are logged out');
     res.redirect('/auth/signin');

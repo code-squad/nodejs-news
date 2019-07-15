@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportConfig = require('./passport');
+const {isLoggedIn, isNotLoggedIn} = require('./routes/middlewares');
 
 const authRouter = require('./routes/auth');
 

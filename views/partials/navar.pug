@@ -5,19 +5,17 @@
                 span.icon-bar
                 span.icon-bar
                 span.icon-bar
-            a.brand(href='#') Sony's NewsRoom
+            a.brand(href='/') Sony's NewsRoom
             .nav-collapse.collapse
                 p.navbar-text.pull-right
                     if user === null
-                        a.navbar-link(href='/auth/signin') Sign in
+                        a.btn.btn-secondary(href='/auth/signin') Sign in
                     else
-                        | Logged in as
-                        |
                         a.navbar-link(href='#') #{user.name}
                         a.btn.btn-secondary(href='/auth/logout') Logout
                 ul.nav
                     li.active
-                        a(href='#') Home
+                        a(href='/') Home
                     li
                         a(href='#about') About
                     li

@@ -1,14 +1,15 @@
 exports.isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
-        next();
+        return next();
     } else {
-        res.status(403).send('로그인 필요');
+        req.flash('error_msg', '로그인 후 이용해주세요.');
+        res.redirect('/auth/signin');
     }
 };
 
 exports.isNotLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        next();
+        return next();
     } else {
         res.redirect('/');
     }

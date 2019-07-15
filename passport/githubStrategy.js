@@ -3,12 +3,12 @@ const githubConfig = require('../github-config');
 const {User, validateUser} = require('../model/user');
 
 
-module.exports = (passport) =>{
+module.exports = (passport) => {
     passport.use(new GitHubStrategy(githubConfig,
-        function (accessToken, refreshToken, profile, cb) {
-            User.findOne({ 'github.id': profile.id }, async function (err, user) {
-                if (err) return cb(err);
-                if (user) cb(null, user);
+        function (accessToken, refreshToken, profile, done) {
+            User.findOne({'github.id': profile.id}, async function (err, user) {
+                if (err) return done(err);
+                if (user) done(null, user);
                 else {
                     // if there is no user found with github id, create new one
                     let user = new User();
@@ -18,8 +18,13 @@ module.exports = (passport) =>{
                     if (typeof profile.emails != 'undefined' && profile.emails.length > 0) {
                         user.github.email = profile.emails[0].value;
                     }
-                    user = await user.save();
-                    return cb(null, user);
+                    try {
+                        user = await user.save();
+                        return done(null, user);
+                    } catch (err) {
+                        console.error(err);
+                        return done(err);
+                    }
                 }
             });
         }

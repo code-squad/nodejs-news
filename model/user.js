@@ -16,11 +16,9 @@ const User = mongoose.model('User', new mongoose.Schema({
         // required: true,
         minlength: 2,
     },
-    github: {
-        id: String,
-        token: String,
-        email: String,
-        name: String
+    date: {
+      type: Date,
+      default: Date.now
     }
 }));
 
