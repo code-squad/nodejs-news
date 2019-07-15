@@ -11,6 +11,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const {isLoggedIn, isNotLoggedIn} = require('./routes/middlewares');
+const db = require('./config/database');
 
 const authRouter = require('./routes/auth');
 
@@ -18,7 +19,9 @@ const app = express();
 app.use(helmet());
 passportConfig(passport);
 
-mongoose.connect('mongodb://localhost/newsApp')
+mongoose.connect(db.mongoURI, {
+    useMongoClient: true
+})
     .then(() => console.log('Connected to MongoDB...'))
     .catch(err => console.error('Could not connect to MongoDB...'));
 
