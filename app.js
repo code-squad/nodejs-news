@@ -19,13 +19,11 @@ const app = express();
 app.use(helmet());
 passportConfig(passport);
 
-mongoose.connect(db.mongoURI, {
-    useMongoClient: true
-})
+mongoose.connect(db.mongoURI, {useNewUrlParser: true })
     .then(() => console.log('Connected to MongoDB...'))
     .catch(err => console.error('Could not connect to MongoDB...'));
 
-//   ----- Passport config ----
+// ----- Passport config ----
 app.use(session({
     secret           : 'sony news!',
     resave           : false,
@@ -34,7 +32,7 @@ app.use(session({
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-
+// ------ passport config ------
 
 // Global Vars
 app.use((req,res,next) =>  {
@@ -45,15 +43,13 @@ app.use((req,res,next) =>  {
     next();
 });
 
-// ------ passport config ------
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(favicon(path.join(__dirname, "public", "ico", "favicon.ico")));
 
-app.use(function (req, res, next) {
+app.use( (req, res, next) => {
     app.locals.pretty = true;
     next();
 });

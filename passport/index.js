@@ -1,5 +1,6 @@
 const local = require('./localStrategy');
 const github = require('./githubStrategy');
+const google = require('./googleStrategy');
 const {User, validateUser} = require('../model/user');
 
 module.exports = (passport) => {
@@ -14,4 +15,5 @@ module.exports = (passport) => {
 
     local(passport);
     github(passport);
+    google(passport);
 };
