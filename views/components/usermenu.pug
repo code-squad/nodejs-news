@@ -1,0 +1,9 @@
+img.uk-comment-avatar(src='image/avatar.png', width='40', height='40', alt='', style='border-radius: 50%;')
+div(uk-dropdown='mode: click')
+  .uk-flex.uk-flex-center(style='align-items: center;')
+    img.uk-comment-avatar(src='image/avatar.png', width='80', height='80', alt='', style='border-radius: 50%;')
+    .uk-margin-left.user-name= user.email.split('@')[0]
+  .uk-flex.uk-margin-small-top
+    button#write-btn.uk-button.uk-button-default(style='width: 100%;') 글쓰기
+  .uk-flex.uk-margin-small-top
+    button#signout-btn.uk-button.uk-button-danger(style='width: 100%;') 로그아웃
