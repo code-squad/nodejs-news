@@ -12,6 +12,7 @@ const passport = require('passport');
 const passportConfig = require('./passport');
 const db = require('./config/database');
 const authRouter = require('./routes/auth');
+const indexRouter = require('./routes/index');
 
 const app = express();
 app.use(helmet());
@@ -59,9 +60,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.get("/", (req, res) => {
-    res.render("layouts/fluid");
-});
+app.use("/", indexRouter);
 app.use('/auth', authRouter);
 
 app.get("/sticky", (req, res) => {
