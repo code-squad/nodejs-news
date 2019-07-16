@@ -1,7 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-
-const {User, validateUser} = require('../model/user');
+const User = require('../model/user');
 
 module.exports = (passport) => {
     passport.use(new LocalStrategy({

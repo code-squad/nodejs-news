@@ -10,9 +10,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportConfig = require('./passport');
-const {isLoggedIn, isNotLoggedIn} = require('./routes/middlewares');
 const db = require('./config/database');
-
 const authRouter = require('./routes/auth');
 
 const app = express();
@@ -61,30 +59,30 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
     res.render("layouts/fluid");
 });
 app.use('/auth', authRouter);
 
-app.get("/sticky", function (req, res) {
+app.get("/sticky", (req, res) => {
     res.render("layouts/sticky-footer");
 });
 
-app.get("/marketing-alternate", function (req, res) {
+app.get("/marketing-alternate", (req, res) => {
     res.render("layouts/marketing-alternate");
 });
 
-app.get("/marketing-narrow", function (req, res) {
+app.get("/marketing-narrow", (req, res) => {
     res.render("layouts/marketing-narrow");
 });
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use( (req, res, next) => {
     next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use( (err, req, res, next) => {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

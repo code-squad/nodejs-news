@@ -1,6 +1,6 @@
 const GitHubStrategy = require('passport-github').Strategy;
 const githubConfig = require('../config/github-config');
-const {User, validateUser} = require('../model/user');
+const User = require('../model/user');
 
 module.exports = (passport) => {
     passport.use(new GitHubStrategy(githubConfig,

@@ -1,7 +1,7 @@
 const local = require('./localStrategy');
 const github = require('./githubStrategy');
 const google = require('./googleStrategy');
-const {User, validateUser} = require('../model/user');
+const User = require('../model/user');
 
 module.exports = (passport) => {
     passport.serializeUser((user, done) => {
