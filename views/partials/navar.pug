@@ -11,7 +11,7 @@
                     if user === null
                         a.btn.btn-secondary(href='/auth/signin') Sign in
                     else
-                        a.navbar-link(href='#') #{user.name}
+                        a.navbar-link(href='#') #{user.name} #{user.github.name} #{user.google.name}
                         a.btn.btn-secondary(href='/auth/logout') Logout
                 ul.nav
                     li.active
