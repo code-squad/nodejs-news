@@ -3,7 +3,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
 import userController from '../controllers/user';
 import { isLoggedIn, isNotLoggedIn } from '../middlewares/auth';
-import passport = require('passport');
+import passport from 'passport';
 
 const authRouter = Router();
 
@@ -20,6 +20,7 @@ authRouter.post('/signup', isNotLoggedIn,  async (req: Request, res: Response, n
   try {
     const exUser = await userController.GetUserByQuery({ email });
     if (exUser) {
+      req.flash('signupError', '이미 ')
       return res.send({message: '이미 가입된 이메일입니다.'});
     }
     const hash = await bcrypt.hash(password, 12);
@@ -35,8 +36,8 @@ authRouter.post('/signin', isNotLoggedIn, async (req: Request, res: Response, ne
     if (authError) {
       return next(authError);
     }
-    if (!user) {
-      return res.send({ message: '일치하는 정보가 없습니다.'});
+    if (info) {
+      return res.send(info);
     }
     return req.login(user, (loginError) => {
       if (loginError) {
