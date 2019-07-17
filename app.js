@@ -44,7 +44,7 @@ app.use((req,res,next) =>  {
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set('view engine', 'pug', {defaultEngine: 'main'});
 
 app.use(favicon(path.join(__dirname, "public", "ico", "favicon.ico")));
 
@@ -63,9 +63,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use("/", indexRouter);
 app.use('/auth', authRouter);
 
-app.get("/sticky", (req, res) => {
-    res.render("layouts/sticky-footer");
-});
+// app.get("/sticky", (req, res) => {
+//     res.render("layouts/sticky-footer");
+// });
 
 app.get("/marketing-alternate", (req, res) => {
     res.render("layouts/marketing-alternate");

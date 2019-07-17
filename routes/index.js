@@ -3,7 +3,7 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  res.render("layouts/fluid");
+  res.render("index/index");
 });
 
 module.exports = router;
