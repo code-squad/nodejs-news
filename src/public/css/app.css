@@ -30,7 +30,7 @@ body {
   border: 1px solid black;
 }
 
-#signin-form form {
+#signin-form>form, #image-upload-form>form {
   width: 300px;
 }
 
@@ -49,4 +49,20 @@ body {
   margin: auto;
   padding: 30px;
   background-color: white;
+}
+
+#user-drop {
+  cursor: pointer;
+}
+
+.image-upload>input {
+  display: none;
+}
+
+.image-upload>#upload-img-btn:hover {
+  cursor: copy;
+}
+
+#file-input {
+  font-size: 16px;
 }

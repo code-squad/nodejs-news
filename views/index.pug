@@ -4,9 +4,13 @@ html
   body
     include components/header.pug
     .container
+      block article
 
+      div= user
     if !user
       include components/signinform.pug
+    if user
+      include components/imageuploadform.pug
 
     include scripts/vendor.pug
     script(type='module' src='js/auth.js')
