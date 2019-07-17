@@ -1,5 +1,5 @@
-import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IUser extends Document {
   _id             : Schema.Types.ObjectId;
@@ -10,6 +10,7 @@ export interface IUser extends Document {
   signUpDate      : Date;
   status          : number;
   bannedExpires   : Date;
+  deletedAt       : Date;
 }
 
 export interface IUserForClient extends Document {
@@ -27,6 +28,7 @@ const UserSchema: Schema = new Schema({
   signUpDate      : { type: Date, required: true },
   status          : { type: Number, required: true },
   bannedExpires   : { type: Date },
+  deletedAt       : { type: Date },
 });
 
 const comparePassword = function (candidatePassword, cb) {
