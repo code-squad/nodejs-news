@@ -9,6 +9,7 @@ import passport from 'passport';
 import path from 'path';
 import { passportConfig } from './config/passport';
 import connect from './connect';
+import articleRouter from './routes/article';
 import authRouter from './routes/auth';
 import homeRouter from './routes/home';
 import userRouter from './routes/user';
@@ -55,6 +56,7 @@ app.use(express.static(path.join(__dirname, '../../src/public')));
 app.use('/', homeRouter);
 app.use('/user', userRouter);
 app.use('/auth', authRouter);
+app.use('/article', articleRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
