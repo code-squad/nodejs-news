@@ -1,10 +1,10 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
 import UserController from '../controllers/user';
 
 const userRouter = Router();
 
-userRouter.get('/:id', async (req: Request, res: Response, next) => {
+userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await UserController.GetUserByObjectId({
       _id: req.params.id,
@@ -32,7 +32,7 @@ userRouter.delete('/:id', async (req: Request, res: Response, next) => {
 
 userRouter.put('/:id', async (req: Request, res: Response, next) => {
   try {
-    const user = await UserController.PutUserByObjectId({
+    const user = await UserController.PutUserById({
       _id: req.params.id,
       email: req.body.email,
       password: req.body.password,

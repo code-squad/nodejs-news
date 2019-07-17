@@ -1,11 +1,19 @@
 import User, { IUser, IUserForClient } from '../models/user.model';
-import { addHours } from '../util/datehelper';
 import { UserPrivilege, UserStatus } from '../types/enums';
-import { removeNullFields } from '../util/fieldset';
+import { addHours } from '../util/datehelper';
+import { removeUndefinedFields } from '../util/fieldset';
 
 interface ICreateUserInput {
   email    : IUser['email'];
   password : IUser['password'];
+}
+
+interface IPatchUserInput {
+  _id              : IUser['_id'];
+  email?           : string;
+  password?        : string;
+  privilege?       : number;
+  profileImageUrl? : string;
 }
 
 async function CreateUser({
@@ -57,15 +65,15 @@ async function DeleteUserByObjectId({
   }
 }
 
-async function PutUserByObjectId({
+async function PatchUserById({
   _id,
   email,
   password,
   privilege,
   profileImageUrl,
-}): Promise<IUser> {
+}: IPatchUserInput): Promise<any> {
   try {
-    const result = await User.updateOne({ _id }, removeNullFields({email, password, privilege, profileImageUrl}));
+    const result = await User.updateOne({ _id }, removeUndefinedFields({email, password, privilege, profileImageUrl}));
     return result;
   } catch (error) {
     throw error;
@@ -100,6 +108,6 @@ export default {
   DeleteUserByObjectId,
   GetUserByObjectId,
   GetUserByQuery,
-  PutUserByObjectId,
+  PatchUserById,
   banUser,
 };

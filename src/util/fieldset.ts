@@ -1,4 +1,4 @@
-export function removeNullFields(document: object) {
+export function removeUndefinedFields(document: object) {
   const newDocument = {};
 
   for (const key in document) {
