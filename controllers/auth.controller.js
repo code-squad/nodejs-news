@@ -1,15 +1,15 @@
-const User      = require('../models/user');
-const jwt       = require('jsonwebtoken');
 const passport  = require('passport');
+const jwt       = require('jsonwebtoken');
+const User      = require('../models/user');
 
 const AuthController = {};
 
 /*
-    GET /auth/check-overlap/:username
+    GET /auth/check/:username
 */
 AuthController.checkOverlap = async (req, res) => {
     try {
-        const isExistUser = await User.findOne({ username : req.params.username }).exec();
+        const isExistUser = await User.findByUsername(req.params.username).exec();
         const message = (isExistUser) ? "Exist username" : "Available username";
         res.json({ message : message });
     } catch (err) {
@@ -21,7 +21,8 @@ AuthController.checkOverlap = async (req, res) => {
     POST /auth/register
     {
         username,
-        password
+        password,
+        nickname
     }
 */
 AuthController.register = async (req, res) => {
@@ -72,6 +73,25 @@ AuthController.login = async (req, res) => {
         })(req, res);
     } catch (err) {
         res.status(500).json({ message : `An error occurred : ${err}`});
+    }
+}
+
+/*
+    GET /auth/logout
+*/
+AuthController.logout = async (req, res) => {
+    req.logout();
+    res.json({ message : 'Successfully logged out' });
+}
+
+/*
+    GET /auth/profile
+*/
+AuthController.profile = async (req, res) => {
+    try {
+        res.json({ user : req.user });
+    } catch (err) {
+        res.json({ err : err });
     }
 }
 

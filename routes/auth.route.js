@@ -1,8 +1,14 @@
 const AuthController = require('../controllers/auth.controller');
 const router         = require('express').Router();
 
-router.get('/check-overlap/:username', (req, res) => AuthController.checkOverlap(req, res));
-router.post('/register', (req, res) => AuthController.register(req, res));
-router.post('/login', (req, res) => AuthController.login(req, res));
+router.get('/check/:username', AuthController.checkOverlap);
+
+router.post('/register', AuthController.register);
+
+router.post('/login', AuthController.login);
+
+router.get('/logout', AuthController.logout);
+
+router.get('/profile', AuthController.profile);
 
 module.exports = router;
