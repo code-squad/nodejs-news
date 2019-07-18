@@ -32,7 +32,7 @@ userRouter.delete('/:id', async (req: Request, res: Response, next) => {
 
 userRouter.put('/:id', async (req: Request, res: Response, next) => {
   try {
-    const user = await UserController.PutUserById({
+    const user = await UserController.PatchUserById({
       _id: req.params.id,
       email: req.body.email,
       password: req.body.password,

@@ -1,28 +1,37 @@
+import AWS from 'aws-sdk';
+import dotenv from 'dotenv';
+import fs from 'fs';
+import multer from 'multer';
+import multerS3 from 'multer-s3';
 import path from 'path';
-import multer = require('multer');
+
+if (fs.existsSync('.env')) {
+  dotenv.config({ path: '.env' });
+}
 
 const mb = 1024 * 1024;
 
-const uploadBasePath = 'uploads';
-const imageUploadPath = 'images';
+const uploadBasePath = 'original';
+const profileImagePath = 'profile';
 const markdownUploadPath = 'md';
-const imageSizeLimit = 10 * mb;
-const mdSizeLimit = 5 * mb;
 
-function customMulterFactory (destinationPath, limitFileSize): multer.Instance {
+function multerFactory (destinationPath, limitFileSize): multer.Instance {
   return multer({
-    storage: multer.diskStorage({
-      destination(req, file, cb) {
-        cb(undefined, destinationPath);
-      },
-      filename(req, file, cb) {
-        const ext = path.extname(file.originalname);
-        cb(undefined, path.join(destinationPath, path.basename(file.originalname, ext) + Date.now() + ext));
+    storage: multerS3({
+      s3: new AWS.S3(),
+      bucket: 'nodejs-news',
+      key(req, file, cb) {
+        cb(undefined, path.join(destinationPath, `${Date.now()}${path.basename(file.originalname)}`));
       },
     }),
     limits: { fileSize: limitFileSize },
   });
 }
 
-export const imageUpload: multer.Instance = customMulterFactory(path.join(uploadBasePath, imageUploadPath), imageSizeLimit);
-export const markdownUpload: multer.Instance = customMulterFactory(path.join(uploadBasePath, markdownUploadPath), mdSizeLimit);
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: 'ap-northeast-2',
+});
+
+export const profileUpload: multer.Instance = multerFactory(path.join(uploadBasePath, profileImagePath), '1MB');
