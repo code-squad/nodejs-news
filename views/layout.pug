@@ -1,0 +1,20 @@
+doctype html
+html(lang="ko")
+    head
+        meta(charset="utf-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        style
+            include ../public/css/layout.css
+        block title
+    body
+        header
+            section(id="header_main_section")
+                h1 Today's News
+                form(action="/signUp" method="get" class="header_button_form")
+                    input(type="submit" value="Sign Up")
+                form(action="/signIn" method="get" class="header_button_form")
+                    input(type="submit" value="LogIn")
+        block content
+        footer 
+            section(id="footer_section")
+                h4(id="footer_description") Copyright Hyodol. All right reserved.

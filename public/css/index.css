@@ -1,0 +1,26 @@
+#index_main_section {
+    margin: 0 auto;
+    height: 1300px;
+    width: 100%;
+}
+
+#category_section {
+    background-color: #525c6d;
+    border-radius: 10px;
+    margin-top: 2.5%;
+    height: 7%;
+}
+
+#top20_section {
+    background-color: #525c6d;
+    border-radius: 10px;
+    margin-top: 1.0%;
+    height: 30%;
+}
+
+#post_section {
+    border-color: #525c6d;
+    border-radius: 10px;
+    margin-top: 1.0%;
+    height: 60%;
+}
