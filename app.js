@@ -1,6 +1,7 @@
-const createError = require('http-errors');
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
@@ -14,6 +15,8 @@ const db = require('./config/database');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
 const articlesRouter = require('./routes/articles');
+
+
 
 
 const app = express();

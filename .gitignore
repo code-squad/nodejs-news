@@ -60,8 +60,5 @@ typings/
 # next.js build output
 .next
 
-# login config file
-# github-config.js
-
 # .history
 .history
