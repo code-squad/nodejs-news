@@ -12,6 +12,7 @@ import connect from './connect';
 import articleRouter from './routes/article';
 import authRouter from './routes/auth';
 import homeRouter from './routes/home';
+import uploadRouter from './routes/upload';
 import userRouter from './routes/user';
 import { addHours } from './util/datehelper';
 import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
@@ -53,10 +54,17 @@ app.use(passport.session());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../../src/public')));
 
+// Set flashMessage
+app.use((req, res, next) => {
+  res.locals.flashMessage = req.flash('flashMessage');
+  next();
+});
+
 app.use('/', homeRouter);
 app.use('/user', userRouter);
 app.use('/auth', authRouter);
 app.use('/article', articleRouter);
+app.use('/upload', uploadRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
