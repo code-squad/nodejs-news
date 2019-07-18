@@ -14,3 +14,6 @@ html
 
     include scripts/vendor.pug
     script(type='module' src='/js/auth.js')
+    if flashMessage != ''
+      script.
+        UIkit.notification('#{flashMessage}', {status: 'danger'});
