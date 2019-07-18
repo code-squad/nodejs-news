@@ -13,6 +13,8 @@ const passportConfig = require('./passport');
 const db = require('./config/database');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
+const articlesRouter = require('./routes/articles');
+
 
 const app = express();
 app.use(helmet());
@@ -62,6 +64,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/", indexRouter);
 app.use('/auth', authRouter);
+app.use('/articles', articlesRouter);
 
 // app.get("/sticky", (req, res) => {
 //     res.render("layouts/sticky-footer");

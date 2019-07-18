@@ -22,6 +22,10 @@ html(lang='en')
         link(rel='apple-touch-icon-precomposed', sizes='72x72', href='/ico/apple-touch-icon-72-precomposed.png')
         link(rel='apple-touch-icon-precomposed', href='/ico/apple-touch-icon-57-precomposed.png')
         link(rel='shortcut icon', href='/ico/favicon.png')
+
+        // CK Editor
+        script(src='https://cdn.ckeditor.com/4.12.1/standard/ckeditor.js')
+
     body
         include ../partials/navar
         .container-fluid
@@ -29,6 +33,9 @@ html(lang='en')
                 .span3
                     include ../partials/sidebar
                 block index
+                block add-articles
+                block index-article
+                block show-articles
             hr
             footer
                 include ../partials/sticky-footer
