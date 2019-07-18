@@ -2,7 +2,7 @@ img#user-drop.uk-comment-avatar(src='image/avatar.png', width='40', height='40',
 div(uk-dropdown='mode: click')
   .uk-flex.uk-flex-center(style='align-items: center;')
     .image-upload
-      img.uk-comment-avatar#upload-img-btn(src='image/avatar.png', width='80', height='80', alt='', style='border-radius: 50%;' uk-toggle="target: #image-upload-form")
+      img.uk-comment-avatar#upload-img-btn(src='/image/avatar.png', width='80', height='80', alt='', style='border-radius: 50%;' uk-toggle="target: #image-upload-form")
     .uk-margin-left.user-name= user.email.split('@')[0]
   .uk-flex.uk-margin-small-top
     button#subscription-list-btn.uk-button.uk-button-default.uk-width-1-1 구독 목록
