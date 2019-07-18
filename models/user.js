@@ -3,10 +3,9 @@ const mongoose              = require('mongoose');
 const Schema                = mongoose.Schema;
 
 const userSchema = new Schema({
-    user_id     : String,
-    user_pw     : String,
-    user_name   : String,
-    user_e_mail : String,
+    username    : String,
+    password    : String,
+    nickname    : String,
     comment     : [ String ],
     admin       : { type : Boolean, default : false }
 });
