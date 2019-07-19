@@ -11,7 +11,7 @@ import { passportConfig } from './config/passport';
 import connect from './connect';
 import articleRouter from './routes/article';
 import authRouter from './routes/auth';
-import homeRouter from './routes/home';
+import indexRouter from './routes/index';
 import uploadRouter from './routes/upload';
 import userRouter from './routes/user';
 import { addHours } from './util/datehelper';
@@ -55,22 +55,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../../src/public')));
 
 // Set flashMessage
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.locals.flashMessage = req.flash('flashMessage');
   next();
 });
 
-app.use('/', homeRouter);
+app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/auth', authRouter);
 app.use('/article', articleRouter);
 app.use('/upload', uploadRouter);
 
-app.use((req, res, next) => {
+// 404 Handler
+app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
 });
 
-app.use((err, req, res, next) => {
+// General error handlder
+app.use((err, req: Request, res: Response, next: NextFunction) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
