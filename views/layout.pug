@@ -9,11 +9,11 @@ html(lang="ko")
     body
         header
             section(id="header_main_section")
-                h1 Today's News
-                form(action="/signUp" method="get" class="header_button_form")
-                    input(type="submit" value="Sign Up")
-                form(action="/signIn" method="get" class="header_button_form")
-                    input(type="submit" value="LogIn")
+                h1(id="header_title") Today's News
+                input(type="button" class="header_button" id="sign_up_button" value="Sign Up")
+                input(type="button" class="header_button" id="login_button" value="LogIn")
+            script
+                include ../public/js/header.js
         block content
         footer 
             section(id="footer_section")

@@ -5,4 +5,6 @@ router.get('/', IndexController.index);
 
 router.get('/index', IndexController.index);
 
+router.get('/signUp', IndexController.signUp);
+
 module.exports = router;
