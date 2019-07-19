@@ -6,7 +6,7 @@ const userRouter = Router();
 
 userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await UserController.GetUserByObjectId({
+    const user = await UserController.GetUserById({
       _id: req.params.id,
     });
 
@@ -19,7 +19,7 @@ userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =
 
 userRouter.delete('/:id', async (req: Request, res: Response, next) => {
   try {
-    const user = await UserController.DeleteUserByObjectId({
+    const user = await UserController.DeleteUserById({
       _id: req.params.id,
     });
 

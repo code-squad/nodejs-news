@@ -27,38 +27,38 @@ async function CreateUser({
       privilege: UserPrivilege.USER,
       signUpDate: new Date(),
       status: UserStatus.NORMAL,
-});
+    });
     return data;
   } catch (error) {
     throw error;
   }
 }
 
-async function GetUserByObjectId({
+async function GetUserById({
   _id,
 }): Promise<IUserForClient> {
   try {
-    const user: IUserForClient = await User.findById({ _id });
+    const user: IUserForClient = await User.findOne({ _id,  deletedAt: { $exists: false } }, '-password');
     return user;
   } catch (error) {
     throw error;
   }
 }
 
-async function GetUserByQuery(query): Promise<IUserForClient> {
+async function GetUserByEmail(email): Promise<IUserForClient> {
   try {
-    const user: IUserForClient = await User.findOne(query);
+    const user: IUserForClient = await User.findOne({ email,  deletedAt: { $exists: false } }, '-password');
     return user;
   } catch (error) {
     throw error;
   }
 }
 
-async function DeleteUserByObjectId({
+async function DeleteUserById({
   _id,
 }): Promise<{}> {
   try {
-    const result: {} = await User.deleteOne({ _id });
+    const result: {} = await User.updateOne({ _id, deletedAt: { $exists: false } }, { deletedAt: new Date() });
     return result;
   } catch (error) {
     throw error;
@@ -74,7 +74,7 @@ async function PatchUserById({
 }: IPatchUserInput): Promise<any> {
   try {
     console.log(_id, profileImageUrl);
-    const result = await User.updateOne({ _id }, removeUndefinedFields({email, password, privilege, profileImageUrl}));
+    const result = await User.updateOne({ _id, deletedAt: { $exists: false } }, removeUndefinedFields({email, password, privilege, profileImageUrl}));
     return result;
   } catch (error) {
     throw error;
@@ -94,7 +94,7 @@ async function banUser({
       status: UserStatus.BANNED_FOREVER,
     };
     const result = await User.updateOne(
-      { _id },
+      { _id, deletedAt: { $exists: false }},
       modifyFieldSet,
     );
 
@@ -106,9 +106,9 @@ async function banUser({
 
 export default {
   CreateUser,
-  DeleteUserByObjectId,
-  GetUserByObjectId,
-  GetUserByQuery,
+  DeleteUserById,
+  GetUserById,
+  GetUserByEmail,
   PatchUserById,
   banUser,
 };

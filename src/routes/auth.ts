@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
+import passport from 'passport';
 import userController from '../controllers/user';
 import { isLoggedIn, isNotLoggedIn } from '../middlewares/auth';
-import passport from 'passport';
 
 const authRouter = Router();
 
@@ -18,9 +18,9 @@ authRouter.get('/signup', isNotLoggedIn, async (req: Request, res: Response, nex
 authRouter.post('/signup', isNotLoggedIn,  async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   try {
-    const exUser = await userController.GetUserByQuery({ email });
+    const exUser = await userController.GetUserByEmail(email);
     if (exUser) {
-      req.flash('signupError', '이미 ')
+      req.flash('signupError', '이미 ');
       return res.send({message: '이미 가입된 이메일입니다.'});
     }
     const hash = await bcrypt.hash(password, 12);
