@@ -1,0 +1,24 @@
+extends ./layout.pug
+block title
+    title= _title
+block content
+    style
+        include ../public/css/signUp.css
+    section(id="signUp_main")
+        section(id="account_background")
+            section(id="account_main")
+                section(id="account_title") 
+                    h2 Welcome! Create a your Account
+                section(id="account_contents")
+                    section(class="account_contents_info")
+                        h3(class="account_description") E-mail
+                        input(type="email" class="account_input" placeholder="Input your email...")
+                    section(class="account_contents_info")
+                        h3(class="account_description") Password
+                        input(type="password" class="account_input" placeholder="Input your password...")
+                    section(class="account_contents_info")
+                        h3(class="account_description") Name
+                        input(type="text" class="account_input" placeholder="Input your name...")
+                section(id="account_button")
+                    input(type="button" value="Create new account" id="signUp_button")
+

@@ -1,0 +1,119 @@
+body {
+    overflow: hidden;
+}
+
+#signUp_main {
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+}
+
+#account_background {
+    background-color: #525c6d;
+    border-radius: 2rem;
+    margin-bottom: 5rem;
+    margin-top: 5rem;
+    height: 40rem;
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+#account_main {
+    background-color: white;
+    border-radius: 2rem;
+    height: 80%;
+    width: 80%;
+}
+
+#account_title {
+    margin-top: 1rem;
+    height: 4rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+h2 {
+    color: #525c6d;
+    font-size: 30px;
+}
+
+#account_contents {
+    height: 21rem;
+    width: 90%;
+}
+
+.account_contents_info {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+    height: 33%;
+}
+
+.account_description {
+    color: #525c6d;
+    font-size: 20px;
+    width: 15%;
+}
+
+.account_input {
+    outline:none;
+    border: none;
+    border-radius: 1rem;
+    background-color: lightgray;
+    color: #525c6d;
+    text-indent: 1rem;
+    font-size: 20px;
+    margin-left: 5%;
+    height: 2.5rem;
+    width: 75%;
+}
+
+.email_info {
+    outline:none;
+    border: none;
+    border-radius: 1rem;
+    background-color: lightgray;
+    color: #525c6d;
+    text-indent: 1rem;
+    font-size: 20px;
+    margin-left: 5%;
+    height: 2.5rem;
+    width: 30%;
+}
+
+.account_input:focus {
+    border: 2px solid lightcoral;
+}
+
+#account_button {
+    text-align: center;
+    margin-top: 1rem;
+    height: 3rem;
+    width: 90%;
+}
+
+#signUp_button {
+    outline: none;
+    border: none;
+    border-radius: 1rem;
+    border: 2px solid #525c6d;
+    background-color: white;
+    font-size: 20px;
+    color: #525c6d;
+    height: 100%;
+    width: 90%;
+}
+
+#signUp_button:focus {
+    border: 2px solid lightcoral;
+}
+
+#signUp_button:hover {
+    background-color: #525c6d;
+    color: white;
+    cursor: pointer;
+}
