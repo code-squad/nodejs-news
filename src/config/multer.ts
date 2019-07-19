@@ -1,15 +1,8 @@
 import AWS from 'aws-sdk';
-import dotenv from 'dotenv';
-import fs from 'fs';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import path from 'path';
-
-if (fs.existsSync('.env')) {
-  dotenv.config({ path: '.env' });
-}
-
-const mb = 1024 * 1024;
+import { S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY } from '../util/secrets';
 
 const uploadBasePath = 'original';
 const profileImagePath = 'profile';
@@ -29,8 +22,8 @@ function multerFactory (destinationPath, limitFileSize): multer.Instance {
 }
 
 AWS.config.update({
-  accessKeyId: process.env.S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  accessKeyId: S3_ACCESS_KEY_ID,
+  secretAccessKey: S3_SECRET_ACCESS_KEY,
   region: 'ap-northeast-2',
 });
 

@@ -13,6 +13,9 @@ const prod = ENVIRONMENT === 'production';
 export const SESSION_SECRET = process.env.SESSION_SECRET;
 export const MONGODB_URI = process.env.MONGODB_URI;
 
+export const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID;
+export const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY;
+
 if (!SESSION_SECRET) {
     logger.error('No client secret. Set SESSION_SECRET environment variable.');
     process.exit(1);
