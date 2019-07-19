@@ -17,9 +17,6 @@ const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
 const articlesRouter = require('./routes/articles');
 
-
-
-
 const app = express();
 app.use(helmet());
 passportConfig(passport);
@@ -39,7 +36,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 // ------ passport config ------
 
-// Global Vars
+// Global Vars for flash message and user info
 app.use((req,res,next) =>  {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
@@ -70,18 +67,6 @@ app.use(methodOverride('_method'));
 app.use("/", indexRouter);
 app.use('/auth', authRouter);
 app.use('/articles', articlesRouter);
-
-// app.get("/sticky", (req, res) => {
-//     res.render("layouts/sticky-footer");
-// });
-
-app.get("/marketing-alternate", (req, res) => {
-    res.render("layouts/marketing-alternate");
-});
-
-app.get("/marketing-narrow", (req, res) => {
-    res.render("layouts/marketing-narrow");
-});
 
 // catch 404 and forward to error handler
 app.use( (req, res, next) => {

@@ -8,10 +8,11 @@ block index-article
                 | This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
             p
                 a.btn.btn-primary.btn-large Learn more »
-        .row-fluid
+        .grid-container
             each value in articles
-                .span4
+                .div
                     h2= value.title
-                    p !{value.body}
+                    div#article-preview
+                        | !{value.body}
                     p
                         a.btn(href='/articles/show/' + value.id) View details »
