@@ -12,7 +12,6 @@ html(lang='en')
                 padding-top: 60px;
                 padding-bottom: 40px;
             }
-
             .sidebar-nav {
                 padding: 9px 0;
             }
@@ -33,9 +32,10 @@ html(lang='en')
                 .span3
                     include ../partials/sidebar
                 block index
-                block add-articles
                 block index-article
                 block show-articles
+                block add-articles
+                block edit-articles
             hr
             footer
                 include ../partials/sticky-footer

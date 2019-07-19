@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportConfig = require('./passport');
+const methodOverride = require('method-override');
 const db = require('./config/database');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
@@ -64,6 +65,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(methodOverride('_method'));
 
 app.use("/", indexRouter);
 app.use('/auth', authRouter);
