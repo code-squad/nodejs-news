@@ -1,11 +1,12 @@
 const AuthController = require('../controllers/auth.controller');
 const router         = require('express').Router();
+const passport       = require('passport');
 
-router.get('/check/:username', AuthController.checkOverlap);
-
+router.get('/check/:email', AuthController.checkOverlap);
+    
 router.post('/register', AuthController.register);
 
-router.post('/login', AuthController.login);
+router.post('/login', passport.authenticate('local'), AuthController.login);
 
 router.get('/logout', AuthController.logout);
 

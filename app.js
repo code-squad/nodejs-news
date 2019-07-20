@@ -1,55 +1,56 @@
+const path          = require('path');
+const morgan        = require('morgan');
 const express       = require('express');
 const mongoose      = require('mongoose');
+const cookieParser  = require('cookie-parser');
 const bodyParser    = require('body-parser');
-const morgan        = require('morgan');
-const path          = require('path');
-
+const session       = require('express-session');
 const passport      = require('passport');
-const JwtStrategy   = require('passport-jwt').Strategy;
-const ExtractJwt    = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
 
 const config        = require('./config');
 const User          = require('./models/user');
-const authRouter    = require('./routes/auth.route');
-const indexRouter   = require('./routes/index.route');
 
 /* ==========================
     EXPRESS CONFIGURATION
 ============================= */
-const app = express();
-const port = process.env.PORT || 7777;
+const app    = express();
+const port   = process.env.PORT || 7777;
 
-const jwtOptions = { 
-    jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(), 
-    secretOrKey : config.secret 
-};
+const localOptions = { usernameField : 'email', passwordField : 'password' };
 
 app.locals.pretty = true;
 
-app.set('jwt-secret', config.secret);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(morgan('dev'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
+app.use(session({ secret : 'seCRetOFhyODol', resave: false, saveUninitialized: true, }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
+app.use(passport.session());
 
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-passport.use(new JwtStrategy(jwtOptions, (payload, done) => {
-    User.findOne({ username : payload.username }, (err, user) => {
-        if (err)  return done(err, false);
-        if (user) return done(null, user);
-        return done(null, false);
-    });
+passport.use(new LocalStrategy(localOptions, async (userEmail, password, done) => {
+    const user = await User.findOneByEmail(userEmail);
+    if (!user || !await user.verify(password)) return done(null, false);
+    return done(null, user);
 }));
+passport.serializeUser((user, done) => {
+    const userData = { 
+        email    : user.email, 
+        nickname : user.nickname, 
+        admin    : user.admin,
+        comment  : user.comment
+    };
+    done(null, userData);
+});
+passport.deserializeUser((userData, done) => done(null, userData));
 
-app.use('/', indexRouter);
-app.use('/auth', authRouter);
+app.use('/', require('./routes/index.route'));
+app.use('/auth', require('./routes/auth.route'));
 
 app.listen(port, () => console.log(`Application server is running on port [ ${port} ]`))
 

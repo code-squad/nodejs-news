@@ -3,7 +3,7 @@ const crypto   = require('crypto');
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
-    username    : String,
+    email       : String,
     salt        : String,
     password    : String,
     nickname    : String,
@@ -34,21 +34,26 @@ userSchema.statics.register = async function(userInfo) {
     const encrypted = await generateEncryption(salt, userInfo.password);
     const userCount = await this.countDocuments({}).exec();
     const user      = new this({ 
-        username : userInfo.username, 
+        email    : userInfo.email, 
         salt     : salt, 
-        password : salt + '.' + encrypted,
+        password : encrypted,
         nickname : userInfo.nickname,
         admin    : (!userCount) ? true : false
     });
     return user.save();
 }
 
-userSchema.statics.findOneByUsername = async function(username) {
-    return this.findOne({ username }).exec();
+userSchema.statics.findOneByEmail = async function(email) {
+    return this.findOne({ email }).exec();
 }
 
 userSchema.statics.count = async function() {
     return this.countDocuments({}).exec();
+}
+
+userSchema.methods.verify = async function(password) {
+    const encrypted = await generateEncryption(this.salt, password);
+    return this.password === encrypted;
 }
 
 module.exports = mongoose.model('User', userSchema);
