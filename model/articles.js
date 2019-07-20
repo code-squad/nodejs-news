@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create Schema
-const ArticleSchema = mongoose.model('Articles', new mongoose.Schema({
+const ArticleSchema = mongoose.model('articles', new mongoose.Schema({
     title:{
         type:String,
         required: true

@@ -37,28 +37,19 @@ block show-articles
                             .form-group
                                 textarea.form-control(rows='3', name='commentBody')
                             button.btn.btn-primary(type='submit') Submit
-                // Single Comment
-                .media.mb-4
-                    img.d-flex.mr-3.rounded-circle(src='http://placehold.it/50x50', alt='')
-                    .media-body
-                        h5.mt-0 Commenter Name
-                        |             Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                // Comment with nested comments
-                .media.mb-4
-                    img.d-flex.mr-3.rounded-circle(src='http://placehold.it/50x50', alt='')
-                    .media-body
-                        h5.mt-0 Commenter Name
-                        |             Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        .media.mt-4
-                            img.d-flex.mr-3.rounded-circle(src='http://placehold.it/50x50', alt='')
-                            .media-body
-                                h5.mt-0 Commenter Name
-                                |                 Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        .media.mt-4
-                            img.d-flex.mr-3.rounded-circle(src='http://placehold.it/50x50', alt='')
-                            .media-body
-                                h5.mt-0 Commenter Name
-                                |                 Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                each comment in article.comments
+                    .media.mb-4
+                        img.d-flex.mr-3.rounded-circle(src='http://placehold.it/50x50', alt='')
+                        .media-body
+                            if comment.commentUser.github !== undefined
+                                h5.mt-0= comment.commentUser.github.name
+                            if comment.commentUser.google !== undefined
+                                h5.mt-0= comment.commentUser.google.name
+                            if comment.commentUser.name !== undefined
+                                h5.mt-0= comment.commentUser.name
+                            |            #{comment.commentBody}
+                        small
+                            | Posted: #{comment.commentDate}
 
         // /.row
     // /.container
