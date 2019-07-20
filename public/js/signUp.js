@@ -9,9 +9,9 @@ emailText.addEventListener('keydown', () => {
 document.querySelector('#signUp_button').addEventListener('click', () => {
     const email = document.querySelector('#email').value;
     const password = document.querySelector('#password').value;
-    const name = document.querySelector('#name').value;
+    const nickname = document.querySelector('#nickname').value;
     const headers = { 'Content-Type' : 'application/json' };
-    const body = JSON.stringify({ username : email, password : password, nickname : name });
+    const body = JSON.stringify({ email : email, password : password, nickname : nickname });
     fetch('http://localhost:7777/auth/register', { method : 'POST', headers: headers, body : body })
     .then(res => { return res.json(); })
     .then(json => {
