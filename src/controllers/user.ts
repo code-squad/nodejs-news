@@ -74,7 +74,10 @@ async function PatchUserById({
 }: IPatchUserInput): Promise<any> {
   try {
     console.log(_id, profileImageUrl);
-    const result = await User.updateOne({ _id, deletedAt: { $exists: false } }, removeUndefinedFields({email, password, privilege, profileImageUrl}));
+    const result = await User.updateOne({
+      _id,
+      deletedAt: { $exists: false }
+    }, removeUndefinedFields({email, password, privilege, profileImageUrl}));
     return result;
   } catch (error) {
     throw error;
