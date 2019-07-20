@@ -24,11 +24,11 @@ router.get("/google/callback", passport.authenticate('google', {
     failureFlash   : true
 }));
 
-router.get("/signin", isNotLoggedIn, function (req, res) {
+router.get("/signin", isNotLoggedIn, (req, res) => {
     res.render("layouts/signin");
 });
 
-router.get("/signup", isNotLoggedIn, function (req, res) {
+router.get("/signup", isNotLoggedIn, (req, res) => {
     res.render("layouts/signup");
 });
 
@@ -42,7 +42,6 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
         req.flash('error_msg', '비밀번호가 일치하지 않습니다.');
         return res.redirect("signup");
     }
-
     if (password.length < 6) {
         req.flash('error_msg', '비밀번호는 최소 6글자 이상어야 합니다.');
         return res.redirect("signup");
@@ -84,7 +83,7 @@ router.post('/signin', isNotLoggedIn, (req, res, next) => {
 
 
 // 로그 아웃
-router.get('/logout', isLoggedIn, function (req, res) {
+router.get('/logout', isLoggedIn, (req, res) => {
     req.logout();
     req.flash('success_msg', 'You are logged out');
     res.redirect('/auth/signin');

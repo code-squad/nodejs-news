@@ -73,4 +73,20 @@ router.delete('/:id', (req, res) => {
         .then(() => res.redirect('/articles/' + req.body.field))
 });
 
+router.post('/comment/:id', (req,res) => {
+   Article.findOne({_id: req.params.id})
+       .then(article => {
+           const newComment = {
+               commentBody: req.body.commentBody,
+               commentUser: req.user.id
+           };
+
+           // Add to comments array
+           article.comments.unshift(newComment);
+
+           article.save()
+               .then(article => res.redirect('/articles/show' + article.id));
+       })
+});
+
 module.exports = router;

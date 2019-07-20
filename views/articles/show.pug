@@ -33,9 +33,9 @@ block show-articles
                 .card.my-4
                     h5.card-header Leave a Comment:
                     .card-body
-                        form
+                        form(action='/articles/comment/' + article.id, method='post')
                             .form-group
-                                textarea.form-control(rows='3')
+                                textarea.form-control(rows='3', name='commentBody')
                             button.btn.btn-primary(type='submit') Submit
                 // Single Comment
                 .media.mb-4
