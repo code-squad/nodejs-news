@@ -28,17 +28,15 @@ AuthController.checkOverlap = async (req, res) => {
 AuthController.register = async (req, res) => {
     try {
         const userCount = await User.countDocuments({}).exec();
-
         const newUser = new User({
             username    : req.body.username,
             nickname    : req.body.nickname,
             admin       : (!userCount) ? true : false
         });
 
-        User.register(newUser, req.body.password, (err) => {
-            if (err) return res.status(500).json({ success : false, message : err });
-            res.json({ success : true, message : `Successfully create new account!` });
-        });
+        const { err, user } = await User.register(newUser, req.body.password);
+        if (err) return res.status(500).json({ success : false, message : err });
+        res.json({ success : true, message : `Successfully create new account!` });
     } catch (err) {
         res.status(500).json({ success : false, message : err });
     }
@@ -89,7 +87,8 @@ AuthController.logout = async (req, res) => {
 */
 AuthController.profile = async (req, res) => {
     try {
-        res.json({ user : req.user });
+        const userlist = await User.find({}).exec();
+        res.json({ user : userlist });
     } catch (err) {
         res.json({ err : err });
     }
