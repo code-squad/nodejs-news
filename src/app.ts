@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
 import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import createError from 'http-errors';
-import logger from 'morgan';
 import passport from 'passport';
 import path from 'path';
 import { passportConfig } from './config/passport';
@@ -15,6 +14,7 @@ import indexRouter from './routes/index';
 import uploadRouter from './routes/upload';
 import userRouter from './routes/user';
 import { addHours } from './util/datehelper';
+import logger from './util/logger';
 import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
 
 
@@ -29,7 +29,6 @@ const app = express();
 app.set('views', path.join(__dirname, '../../views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
 app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -75,6 +74,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use((err, req: Request, res: Response, next: NextFunction) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  logger.error(err);
 
   res.status(err.status || 500);
   res.render('error', {
