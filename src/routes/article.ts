@@ -1,17 +1,19 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
-import showdown from 'showdown';
-import passport = require('passport');
+import articleController from '../controllers/article';
 
 const articleRouter = Router();
-const converter = new showdown.Converter();
 
-articleRouter.get('/', (req: Request, res: Response, next: NextFunction) => {
+articleRouter.get('/:articleId', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const articleId = req.params.articleId;
 
-    return res.render('block/article');
+    const article = await articleController.getRawArticleById(articleId);
+
+    return res.render('block/article', { user: req.user, article });
   } catch (error) {
-    next(createError(404));
+    console.error(error);
+    next(createError(500));
   }
 });
 

@@ -1,68 +1,38 @@
-// import Article, { IArticle } from "../models/article.model";
-// import { removeNullFields } from "../util/fieldset";
+import Showdown from 'showdown';
+import s3 from '../config/aws';
+import Article, { IArticle } from '../models/article.model';
+import { S3_BUCKET } from '../util/secrets';
 
-// interface ICreateArticleInput {
-//   bodyUrl: IArticle["bodyUrl"];
-//   title: IArticle["title"];
-//   writerId: IArticle["writerId"];
-// }
+const converter = new Showdown.Converter();
+converter.setFlavor('github');
+converter.setOption('tasklists', true);
+converter.setOption('emoji', true);
 
-// async function CreateArticle({
-//   age,
-//   id,
-//   password,
-// }: ICreateArticleInput): Promise<IArticle> {
-//   try {
-//     const data: IArticle = await Article.create({
-//       age,
-//       id,
-//       password,
-//     });
-//     return data;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+interface IArticleInfo {
+  title   : IArticle['title'];
+  rawHtml : string;
+}
 
-// async function GetUserByObjectId({
-//   _id,
-// }: IGetUserInput): Promise<IUserForClient[]> {
-//   try {
-//     const user: IUserForClient[] = await User.find({ _id });
-//     return user;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+async function getRawArticleById(articleId): Promise<IArticleInfo> {
+  try {
+    const article: IArticle = await Article.findOne({ _id: articleId, deletedAt: { $exists: false } });
 
-// async function DeleteUserByObjectId({
-//   _id,
-// }: IGetUserInput): Promise<{}> {
-//   try {
-//     const result: {} = await User.deleteOne({ _id });
-//     return result;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+    const articleRawHtml = await s3.getObject({
+      Bucket: S3_BUCKET,
+      Key: article.markdownKey,
+    }).promise();
 
-// async function PutUserByObjectId({
-//   _id,
-//   age,
-//   id,
-//   password,
-// }): Promise<IUser> {
-//   try {
-//     const result: IUser = await User.update({ _id }, removeNullFields({age, id, password}));
-//     return result;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+    const rawMarkdown = await articleRawHtml.Body.toString('utf-8');
 
-// export default {
-//   CreateUser,
-//   DeleteUserByObjectId,
-//   GetUserByObjectId,
-//   PutUserByObjectId,
-// };
+    return {
+      title: article.title,
+      rawHtml: converter.makeHtml(rawMarkdown),
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+export default {
+  getRawArticleById,
+};
