@@ -9,7 +9,7 @@ const AuthController = {};
 */
 AuthController.checkOverlap = async (req, res) => {
     try {
-        const isExistUser = await User.findByUsername(req.params.username).exec();
+        const isExistUser = await User.findOneByUsername(req.params.username);
         const message = (isExistUser) ? "Exist username" : "Available username";
         res.json({ message : message });
     } catch (err) {
@@ -27,16 +27,8 @@ AuthController.checkOverlap = async (req, res) => {
 */
 AuthController.register = async (req, res) => {
     try {
-        const userCount = await User.countDocuments({}).exec();
-        const newUser = new User({
-            username    : req.body.username,
-            nickname    : req.body.nickname,
-            admin       : (!userCount) ? true : false
-        });
-
-        const { err, user } = await User.register(newUser, req.body.password);
-        if (err) return res.status(500).json({ success : false, message : err });
-        res.json({ success : true, message : `Successfully create new account!` });
+        await User.register(req.body);
+        res.json({ success : true, message : `Successfully create new account!`});
     } catch (err) {
         res.status(500).json({ success : false, message : err });
     }
@@ -52,23 +44,26 @@ AuthController.register = async (req, res) => {
 AuthController.login = async (req, res) => {
     try {
         const { username, password } = req.body;
+        if (!username || !password) return res.status(400).json({ message : 'Please enter your info (username or password)' });
 
-        if (!username || !password) 
-            return res.status(400).json({ message : 'Please enter your info (username or password)' });
+        const { err, user, info } = await passport.authenticate('local')(req, res);
+        if (err || info) return res.status(401).json({ error : error });
+        if (!user) return res.status(404).json({ message : 'Not exist user' });
+        res.join({ user});
 
-        passport.authenticate('local', { session : false }, (err, user, info) => {
-            const error = err || info;
+        // passport.authenticate('local', (err, user, info) => {
+        //     const error = err || info;
 
-            if (error) 
-                return res.status(401).json({ error : error });
+        //     if (error) 
+        //         return res.status(401).json({ error : error });
 
-            if (!user) 
-                return res.status(404).json({ message : 'Not exist user' });
+        //     if (!user) 
+        //         return res.status(404).json({ message : 'Not exist user' });
             
-            const payload = { username : user.username };
-            const options = { expiresIn : '7d', issuer: 'hyodol.com' };
-            res.json({ access_token : jwt.sign(payload, req.app.get('jwt-secret'), options) });
-        })(req, res);
+        //     const payload = { username : user.username };
+        //     const options = { expiresIn : '7d', issuer: 'hyodol.com' };
+        //     res.json({ access_token : jwt.sign(payload, req.app.get('jwt-secret'), options) });
+        // })(req, res);
     } catch (err) {
         res.status(500).json({ message : `An error occurred : ${err}`});
     }
