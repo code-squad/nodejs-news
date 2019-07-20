@@ -12,13 +12,15 @@ block content
                 section(id="account_contents")
                     section(class="account_contents_info")
                         h3(class="account_description") E-mail
-                        input(type="email" class="account_input" placeholder="Input your email...")
+                        input(type="email" class="account_input" id="email" placeholder="Input your email...")
                     section(class="account_contents_info")
                         h3(class="account_description") Password
-                        input(type="password" class="account_input" placeholder="Input your password...")
+                        input(type="password" class="account_input" id="password" placeholder="Input your password...")
                     section(class="account_contents_info")
                         h3(class="account_description") Name
-                        input(type="text" class="account_input" placeholder="Input your name...")
+                        input(type="text" class="account_input" id="name" placeholder="Input your name...")
                 section(id="account_button")
                     input(type="button" value="Create new account" id="signUp_button")
+    script
+        include ../public/js/signUp.js
 

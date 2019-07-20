@@ -35,12 +35,12 @@ AuthController.register = async (req, res) => {
             admin       : (!userCount) ? true : false
         });
 
-        User.register(newUser, req.body.password, (err, user) => {
-            const message = (err) ? `${err}` : `Successfully created new account`;
-            res.json({ message : message, user });
+        User.register(newUser, req.body.password, (err) => {
+            if (err) return res.status(500).json({ success : false, message : err });
+            res.json({ success : true, message : `Successfully create new account!` });
         });
     } catch (err) {
-        res.status(500).json({ message : `An error occurred : ${err}`});
+        res.status(500).json({ success : false, message : err });
     }
 }
 

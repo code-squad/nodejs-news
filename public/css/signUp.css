@@ -86,7 +86,7 @@ h2 {
 }
 
 .account_input:focus {
-    border: 2px solid lightcoral;
+    border: 2px solid #525c6d;
 }
 
 #account_button {
@@ -109,7 +109,7 @@ h2 {
 }
 
 #signUp_button:focus {
-    border: 2px solid lightcoral;
+    border: 2px solid #525c6d;
 }
 
 #signUp_button:hover {
