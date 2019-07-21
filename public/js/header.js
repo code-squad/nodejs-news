@@ -1,6 +1,11 @@
 // index
 document.querySelector('#header_title').addEventListener('click', () => location.href = '/');
 
-document.querySelector('input[value="Sign Up"]').addEventListener('click', () => location.href = '/signUp');
+const url = {
+    'signup' : '/signUp',
+    'login'  : '/login',
+    'logout' : '/auth/logout',
+    'user'   : '/auth/:user_email'
+}
 
-document.querySelector('input[value="LogIn"]').addEventListener('click', () => location.href = '/login');
+const execute = (type) => location.href = url[type];
