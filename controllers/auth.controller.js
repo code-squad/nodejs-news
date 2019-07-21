@@ -15,15 +15,22 @@ AuthController.checkOverlap = async (req, res) => {
 
 AuthController.register = async (req, res) => {
     try {
+        let message = undefined;
         if (await User.findOneByEmail(req.body.email))
-            return res.json({ success : false, message : `Exists user!` });
-
+            message = 'Exists user information';
+        
         if (!await User.register(req.body))
-            return res.status(500).json({ success : false, message : `Failure`});
-            
-        res.json({ success : true, message : `Successfully create new account!`});
+            message = 'Failure register'
+        
+        if (message) {
+            req.flash('message', message);
+            return res.redirect('/signUp');
+        }
+
+        res.redirect('/');
     } catch (err) {
-        res.status(500).json({ success : false, message : err });
+        req.flash('message', 'Server Error');
+        res.redirect('/signUp');
     }
 }
 

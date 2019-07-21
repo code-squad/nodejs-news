@@ -11,7 +11,7 @@ IndexController.index = async (req, res) => {
 }
 
 IndexController.signUp = async (req, res) => {
-    res.render('signUp', { title : `Sign Up` });
+    res.render('signUp', { title : `Sign Up`, message : req.flash('message') });
 }
 
 IndexController.login = async (req, res) => {

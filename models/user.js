@@ -7,7 +7,6 @@ const userSchema = new Schema({
     salt        : String,
     password    : String,
     nickname    : String,
-    comment     : [ String ],
     admin       : { type : Boolean, default : false }
 });
 
@@ -45,10 +44,6 @@ userSchema.statics.register = async function(userInfo) {
 
 userSchema.statics.findOneByEmail = async function(email) {
     return this.findOne({ email }).exec();
-}
-
-userSchema.statics.count = async function() {
-    return this.countDocuments({}).exec();
 }
 
 userSchema.methods.verify = async function(password) {

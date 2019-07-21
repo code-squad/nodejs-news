@@ -1,6 +1,6 @@
 extends ./layout.pug
 block title
-    title= _title
+    title Today's News - #{title}
 block content
     style
         include ../public/css/signUp.css
@@ -9,18 +9,21 @@ block content
             section(id="account_main")
                 section(id="account_title") 
                     h2 Welcome! Create a your Account
-                section(id="account_contents")
-                    section(class="account_contents_info")
-                        h3(class="account_description") E-mail
-                        input(type="email" class="account_input" id="email" placeholder="Input your email...")
-                    section(class="account_contents_info")
-                        h3(class="account_description") Password
-                        input(type="password" class="account_input" id="password" placeholder="Input your password...")
-                    section(class="account_contents_info")
-                        h3(class="account_description") Name
-                        input(type="text" class="account_input" id="nickname" placeholder="Input your name...")
-                section(id="account_button")
-                    input(type="button" value="Create new account" id="signUp_button")
+                form(action="/auth/register" method="post" id="register_form")
+                    section(id="account_contents")
+                        section(class="account_contents_info")
+                            h3(class="account_description") E-mail
+                            input(type="email" class="account_input" name="email" placeholder="Input your email...")
+                        section(class="account_contents_info")
+                            h3(class="account_description") Password
+                            input(type="password" class="account_input" name="password" placeholder="Input your password...")
+                        section(class="account_contents_info")
+                            h3(class="account_description") Name
+                            input(type="text" class="account_input" name="nickname" placeholder="Input your name...")
+                        section(id="account_alert")
+                            h3(id="alert_message")= message
+                    section(id="account_button")
+                        input(type="submit" value="Create new account" id="signUp_button")
     script
         include ../public/js/signUp.js
 

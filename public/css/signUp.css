@@ -40,8 +40,12 @@ h2 {
     font-size: 30px;
 }
 
+#register_form {
+    width: 100%;
+}
+
 #account_contents {
-    height: 21rem;
+    height: 20rem;
     width: 90%;
 }
 
@@ -50,7 +54,19 @@ h2 {
     align-items: center;
     text-align: center;
     width: 90%;
-    height: 33%;
+    height: 30%;
+}
+
+#account_alert {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+    height: 15%;
+}
+
+h3 {
+    color: red;
 }
 
 .account_description {
@@ -91,7 +107,7 @@ h2 {
 
 #account_button {
     text-align: center;
-    margin-top: 1rem;
+    margin-top: 2rem;
     height: 3rem;
     width: 90%;
 }
@@ -100,20 +116,14 @@ h2 {
     outline: none;
     border: none;
     border-radius: 1rem;
-    border: 2px solid #525c6d;
-    background-color: white;
+    border: 2px solid white;
+    background-color: #525c6d;
     font-size: 20px;
-    color: #525c6d;
+    color: white;
     height: 100%;
     width: 90%;
 }
 
-#signUp_button:focus {
-    border: 2px solid #525c6d;
-}
-
 #signUp_button:hover {
-    background-color: #525c6d;
-    color: white;
     cursor: pointer;
 }
