@@ -6,11 +6,11 @@ const userRouter = Router();
 
 userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await UserController.GetUserById({
+    const targetUser = await UserController.GetUserById({
       _id: req.params.id,
     });
 
-    return res.send({ user });
+    return res.render('block/userpage', { user: req.user, targetUser });
   } catch (error) {
     createError(500);
     next(error);
