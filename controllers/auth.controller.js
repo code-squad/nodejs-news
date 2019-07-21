@@ -36,7 +36,7 @@ AuthController.register = async (req, res) => {
 
 AuthController.logout = async (req, res) => {
     req.logout();
-    res.json({ message : 'Successfully logged out' });
+    res.redirect(req.session.cookie.path);
 }
 
 module.exports = AuthController;

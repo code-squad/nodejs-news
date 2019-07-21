@@ -12,10 +12,10 @@ html(lang="ko")
                 h1(id="header_title") Today's News
                 if (user)
                     input(type="button" class="header_button" id="user_info" value=user.nickname onclick="execute('user')")
-                    input(type="button" class="header_button" value="LogOut" onclick="execute('logout')")
+                    input(type="button" class="header_button" value="Log-out" onclick="execute('logout')")
                 else
-                    input(type="button" class="header_button" value="Sign Up" onclick="execute('signup')")
-                    input(type="button" class="header_button" value="LogIn" onclick="execute('login')")
+                    input(type="button" class="header_button" value="Sign-up" onclick="execute('signup')")
+                    input(type="button" class="header_button" value="Log-in" onclick="execute('login')")
             script
                 include ../public/js/header.js
         block content

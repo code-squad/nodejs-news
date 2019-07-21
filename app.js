@@ -12,29 +12,45 @@ const LocalStrategy = require('passport-local').Strategy;
 const config        = require('./config');
 const User          = require('./models/user');
 
+/* ==============================
+    CONNECT TO MONGODB
+================================= */
+const db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', () => console.log(`Mongodb server is connected`));
+
+mongoose.connect(config.mongodbUri, { useNewUrlParser : true, useCreateIndex : true });
+
 /* ==========================
     EXPRESS CONFIGURATION
 ============================= */
 const app    = express();
 const port   = process.env.PORT || 7777;
 
-const localOptions = { usernameField : 'email', passwordField : 'password' };
-
+// views
 app.locals.pretty = true;
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// etc
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
-app.use(session({ secret : 'seCRetOFhyODol', resave : false, saveUninitialized : true }));
+
+// Session-related
+app.use(session({ 
+    secret              : 'seCRetOFhyODol', 
+    resave              : false, 
+    saveUninitialized   : true 
+}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// local passport
+const localOptions = { usernameField : 'email', passwordField : 'password' };
 passport.use(new LocalStrategy(localOptions, async (userEmail, password, done) => {
     const user = await User.findOneByEmail(userEmail);
 
@@ -57,16 +73,10 @@ passport.serializeUser((user, done) => {
 });
 passport.deserializeUser((userData, done) => done(null, userData));
 
+// router
 app.use('/', require('./routes/index.route'));
 app.use('/auth', require('./routes/auth.route'));
 
+// error
+
 app.listen(port, () => console.log(`Application server is running on port [ ${port} ]`))
-
-/* ==============================
-    CONNECT TO MONGODB
-================================= */
-const db = mongoose.connection;
-db.on('error', console.error);
-db.once('open', () => console.log(`Mongodb server is connected`));
-
-mongoose.connect(config.mongodbUri, { useNewUrlParser : true, useCreateIndex : true });
