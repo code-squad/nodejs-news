@@ -3,13 +3,15 @@ const router         = require('express').Router();
 const passport       = require('passport');
 
 router.get('/check/:email', AuthController.checkOverlap);
-    
+
 router.post('/register', AuthController.register);
 
-router.post('/login', passport.authenticate('local'), AuthController.login);
+router.post('/login', passport.authenticate('local', { 
+    successRedirect : '/', 
+    failureRedirect : '/login', 
+    failureFlash    : true
+}));
 
 router.get('/logout', AuthController.logout);
-
-router.get('/profile', AuthController.profile);
 
 module.exports = router;

@@ -1,18 +1,29 @@
 const IndexController = {};
 
-/*
-    GET /
-    GET /index
-*/
 IndexController.index = async (req, res) => {
-    res.render('index', { _title : `Today's News - Main` });
+    const data = { title : `Main` };
+    if (req.user) {
+        data.user = req.user;
+        res.render('index', data);
+    } else {
+        res.render('index', data);
+    }
 }
 
-/*
-    GET /signUp
-*/
 IndexController.signUp = async (req, res) => {
-    res.render('signUp', { _title : `Today's News - Sign Up` });
+    res.render('signUp', { title : `Sign Up` });
+}
+
+IndexController.login = async (req, res) => {
+    const flashMessage = req.flash();
+    const data = { title : `Login` };
+    if (flashMessage.error) {
+        data.message = flashMessage.error[0];
+        res.render('login', data);
+        return;
+    } else {
+        res.render('login', data);
+    }
 }
 
 module.exports = IndexController;

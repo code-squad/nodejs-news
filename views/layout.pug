@@ -10,8 +10,12 @@ html(lang="ko")
         header
             section(id="header_main_section")
                 h1(id="header_title") Today's News
-                input(type="button" class="header_button" id="sign_up_button" value="Sign Up")
-                input(type="button" class="header_button" id="login_button" value="LogIn")
+                if (user)
+                    input(type="button" class="header_button" id="user_info" value=user.nickname)
+                    input(type="button" class="header_button" value="LogOut")
+                else
+                    input(type="button" class="header_button" value="Sign Up")
+                    input(type="button" class="header_button" value="LogIn")
             script
                 include ../public/js/header.js
         block content

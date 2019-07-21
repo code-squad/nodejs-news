@@ -49,6 +49,10 @@ header {
     color: white;
 }
 
+#user_info {
+    width: auto;
+}
+
 footer {
     margin-top: 2.5%;
     margin-bottom: 2.5%;

@@ -3,6 +3,7 @@ const morgan        = require('morgan');
 const express       = require('express');
 const mongoose      = require('mongoose');
 const cookieParser  = require('cookie-parser');
+const flash         = require('connect-flash');
 const bodyParser    = require('body-parser');
 const session       = require('express-session');
 const passport      = require('passport');
@@ -28,14 +29,21 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
-app.use(session({ secret : 'seCRetOFhyODol', resave: false, saveUninitialized: true, }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret : 'seCRetOFhyODol', resave : false, saveUninitialized : true }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.static(path.join(__dirname, 'public')));
 
 passport.use(new LocalStrategy(localOptions, async (userEmail, password, done) => {
     const user = await User.findOneByEmail(userEmail);
-    if (!user || !await user.verify(password)) return done(null, false);
+
+    if (!user) 
+        return done(null, false, { message : `Incorrect your email` });
+
+    if (!await user.verify(password))
+        return done(null, false, { message : `Incorrect your password` });
+
     return done(null, user);
 }));
 passport.serializeUser((user, done) => {
