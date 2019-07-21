@@ -34,6 +34,10 @@ AuthController.register = async (req, res) => {
     }
 }
 
+AuthController.login = async (req, res) => {
+    res.redirect(req.session.cookie.path);
+}
+
 AuthController.logout = async (req, res) => {
     req.logout();
     res.redirect(req.session.cookie.path);
