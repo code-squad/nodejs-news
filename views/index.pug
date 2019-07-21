@@ -6,11 +6,16 @@ html
     .container
       block article
 
+    block userpage
+    block userpage-table
+
       div= user
     if !user
       include components/signinform.pug
     if user
       include components/imageuploadform.pug
+    if user.privilege > 0
+      include components/mduploadform.pug
 
     include scripts/vendor.pug
     script(type='module' src='/js/auth.js')
