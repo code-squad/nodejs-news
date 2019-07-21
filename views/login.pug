@@ -1,0 +1,31 @@
+extends ./layout.pug
+block title
+    title Today's News - #{title}
+block content
+    style
+        include ../public/css/login.css
+    section(id="login_main")
+        section(id="account_background")
+            section(id="account_main")
+                section(id="account_title") 
+                    h2 Welcome! Login
+                form(action="/auth/login" method="post" id="login_form")
+                    section(id="account_contents")
+                        section(class="account_contents_info")
+                            h3(class="account_description") E-mail
+                            input(type="email" class="account_input" name="email" placeholder="Input your email...")
+                        section(class="account_contents_info")
+                            h3(class="account_description") Password
+                            input(type="password" class="account_input" name="password" placeholder="Input your password...")
+                        section(id="account_alert")
+                            h3(id="alert_message")= message
+                    section(id="account_button")
+                        input(type="submit" value="Login" id="logIn_button")
+                section(class="oauth_account_button")
+                    input(type="button" value="Google Login" id="google_logIn_button")
+                section(class="oauth_account_button")
+                    input(type="button" value="Github Login" id="github_logIn_button")
+                section(class="oauth_account_button")
+                    input(type="button" value="Facebook Login" id="facebook_logIn_button")
+    script
+        include ../public/js/login.js

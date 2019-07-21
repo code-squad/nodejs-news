@@ -1,0 +1,184 @@
+body {
+    overflow: hidden;
+}
+
+#login_main {
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+}
+
+#account_background {
+    background-color: #525c6d;
+    border-radius: 2rem;
+    margin-bottom: 5rem;
+    margin-top: 5rem;
+    height: 40rem;
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+#account_main {
+    background-color: white;
+    border-radius: 2rem;
+    height: 80%;
+    width: 80%;
+}
+
+#account_title {
+    margin-top: 1rem;
+    height: 5rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+h2 {
+    color: #525c6d;
+    font-size: 30px;
+}
+
+#login_form {
+    width: 100%;
+}
+
+#account_contents {
+    height: 13rem;
+    width: 90%;
+}
+
+.account_contents_info {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+    height: 40%;
+}
+
+#account_alert {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+    height: 15%;
+}
+
+h3 {
+    color: red;
+}
+
+.account_description {
+    color: #525c6d;
+    font-size: 20px;
+    width: 15%;
+}
+
+.account_input {
+    outline:none;
+    border: none;
+    border-radius: 1rem;
+    background-color: lightgray;
+    color: #525c6d;
+    text-indent: 1rem;
+    font-size: 20px;
+    margin-left: 5%;
+    height: 2.5rem;
+    width: 75%;
+}
+
+.email_info {
+    outline:none;
+    border: none;
+    border-radius: 1rem;
+    background-color: lightgray;
+    color: #525c6d;
+    text-indent: 1rem;
+    font-size: 20px;
+    margin-left: 5%;
+    height: 2.5rem;
+    width: 30%;
+}
+
+.account_input:focus {
+    border: 2px solid #525c6d;
+}
+
+#account_button {
+    text-align: center;
+    height: 3rem;
+    width: 90%;
+}
+
+#logIn_button {
+    outline: none;
+    border: none;
+    border-radius: 1rem;
+    border: 2px solid white;
+    background-color: #525c6d;
+    font-size: 20px;
+    color: white;
+    height: 100%;
+    width: 90%;
+}
+
+#logIn_button:hover {
+    cursor: pointer;
+}
+
+.oauth_account_button {
+    display: flex;
+    align-items: flex-start;
+    text-align: center;
+    height: 3rem;
+    width: 90%;
+}
+
+#google_logIn_button {
+    outline: none;
+    border: none;
+    border-radius: 1rem;
+    border: 2px solid white;
+    background-color: #EA4335;
+    font-size: 20px;
+    color: white;
+    height: 100%;
+    width: 90%;
+}
+
+#google_logIn_button:hover {
+    cursor: pointer;
+}
+
+#github_logIn_button {
+    outline: none;
+    border: none;
+    border-radius: 1rem;
+    border: 2px solid white;
+    background-color: black;
+    font-size: 20px;
+    color: white;
+    height: 100%;
+    width: 90%;
+}
+
+#github_logIn_button:hover {
+    cursor: pointer;
+}
+
+#facebook_logIn_button {
+    outline: none;
+    border: none;
+    border-radius: 1rem;
+    border: 2px solid white;
+    background-color:#3b5998;
+    font-size: 20px;
+    color: white;
+    height: 100%;
+    width: 90%;
+}
+
+#facebook_logIn_button:hover {
+    cursor: pointer;
+}
