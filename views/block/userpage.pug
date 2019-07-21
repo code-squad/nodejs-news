@@ -1,0 +1,32 @@
+extend ../index
+
+block userpage
+  - const profileUrl = targetUser.profileImageUrl || '/image/avatar.png';
+  .userpage-header-container(style='width: 100%; background-color: #FAFAFA;')
+    .userpage-header.uk-flex.uk-flex-between.uk-flex-middle(style='width:70%; padding: 16px 0; margin: auto;')
+      .userpage-header-left.uk-flex.uk-flex-middle
+        img#big-profile.uk-comment-avatar(src=profileUrl, width='150px', alt='', style='border-radius: 50%;')
+        .user-info(style='margin-left: 24px; display: inline-block')
+          p(style='color: black; font-size: 1.5em; margin: 0')= targetUser.email.split('@')[0]
+          p(style='color: black; font-size: 1.1em; margin: 0') 140명
+      .userpage-head-right
+        button#subscription-button.uk-button.uk-button-danger 구독
+
+block userpage-table
+  .userpage-table(style='width:60%; margin: auto;')
+    .uk-card.uk-card-default(class='uk-width-1-1')
+      .uk-card-header
+        .uk-grid-small.uk-flex-middle(uk-grid='')
+          .uk-width-auto
+            img.uk-border-circle(width='40', height='40', src='/image/avatar.png')
+          .uk-width-expand
+            h3.uk-card-title.uk-margin-remove-bottom Title
+            p.uk-text-meta.uk-margin-remove-top
+              time(datetime='2016-04-01T19:00') April 01, 2016
+          span.uk-margin-small-right(uk-icon='pencil')
+      .uk-card-body
+        p
+          | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+      .uk-card-footer
+        a.uk-button.uk-button-text(href='#') Read more
+  
