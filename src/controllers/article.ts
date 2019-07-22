@@ -15,7 +15,11 @@ interface IArticleInfo {
 
 async function getRawArticleById(articleId): Promise<IArticleInfo> {
   try {
-    const article: IArticle = await Article.findOne({ _id: articleId, deletedAt: { $exists: false } });
+    const article: IArticle = await Article.findOneAndUpdate(
+      { _id: articleId, deletedAt: { $exists: false } },
+      { $inc: { hits: 1 } },
+      { new: true }
+    );
 
     const articleRawHtml = await s3.getObject({
       Bucket: S3_BUCKET,
@@ -33,6 +37,19 @@ async function getRawArticleById(articleId): Promise<IArticleInfo> {
   }
 }
 
+async function createArticle({
+  writerId,
+  title,
+  markdownKey
+}): Promise<{}> {
+  try {
+    return await Article.create({ writerId, title, markdownKey, createdAt: new Date(), hits: 0 });
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getRawArticleById,
+  createArticle,
 };
