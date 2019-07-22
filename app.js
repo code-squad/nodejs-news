@@ -9,8 +9,15 @@ const session       = require('express-session');
 const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-const config        = require('./config');
-const User          = require('./models/user');
+const config            = require('./config');
+// Model
+const User              = require('./models/user');
+// Routers
+const indexRouter       = require('./routes/index.route');
+const authRouter        = require('./routes/auth.route');
+// Middleware
+const authMiddleware    = require('./middlewares/auth.middleware');
+const errorMiddleware   = require('./middlewares/error.middleware');
 
 /* ==============================
     CONNECT TO MONGODB
@@ -74,9 +81,12 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((userData, done) => done(null, userData));
 
 // router
-app.use('/', require('./routes/index.route'));
-app.use('/auth', require('./routes/auth.route'));
+app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/user', authMiddleware);
 
 // error
+app.use(errorMiddleware.error404);
+app.use(errorMiddleware.error);
 
 app.listen(port, () => console.log(`Application server is running on port [ ${port} ]`))
