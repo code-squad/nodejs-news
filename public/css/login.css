@@ -28,7 +28,7 @@ body {
 
 #account_title {
     margin-top: 1rem;
-    height: 5rem;
+    height: 4rem;
     width: 100%;
     display: flex;
     align-items: center;
@@ -111,11 +111,11 @@ h3 {
     width: 90%;
 }
 
+
 #logIn_button {
     outline: none;
     border: none;
     border-radius: 1rem;
-    border: 2px solid white;
     background-color: #525c6d;
     font-size: 20px;
     color: white;
@@ -131,6 +131,7 @@ h3 {
     display: flex;
     align-items: flex-start;
     text-align: center;
+    margin-top: 2px;
     height: 3rem;
     width: 90%;
 }
@@ -139,7 +140,6 @@ h3 {
     outline: none;
     border: none;
     border-radius: 1rem;
-    border: 2px solid white;
     background-color: #EA4335;
     font-size: 20px;
     color: white;
@@ -155,7 +155,6 @@ h3 {
     outline: none;
     border: none;
     border-radius: 1rem;
-    border: 2px solid white;
     background-color: black;
     font-size: 20px;
     color: white;
@@ -171,7 +170,6 @@ h3 {
     outline: none;
     border: none;
     border-radius: 1rem;
-    border: 2px solid white;
     background-color:#3b5998;
     font-size: 20px;
     color: white;
