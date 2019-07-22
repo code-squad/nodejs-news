@@ -75,7 +75,6 @@ passport.serializeUser((user, done) => {
         email    : user.email, 
         nickname : user.nickname, 
         admin    : user.admin,
-        comment  : user.comment
     };
     done(null, userData);
 });
