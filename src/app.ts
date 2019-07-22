@@ -11,7 +11,6 @@ import connect from './connect';
 import articleRouter from './routes/article';
 import authRouter from './routes/auth';
 import indexRouter from './routes/index';
-import uploadRouter from './routes/upload';
 import userRouter from './routes/user';
 import { addHours } from './util/datehelper';
 import logger from './util/logger';
@@ -63,7 +62,6 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/auth', authRouter);
 app.use('/article', articleRouter);
-app.use('/upload', uploadRouter);
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {
