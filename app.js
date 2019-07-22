@@ -71,12 +71,11 @@ passport.use(new LocalStrategy(localOptions, async (userEmail, password, done) =
     return done(null, user);
 }));
 passport.serializeUser((user, done) => {
-    const userData = { 
+    done(null, { 
         email    : user.email, 
         nickname : user.nickname, 
         admin    : user.admin,
-    };
-    done(null, userData);
+    });
 });
 passport.deserializeUser((userData, done) => done(null, userData));
 
