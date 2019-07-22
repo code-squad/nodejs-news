@@ -1,0 +1,23 @@
+.navbar.navbar-inverse.navbar-fixed-top
+    .navbar-inner
+        .container-fluid
+            a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a.brand(href='/') Sony's NewsRoom
+            .nav-collapse.collapse
+                p.navbar-text.pull-right
+                    if user === null
+                        a.btn.btn-secondary(href='/auth/signin') Sign in
+                    else
+                        a.navbar-link(href='#') #{user.name} #{user.github.name} #{user.google.name}
+                        a.btn.btn-secondary(href='/articles/add') Add Article
+                        a.btn.btn-secondary(href='/auth/logout') Logout
+                ul.nav
+                    li.active
+                        a(href='/') Home
+                    li
+                        a(href='#about') About
+                    li
+                        a(href='#contact') Contact
