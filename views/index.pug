@@ -7,14 +7,14 @@ html
       block article
 
     block userpage
-    block userpage-table
+    block userpage-list
 
       div= user
     if !user
       include components/signinform.pug
     if user
       include components/imageuploadform.pug
-    if user.privilege > 0
+    if user && user.privilege > 0
       include components/mduploadform.pug
 
     include scripts/vendor.pug

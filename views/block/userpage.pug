@@ -2,7 +2,7 @@ extend ../index
 
 block userpage
   - const profileUrl = targetUser.profileImageUrl || '/image/avatar.png';
-  .userpage-header-container(style='width: 100%; background-color: #FAFAFA;')
+  .userpage-header-container(style='width: 100%; background-color: #FAFAFA; margin-top: 20px')
     .userpage-header.uk-flex.uk-flex-between.uk-flex-middle(style='width:70%; padding: 16px 0; margin: auto;')
       .userpage-header-left.uk-flex.uk-flex-middle
         img#big-profile.uk-comment-avatar(src=profileUrl, width='150px', alt='', style='border-radius: 50%;')
@@ -12,8 +12,8 @@ block userpage
       .userpage-head-right
         button#subscription-button.uk-button.uk-button-danger 구독
 
-block userpage-table
-  .userpage-table(style='width:60%; margin: auto;')
+block userpage-list
+  .userpage-list(style='width:60%; margin: 7px auto 0;')
     .uk-card.uk-card-default(class='uk-width-1-1')
       .uk-card-header
         .uk-grid-small.uk-flex-middle(uk-grid='')
