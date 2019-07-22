@@ -2,3 +2,10 @@ extends ./layout.pug
 block title
     title Today's News - #{title}
 block content
+    style
+        include ../public/css/error.css
+    section(id="error_main")
+        section(id="error_content")
+            div(id="error_image")
+            div(id="error_text")
+                h2(id="error_") #{status} - #{message}
