@@ -15,6 +15,7 @@ const User              = require('./models/user');
 // Routers
 const indexRouter       = require('./routes/index.route');
 const authRouter        = require('./routes/auth.route');
+const userRouter        = require('./routes/user.route');
 // Middleware
 const authMiddleware    = require('./middlewares/auth.middleware');
 const errorMiddleware   = require('./middlewares/error.middleware');
@@ -84,6 +85,7 @@ passport.deserializeUser((userData, done) => done(null, userData));
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/user', authMiddleware);
+app.use('/user', userRouter);
 
 // error
 app.use(errorMiddleware.error404);
