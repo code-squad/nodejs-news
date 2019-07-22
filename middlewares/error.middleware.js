@@ -12,7 +12,7 @@ errorMiddleware.error = async (err, req, res, next) => {
 
     // render error page
     res.status(err.status || 500);
-    res.render('error', { title : 'Error' });
+    res.render('error', { title : 'Error', status : err.status, message : err.message });
 }
 
 module.exports = errorMiddleware;
