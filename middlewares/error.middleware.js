@@ -11,8 +11,8 @@ errorMiddleware.error = async (err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render error page
-    err.status(err.status || 500);
-    res.render('error');
+    res.status(err.status || 500);
+    res.render('error', { title : 'Error' });
 }
 
 module.exports = errorMiddleware;
