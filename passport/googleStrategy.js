@@ -10,7 +10,7 @@ module.exports = (passport) => {
                 if (user) done(null, user);
                 else {
                     // if there is no user found with google id, create new one
-                    const image = profile.photos[0].value.substring(0, profile.photos[0].value.indexOf('?'));
+                    const image = profile.photos[0].value;
 
                     let user = new User();
                     user.google.id = profile.id;

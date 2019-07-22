@@ -20,7 +20,8 @@ const User = mongoose.model('users', new mongoose.Schema({
     github:{
         id: String,
         token: String,
-        name: String
+        name: String,
+        image: String
     },
     google:{
         id: String,

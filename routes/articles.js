@@ -55,7 +55,6 @@ router.get('/edit/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-
     Article.findOne({_id: req.params.id})
         .then(article => {
             article.title = req.body.title;

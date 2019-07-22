@@ -39,11 +39,14 @@ block show-articles
                             button.btn.btn-primary(type='submit') Submit
                 each comment in article.comments
                     .media.mb-4
-                        img.d-flex.mr-3.rounded-circle(src='http://placehold.it/50x50', alt='')
+                        if JSON.stringify(comment.commentUser.github) !== JSON.stringify(({}))
+                            img.d-flex.mr-3.rounded-circle(src= comment.commentUser.github.image)
+                        if JSON.stringify(comment.commentUser.google) !== JSON.stringify(({}))
+                            img.d-flex.mr-3.rounded-circle(src= comment.commentUser.google.image)
                         .media-body
-                            if comment.commentUser.github !== undefined
+                            if JSON.stringify(comment.commentUser.github) !== JSON.stringify(({}))
                                 h5.mt-0= comment.commentUser.github.name
-                            if comment.commentUser.google !== undefined
+                            if JSON.stringify(comment.commentUser.google) !== JSON.stringify(({}))
                                 h5.mt-0= comment.commentUser.google.name
                             if comment.commentUser.name !== undefined
                                 h5.mt-0= comment.commentUser.name
