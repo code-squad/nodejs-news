@@ -77,7 +77,7 @@ passport.serializeUser((user, done) => {
         admin    : user.admin,
     });
 });
-passport.deserializeUser((userData, done) => done(null, userData));
+passport.deserializeUser((user, done) => done(null, user));
 
 // router
 app.use('/', indexRouter);
