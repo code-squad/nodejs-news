@@ -125,7 +125,22 @@ router.post('/comment/:id', async (req, res, next) => {
         console.error(error);
         return next(error);
     }
+});
 
+router.delete('/comment/:id', async (req, res, next) => {
+    try {
+        const [articleId, commentId] = req.params.id.split('&');
+        const isDeleted = await Article.updateOne({_id: articleId}, {$pull: {'comments': {_id: commentId}}});
+
+        if (isDeleted) {
+            res.redirect('/articles/show/' + articleId);
+        }
+
+    } catch
+        (error) {
+        console.error(error);
+        return next(error);
+    }
 });
 
 module.exports = router;
