@@ -8,12 +8,13 @@ block show-articles
             .col-lg-8
                 // Title
                 h1.mt-4=article.title
-                    p.pull-right
-                    a.btn.btn-info(type='button', href='/articles/edit/' + article.id) Edit
-                    form.col.s12(action='/articles/' + article.id + '?_method=DELETE', method='post', style='display: inline-block;')
-                        input(type='hidden', name='_method', value='DELETE')
-                        input(type='hidden', name='field', value=article.field)
-                        button.btn.btn-danger(type='submit') Delete
+                    if user.admin
+                        p.pull-right
+                        a.btn.btn-info(type='button', href='/articles/edit/' + article.id) Edit
+                        form.col.s12(action='/articles/' + article.id + '?_method=DELETE', method='post', style='display: inline-block;')
+                            input(type='hidden', name='_method', value='DELETE')
+                            input(type='hidden', name='field', value=article.field)
+                            button.btn.btn-danger(type='submit') Delete
                 // Author
                 p.lead
                     | by
@@ -39,20 +40,23 @@ block show-articles
                             button.btn.btn-primary(type='submit') Submit
                 each comment in article.comments
                     .media.mb-4
-                        if JSON.stringify(comment.commentUser.github) !== JSON.stringify(({}))
-                            img.d-flex.mr-3.rounded-circle(src= comment.commentUser.github.image)
-                        if JSON.stringify(comment.commentUser.google) !== JSON.stringify(({}))
-                            img.d-flex.mr-3.rounded-circle(src= comment.commentUser.google.image)
-                        .media-body
+                        if comment.commentUser !== null
                             if JSON.stringify(comment.commentUser.github) !== JSON.stringify(({}))
-                                h5.mt-0= comment.commentUser.github.name
+                                img.d-flex.mr-3.rounded-circle(src= comment.commentUser.github.image)
                             if JSON.stringify(comment.commentUser.google) !== JSON.stringify(({}))
-                                h5.mt-0= comment.commentUser.google.name
-                            if comment.commentUser.name !== undefined
-                                h5.mt-0= comment.commentUser.name
-                            |            #{comment.commentBody}
-                        small
-                            | Posted: #{comment.commentDate}
+                                img.d-flex.mr-3.rounded-circle(src= comment.commentUser.google.image)
+                        .media-body
+                            if comment.commentUser !== null
+                                if JSON.stringify(comment.commentUser.github) !== JSON.stringify(({}))
+                                    h5.mt-0= comment.commentUser.github.name
+                                if JSON.stringify(comment.commentUser.google) !== JSON.stringify(({}))
+                                    h5.mt-0= comment.commentUser.google.name
+                                if comment.commentUser.name !== undefined
+                                    h5.mt-0= comment.commentUser.name
+                                |            #{comment.commentBody}
+                        if comment.commentUser !== null
+                            small
+                                | Posted: #{comment.commentDate}
 
         // /.row
     // /.container

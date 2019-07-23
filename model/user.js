@@ -21,13 +21,13 @@ const User = mongoose.model('users', new mongoose.Schema({
         id: String,
         token: String,
         name: String,
-        image: String
+        image: String,
     },
     google:{
         id: String,
         email: String,
         name: String,
-        image: String
+        image: String,
     },
     admin:{
         type: Boolean,
