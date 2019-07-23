@@ -1,0 +1,71 @@
+* {
+    font-family: 'Russo One', sans-serif;
+    margin: 0 auto;
+    width: 95%;
+}
+
+header {
+    height: 40%;
+    width: 100%;
+}
+
+#header_title {
+    color: #525c6d;
+    font-size: 40px;
+    margin-left: 1.5%;
+}
+
+#header_title:hover {
+    cursor: pointer;
+}
+
+#header_main_section {
+    border-radius: 2px;
+    border-bottom: 3px solid #525c6d;
+    display: flex;
+    margin-top: 2.5%;
+    padding-bottom: 1.5%;
+    height: 100%;
+    width: 95%;
+}
+
+.header_button[type=button] {
+    outline:none;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-tap-highlight-color:transparent;
+    color: #525c6d;
+    border: none;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 8px;
+    width: 6rem;
+    height: 2rem;
+}
+
+.header_button[type=button]:hover {
+    background-color: #525c6d;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+#user_info {
+    width: auto;
+}
+
+footer {
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
+    height: 40%;
+    width: 100%;
+}
+
+#footer_section {
+    text-align: right;
+    height: 100%;
+    width: 100%;
+}
+
+#footer_description {
+    color: #525c6d;
+}

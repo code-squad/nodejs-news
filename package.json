@@ -1,0 +1,40 @@
+{
+  "name": "nodejs-news",
+  "version": "1.0.0",
+  "description": "NodeJS Step 12 news site",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "jsonwebtoken": "^8.5.1",
+    "mocha": "^6.1.4",
+    "mongoose": "^5.6.4",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^5.0.1",
+    "pug": "^2.0.4",
+    "sinon": "^7.3.2",
+    "supertest": "^4.0.2"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha $(find ./ -name \"*.spec.js\")"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bestdevhyo1225/nodejs-news.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bestdevhyo1225/nodejs-news/issues"
+  },
+  "homepage": "https://github.com/bestdevhyo1225/nodejs-news#readme"
+}

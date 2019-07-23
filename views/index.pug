@@ -1,0 +1,10 @@
+extends ./layout.pug
+block title
+    title Today's News - #{title}
+block content
+    style
+        include ../public/css/index.css
+    section(id="index_main")
+        section(id="category")
+        section(id="top20")
+        section(id="post")

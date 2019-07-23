@@ -1,0 +1,26 @@
+#index_main {
+    margin: 0 auto;
+    height: 1300px;
+    width: 100%;
+}
+
+#category {
+    background-color: #525c6d;
+    border-radius: 10px;
+    margin-top: 2.5%;
+    height: 7%;
+}
+
+#top20 {
+    background-color: #525c6d;
+    border-radius: 10px;
+    margin-top: 1.0%;
+    height: 30%;
+}
+
+#post {
+    border-color: #525c6d;
+    border-radius: 10px;
+    margin-top: 1.0%;
+    height: 60%;
+}
