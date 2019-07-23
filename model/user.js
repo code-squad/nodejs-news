@@ -28,6 +28,10 @@ const User = mongoose.model('users', new mongoose.Schema({
         email: String,
         name: String,
         image: String
+    },
+    admin:{
+        type: Boolean,
+        default: false
     }
 }));
 
