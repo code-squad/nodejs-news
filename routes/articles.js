@@ -7,28 +7,37 @@ router.get('/add', (req, res, next) => {
     res.render("articles/add");
 });
 
-router.get('/:field', isLoggedIn, (req, res, next) => {
-    Article.find({field: req.params.field})
-        .then(articles => {
+router.get('/:field', isLoggedIn, async (req, res, next) => {
+    try {
+        const articles = await Article.find({field: req.params.field});
+        if (articles) {
             res.render('articles/index', {
                 articles: articles
             })
-        })
+        }
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 });
 
-router.get('/show/:id', (req, res) => {
-    Article.findOne({
-        _id: req.params.id
-    })
-        .populate('comments.commentUser')
-        .then(article => {
+router.get('/show/:id', async (req, res, next) => {
+    try {
+        const article = await Article.findOne({
+            _id: req.params.id
+        }).populate('comments.commentUser');
+        if (article) {
             res.render('articles/show', {
                 article: article
             })
-        })
+        }
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 });
 
-router.post('/add', (req, res, next) => {
+router.post('/add', async (req, res, next) => {
     console.log(req.body);
 
     const newArticle = {
@@ -37,56 +46,86 @@ router.post('/add', (req, res, next) => {
         field: req.body.field,
         user : req.user.id
     };
-
-    new Article(newArticle).save()
-        .then(article => res.redirect('/articles/' + req.body.field));
-
+    try {
+        const article = await new Article(newArticle).save();
+        if (article) {
+            res.redirect('/articles/' + req.body.field);
+        }
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 });
 
-router.get('/edit/:id', (req, res) => {
-    Article.findOne({
-        _id: req.params.id
-    }).then(article => {
-        console.log(article);
-        res.render('articles/edit', {
-            article: article
+router.get('/edit/:id', async (req, res) => {
+    try {
+        const article = await Article.findOne({
+            _id: req.params.id
         });
-    });
+        if (article) {
+            res.render('articles/edit', {
+                article: article
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 });
 
-router.put('/:id', (req, res) => {
-    Article.findOne({_id: req.params.id})
-        .then(article => {
+router.put('/:id', async (req, res, next) => {
+    try {
+        const article = await Article.findOne({_id: req.params.id});
+        if (article) {
             article.title = req.body.title;
             article.body = req.body.body;
             article.field = req.body.field;
+            const isSaved = await article.save();
+            if (isSaved) {
+                res.redirect('/articles/' + req.body.field);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 
-            article.save()
-                .then(article => {
-                    res.redirect('/articles/' + req.body.field);
-                })
-        })
 });
 
-router.delete('/:id', (req, res) => {
-    Article.remove({_id: req.params.id})
-        .then(() => res.redirect('/articles/' + req.body.field))
+router.delete('/:id', async (req, res, next) => {
+    try {
+        const isDeleted = await Article.remove({_id: req.params.id});
+        if (isDeleted) {
+            res.redirect('/articles/' + req.body.field);
+        }
+
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 });
 
-router.post('/comment/:id', (req,res) => {
-   Article.findOne({_id: req.params.id})
-       .then(article => {
-           const newComment = {
-               commentBody: req.body.commentBody,
-               commentUser: req.user.id
-           };
+router.post('/comment/:id', async (req, res, next) => {
+    try {
+        const article = await Article.findOne({_id: req.params.id});
+        if (article) {
+            const newComment = {
+                commentBody: req.body.commentBody,
+                commentUser: req.user.id
+            };
+            // Add to comments array
+            article.comments.unshift(newComment);
 
-           // Add to comments array
-           article.comments.unshift(newComment);
+            const isSaved = article.save();
+            if (isSaved) {
+                res.redirect('/articles/show/' + article.id)
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 
-           article.save()
-               .then(article => res.redirect('/articles/show' + article.id));
-       })
 });
 
 module.exports = router;
