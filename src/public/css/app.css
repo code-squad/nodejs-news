@@ -33,7 +33,7 @@ body {
 }
 
 .container {
-  width: 80%;
+  width: 65%;
   margin: auto;
 }
 
@@ -90,4 +90,33 @@ body {
   .markdown-body {
     padding: 15px;
   }
+}
+
+.list-img {
+  min-width: 100%;
+  min-height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.overlay-primary {
+  background: rgba(50,50,50,.39);
+}
+
+.white-font {
+  color: white;
+}
+
+.list-user-info {
+  margin: auto;
+}
+
+.list-user-img {
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50%;
 }

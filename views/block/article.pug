@@ -2,6 +2,7 @@ extends ../index
 
 block article
   - const joinTitleWithHtml = `<h1>${article.title}</h1>\n${article.rawHtml}`
-  article.markdown-body.
-    !{joinTitleWithHtml}
-  script(src='/js/vendor/prism.js')
+  .container
+    article.markdown-body.
+      !{joinTitleWithHtml}
+    script(src='/js/vendor/prism.js')

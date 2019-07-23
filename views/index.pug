@@ -3,9 +3,13 @@ html
   include components/head.pug
   body
     include components/header.pug
-    .container
-      block article
 
+    block article-list
+
+    //- 기사 조회 시에만 불러옴
+    block article
+
+    //- 사용자 페이지 조회할 때만 불러옴
     block userpage
     block userpage-list
 

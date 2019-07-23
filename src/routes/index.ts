@@ -5,7 +5,7 @@ const homeRouter = Router();
 
 homeRouter.get('/', async (req: Request, res: Response, next) => {
   try {
-    return res.render('index', { user: req.user });
+    return res.render('block/article-list', { user: req.user });
   } catch (error) {
     createError(500);
     next(error);
