@@ -2,12 +2,11 @@ const IndexController = {};
 
 IndexController.index = async (req, res) => {
     const data = { title : `Main` };
-    if (req.user) {
+    
+    if (req.user) 
         data.user = req.user;
-        res.render('index', data);
-    } else {
-        res.render('index', data);
-    }
+
+    res.render('index', data);
 }
 
 IndexController.signUp = async (req, res) => {
@@ -17,13 +16,11 @@ IndexController.signUp = async (req, res) => {
 IndexController.login = async (req, res) => {
     const flashMessage = req.flash();
     const data = { title : `Login` };
-    if (flashMessage.error) {
+
+    if (flashMessage.error)
         data.message = flashMessage.error[0];
-        res.render('login', data);
-        return;
-    } else {
-        res.render('login', data);
-    }
+
+    res.render('login', data);
 }
 
 module.exports = IndexController;
