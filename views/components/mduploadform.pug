@@ -3,9 +3,44 @@
     button.uk-modal-close-default(type='button' uk-close='' style='left:unset;')
     .uk-margin
       .uk-inline.uk-width-1-1
-        a.uk-form-icon.uk-form-icon-flip(href="" uk-icon="icon: pencil")
+        a.uk-form-icon.uk-form-icon-flip.disabled(href="" uk-icon="icon: pencil")
         input#signin-id-input.uk-input.uk-width-1-1(placeholder="제목을 입력하세요" name='title' autocomplete="off")
     .uk-margin
-      input#markdown.uk-input(type='file', name='markdown', accept='.md')
-    #image-upload-btn.uk-margin
+      .uk-inline.uk-width-1-1
+        a.uk-form-icon.uk-form-icon-flip.disabled(href="" uk-icon="icon: file-text")
+        input#md-file-display.uk-input.uk-width-1-1(placeholder='마크다운 파일을 선택하세요' autocomplete="off" readonly='')
+        button#md-file-selector.uk-button.uk-button-default(type='button', tabindex='-1', style='position: absolute; top:0; right: 0; background-color: #ECF0F1') 파일 선택
+        input#md-file-input(type='file', name='markdown', accept='.md', style='display: none')
+    .uk-margin
+      .uk-inline.uk-width-1-1
+        a.uk-form-icon.uk-form-icon-flip.disabled(href="" uk-icon="icon: image")
+        input#hero-image-display.uk-input.uk-width-1-1(placeholder='대표 이미지를 선택하세요' autocomplete="off" readonly='')
+        button#hero-image-selector.uk-button.uk-button-default(type='button', tabindex='-1', style='position: absolute; top:0; right: 0; background-color: #ECF0F1') 파일 선택
+        input#hero-image-input(type='file', name='heroimage', accept='image/*', style='display: none')
+    #article-upload-btn.uk-margin
       button.uk-button.uk-button-primary.uk-width.uk-width-1-1 업로드
+
+script.
+  const markdownFileSelector = document.getElementById('md-file-selector');
+  const markdownFileDisplay = document.getElementById('md-file-display');
+  const markdownFileInput = document.getElementById('md-file-input');
+  markdownFileSelector.addEventListener('click', e => {
+    e.preventDefault();
+    markdownFileInput.click();
+  });
+
+  markdownFileInput.addEventListener('change', e => {
+    markdownFileDisplay.value = e.target.files[0].name;
+  });
+  
+  const heroImageSelector = document.getElementById('hero-image-selector');
+  const heroImageDisplay = document.getElementById('hero-image-display');
+  const heroImageInput = document.getElementById('hero-image-input');
+  heroImageSelector.addEventListener('click', e => {
+    e.preventDefault();
+    heroImageInput.click();
+  });
+
+  heroImageInput.addEventListener('change', e => {
+    heroImageDisplay.value = e.target.files[0].name;
+  });

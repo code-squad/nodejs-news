@@ -37,12 +37,12 @@ body {
   margin: auto;
 }
 
-#signin-form>form, #image-upload-form>form{
+#signin-form>form {
   width: 300px;
 }
 
-#markdown-upload-form>form {
-  width: 400px;
+#image-upload-form>form, #markdown-upload-form>form {
+  width: 500px;
 }
 
 .shadow-border {
@@ -119,4 +119,9 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   border-radius: 50%;
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
 }
