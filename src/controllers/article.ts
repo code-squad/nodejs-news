@@ -40,10 +40,11 @@ async function getRawArticleById(articleId): Promise<IArticleInfo> {
 async function createArticle({
   writerId,
   title,
-  markdownKey
+  markdownKey,
+  heroImageUrl,
 }): Promise<{}> {
   try {
-    return await Article.create({ writerId, title, markdownKey, createdAt: new Date(), hits: 0 });
+    return await Article.create({ writerId, title, markdownKey, heroImageUrl, createdAt: new Date(), hits: 0 });
   } catch (error) {
     throw error;
   }

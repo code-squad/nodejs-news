@@ -47,4 +47,4 @@ function multerFactory (destinationPath, limitFileSize): multer.Instance {
 }
 
 export const profileUpload: multer.Instance = multerFactory(path.join(uploadBasePath, profileImagePath), '1MB');
-export const markdownUpload: multer.Instance = multerFactory(path.join(uploadBasePath, markdownUploadPath), '1MB');
+export const markdownUpload: multer.Instance = multerFactory(path.join(uploadBasePath, markdownUploadPath), '16MB');
