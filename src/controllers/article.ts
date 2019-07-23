@@ -1,12 +1,7 @@
-import Showdown from 'showdown';
 import s3 from '../config/aws';
+import converter from '../config/converter';
 import Article, { IArticle } from '../models/article.model';
 import { S3_BUCKET } from '../util/secrets';
-
-const converter = new Showdown.Converter();
-converter.setFlavor('github');
-converter.setOption('tasklists', true);
-converter.setOption('emoji', true);
 
 interface IArticleInfo {
   title   : IArticle['title'];
