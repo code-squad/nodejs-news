@@ -2,12 +2,7 @@ extends ../index
 
 block article-list
   .container
-    //- .another-logo(style="font-size: 5em") Tech
-    - var i = 0;
-    while i < 10
-      - i++
-      .uk-grid-match.uk-grid-small.uk-width-1-1(uk-grid='')
-        if i%2 !== 0
-          include ../components/index-list-even
-        else
-          include ../components/index-list-odd
+    .inner-logo(style="font-size: 5em") Latest Techs
+
+  script(src='/js/articlelist.js' type='module')
+

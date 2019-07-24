@@ -1,22 +1,32 @@
-div.uk-width-3-5
+- var profileImage = twoArticles[0].writerId.profileImageUrl || '/image/avatar.png';
+- var date = new Date(twoArticles[0].createdAt);
+- var formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+div.uk-card.uk-width-3-5
   div(uk-scrollspy='cls: uk-animation-slide-left; repeat: false')
-    img.list-img(src='image/3.jpg' uk-img)
-    .overlay-primary.uk-position-cover
-    .uk-overlay.uk-light.uk-position-bottom
-      h3(style='margin-bottom: 5px !important') Left
-      .list-user-info.uk-flex.uk-flex-middle
-        img.list-user-img(src='/image/avatar.png')
-        .white-font(style='display: inline-block; margin-left: 10px;')
-          p(style='margin: 0; font-size: 0.9em') cocahack
-          p(style='margin: 0; font-size: 0.7em') July. 26
-div.uk-width-2-5
-  div(uk-scrollspy='cls: uk-animation-slide-right; repeat: false')
-    img.list-img(src='image/4.jpg' uk-img)
-    .overlay-primary.uk-position-cover
-    .uk-overlay.uk-light.uk-position-bottom
-      h3(style='margin-bottom: 5px !important') Right
-      .list-user-info.uk-flex.uk-flex-middle
-        img.list-user-img(src='/image/avatar.png')
-        .white-font(style='display: inline-block; margin-left: 10px;')
-          p(style='margin: 0; font-size: 0.9em') cocahack
-          p(style='margin: 0; font-size: 0.7em') July. 26
+    img.list-img(src=twoArticles[0].heroImageUrl uk-img).grid-card-constraint
+    a(href="/article/" + twoArticles[0]._id)
+      .overlay-primary.uk-position-cover
+      .uk-overlay.uk-light.uk-position-bottom
+        h3(style='margin-bottom: 5px !important')= twoArticles[0].title
+        a.list-user-info.uk-flex.uk-flex-middle(href="/user/" + twoArticles[0].writerId._id)
+          img.list-user-img(src=profileImage)
+          .white-font(style='display: inline-block; margin-left: 10px;')
+            p(style='margin: 0; font-size: 0.9em') #{twoArticles[0].writerId.email.split('@')[0]}
+            p(style='margin: 0; font-size: 0.7em')= formattedDate
+
+if twoArticles[1]
+  - var profileImage = twoArticles[1].writerId.profileImageUrl || '/image/avatar.png';
+  - var date = new Date(twoArticles[0].createdAt);
+  - var formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+  div.uk-card.uk-width-2-5
+    div(uk-scrollspy='cls: uk-animation-slide-left; repeat: false')
+      img.list-img(src=twoArticles[1].heroImageUrl uk-img).grid-card-constraint
+      .overlay-primary.uk-position-cover
+      a(href="/article/" + twoArticles[1]._id)
+        .uk-overlay.uk-light.uk-position-bottom
+          h3(style='margin-bottom: 5px !important')= twoArticles[1].title
+          a.list-user-info.uk-flex.uk-flex-middle(href="/user/" + twoArticles[0].writerId._id)
+            img.list-user-img(src=profileImage)
+            .white-font(style='display: inline-block; margin-left: 10px;')
+              p(style='margin: 0; font-size: 0.9em') #{twoArticles[1].writerId.email.split('@')[0]}
+              p(style='margin: 0; font-size: 0.7em')= formattedDate
