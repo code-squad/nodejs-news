@@ -143,4 +143,10 @@ router.delete('/comment/:id', async (req, res, next) => {
     }
 });
 
+router.post('/:id/act', (req, res, next) => {
+    const action = req.body.action;
+    const counter = action === 'Like' ? 1 : -1;
+    Article.update({_id: req.params.id}, {$inc: {likes_count: counter}}, {}, (err, numberAffected) => {});
+});
+
 module.exports = router;

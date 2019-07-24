@@ -35,7 +35,12 @@ const ArticleSchema = mongoose.model('articles', new mongoose.Schema({
     date:{
         type: Date,
         default: Date.now
+    },
+    likes_count:{
+        type: Number,
+        default: 0
     }
+
 }));
 
 // Create collection and add schema

@@ -28,7 +28,11 @@ block show-articles
                 hr
                 // Post Content
                 p.lead !{article.body}
-
+                hr
+                .row
+                    button(id='likes-button', onclick='actOnPost(event);', data-post-id= article.id )
+                        | Like
+                    span(id=`likes-count-` + article.id) #{article.likes_count}
                 hr
                 // Comments Form
                 .card.my-4
@@ -51,9 +55,9 @@ block show-articles
                                     h5.mt-0= comment.commentUser.github.name
                                 if JSON.stringify(comment.commentUser.google) !== JSON.stringify(({}))
                                     h5.mt-0= comment.commentUser.google.name
-                                if comment.commentUser.name !== null
+                                if comment.commentUser.name !== undefined
                                     h5.mt-0= comment.commentUser.name
-                                |            #{comment.commentBody}
+                                p= comment.commentBody
                                 // Edit, Delete buttons
                                 if user.id === comment.commentUser.id
                                     a.btn.btn-info(type='button', href='/articles/comment/' + comment.id) Edit
