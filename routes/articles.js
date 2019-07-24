@@ -143,10 +143,18 @@ router.delete('/comment/:id', async (req, res, next) => {
     }
 });
 
-router.post('/:id/act', (req, res, next) => {
+router.post('/:id/act', async (req, res, next) => {
     const action = req.body.action;
     const counter = action === 'Like' ? 1 : -1;
-    Article.update({_id: req.params.id}, {$inc: {likes_count: counter}}, {}, (err, numberAffected) => {});
+    try {
+        const likesStatusUpdated = await Article.update({_id: req.params.id}, {$inc: {likes_count: counter}}, {});
+        if (likesStatusUpdated) {
+            res.redirect('/articles/show/' + req.params.id);
+        }
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 });
 
 module.exports = router;
