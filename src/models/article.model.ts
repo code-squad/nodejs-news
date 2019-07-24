@@ -17,7 +17,7 @@ const articleSchema: Schema = new Schema({
   title        : { type: Schema.Types.String, required: true },
   markdownKey  : { type: Schema.Types.String, required: true },
   heroImageUrl : { type: Schema.Types.String, required: true },
-  writerId     : { type: Schema.Types.ObjectId, required: true },
+  writerId     : { type: Schema.Types.ObjectId, required: true, ref: 'User' },
   hits         : { type: Schema.Types.Number, required: true },
   createdAt    : { type: Schema.Types.Date, required: true },
   modifiedAt   : { type: Schema.Types.Date },

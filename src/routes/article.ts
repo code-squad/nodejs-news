@@ -55,5 +55,29 @@ articleRouter.post('/', isLoggedIn,  markdownUploadMiddleware, async (req: Reque
   }
 });
 
+articleRouter.get('/userid/:userId/page/:page', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, page } = req.params;
+    const articles = await articleController.getArticlesByUserId(userId, parseInt(page, 10));
+
+    return res.send(articles);
+    // return res.render('user-articles', { user: req.user, articles });
+  } catch (error) {
+    createError(500);
+    next(error);
+  }
+});
+
+articleRouter.get('/page/:page', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const articles = await articleController.getArticles(parseInt(req.params.page, 10));
+
+    // return res.send(articles);
+    return res.render('components/index-list', { user: req.user, articles});
+  } catch (error) {
+    createError(500);
+    next(error);
+  }
+});
 
 export default articleRouter;

@@ -8,6 +8,8 @@ interface IArticleInfo {
   rawHtml : string;
 }
 
+const pageSize = 8;
+
 async function getRawArticleById(articleId): Promise<IArticleInfo> {
   try {
     const article: IArticle = await Article.findOneAndUpdate(
@@ -45,7 +47,33 @@ async function createArticle({
   }
 }
 
+async function getArticles(page = 1): Promise<IArticle[]> {
+  try {
+    return await Article.find(
+      { deletedAt: { $exists: false } },
+      undefined,
+      { skip: (page - 1) * pageSize, limit: pageSize
+    }).sort('-createdAt')
+      .populate('writerId');
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getArticlesByUserId(userId, page): Promise<IArticle[]> {
+  try {
+    return await Article.find(
+      { writerId: userId, deletedAt: { $exists: false } },
+      undefined,
+      { skip: (page - 1) * pageSize, limit: pageSize }).sort('-createdAt');
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getRawArticleById,
   createArticle,
+  getArticlesByUserId,
+  getArticles,
 };
