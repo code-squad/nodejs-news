@@ -36,6 +36,7 @@ body {
 .container {
   width: 65%;
   margin: auto;
+  padding: 20px 0;
 }
 
 #signin-form>form {
@@ -109,6 +110,10 @@ body {
   color: white;
 }
 
+.black-font {
+  color: black;
+}
+
 .list-user-info {
   margin: auto;
 }
@@ -129,6 +134,7 @@ a.disabled {
 
 .grid-card-constraint {
   max-height: 400px;
+  overflow: hidden;
 }
 
 .inner-logo {
