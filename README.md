@@ -46,8 +46,9 @@
 
 | Key       | Value           |
 | --------- | --------------- |
-| Id        | 사용자 아이디   |
+| email        | 사용자 email   |
 | password  | 사용자 비밀번호 |
+| nickname        | 사용자 닉네임 |
 | privilege | 사용자 권한     |
 
 - Book
@@ -64,7 +65,6 @@
 | likes            | 좋아요 개수      |
 | hates            | 싫어요 개수      |
 | category         | 카테고리         |
-|                  |                  |
 
 - Review
 
@@ -77,7 +77,6 @@
 | hates            | 싫어요 개수             |
 | content          | 내용                    |
 | registrationDate | 등록 날짜               |
-|                  |                         |
 
 - Comment
 
@@ -88,7 +87,11 @@
 | writerID         | 글쓴이 아이디              |
 | content          | 내용                       |
 | registrationDate | 등록날짜                   |
-|                  |                            |
+
+### URL
+* 회원 가입 요청 : POST /auth/register
+* 로그인 : POST /auth/login
+* 로그아웃 : GET /auth/logout
 
 ### 추후 확장
 
