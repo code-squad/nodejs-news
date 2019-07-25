@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
-import { IS3Request, profileUpload } from '../config/multer';
+import { profileUpload } from '../config/multer';
 import UserController from '../controllers/user';
 import { isLoggedIn } from '../middlewares/auth';
 
@@ -63,11 +63,12 @@ userRouter.put('/:id', async (req: Request, res: Response, next) => {
   }
 });
 
-userRouter.post('/profile', isLoggedIn, profileUploadMiddleware, async (req: IS3Request, res: Response, next: NextFunction) => {
+userRouter.post('/profile', isLoggedIn, profileUploadMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     await UserController.PatchUserById({
         _id: req.user._id,
-        profileImageUrl: req.file.location,
+        // tslint:disable-next-line: no-string-literal
+        profileImageUrl: req.file['location'],
     });
     return res.redirect('/');
   } catch (error) {
