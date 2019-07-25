@@ -20,25 +20,25 @@ function appendElements(rawHtml) {
 }
 
 const infScroll = new InfiniteScroll('.container', {
-  path: () => '/'
+  path: () => '/',
 });
 
 infScroll.on('scrollThreshold', async (e) => {
   try {
-    container.appendChild(getLoadingAnimation().body.childNodes[0]);
+    const loadingAnimation = container.appendChild(getLoadingAnimation().body.childNodes[0]);
     infScroll.option({loadOnScroll: false});
     const rawHtml = await getArticleList();
     if (rawHtml) {
-      container.removeChild(container.lastChild);
+      container.removeChild(loadingAnimation);
       appendElements(rawHtml);
       infScroll.option({loadOnScroll: true});
     } else {
-      container.removeChild(container.lastChild);
+      container.removeChild(loadingAnimation);
       infScroll.destroy();
     }
   } catch (error) {
     console.error(error);
-    container.removeChild(container.lastChild);
+    container.removeChild(loadingAnimation);
     infScroll.destroy();
   }
 });
