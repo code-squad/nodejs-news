@@ -4,11 +4,10 @@ import Article, { IArticle } from '../models/article.model';
 import { S3_BUCKET } from '../util/secrets';
 
 interface IArticleInfo {
-  title   : IArticle['title'];
+  article : IArticle;
   rawHtml : string;
+  writer  : {};
 }
-
-const pageSize = 8;
 
 async function getRawArticleById(articleId): Promise<IArticleInfo> {
   try {
@@ -16,7 +15,7 @@ async function getRawArticleById(articleId): Promise<IArticleInfo> {
       { _id: articleId, deletedAt: { $exists: false } },
       { $inc: { hits: 1 } },
       { new: true }
-    );
+    ).populate('writerId');
 
     const articleRawHtml = await s3.getObject({
       Bucket: S3_BUCKET,
@@ -26,8 +25,9 @@ async function getRawArticleById(articleId): Promise<IArticleInfo> {
     const rawMarkdown = await articleRawHtml.Body.toString('utf-8');
 
     return {
-      title: article.title,
+      article,
       rawHtml: converter.makeHtml(rawMarkdown),
+      writer: article.writerId,
     };
   } catch (error) {
     throw error;
@@ -52,8 +52,8 @@ async function getArticles(page = 1): Promise<IArticle[]> {
     return await Article.find(
       { deletedAt: { $exists: false } },
       undefined,
-      { skip: (page - 1) * pageSize, limit: pageSize
-    }).sort('-createdAt')
+      { skip: (page - 1) * 8, limit: 8 }
+    ).sort('-createdAt')
       .populate('writerId');
   } catch (error) {
     throw error;
@@ -65,7 +65,7 @@ async function getArticlesByUserId(userId, page): Promise<IArticle[]> {
     return await Article.find(
       { writerId: userId, deletedAt: { $exists: false } },
       undefined,
-      { skip: (page - 1) * pageSize, limit: pageSize }).sort('-createdAt');
+      { skip: (page - 1) * 9, limit: 9 }).sort('-createdAt');
   } catch (error) {
     throw error;
   }

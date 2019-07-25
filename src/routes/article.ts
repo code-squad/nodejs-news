@@ -26,16 +26,20 @@ articleRouter.get('/:articleId', async (req: Request, res: Response, next: NextF
   try {
     const articleId = req.params.articleId;
 
-    const article = await articleController.getRawArticleById(articleId);
+    const articleInfo = await articleController.getRawArticleById(articleId);
 
-    return res.render('block/article', { user: req.user, article });
+    return res.render('block/article', { user: req.user,
+      article: articleInfo.article,
+      rawHtml: articleInfo.rawHtml,
+      writer: articleInfo.writer,
+    });
   } catch (error) {
     console.error(error);
     next(createError(500));
   }
 });
 
-articleRouter.post('/', isLoggedIn,  articleUploadMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+articleRouter.post('/', isLoggedIn, articleUploadMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     await articleController.createArticle({
       writerId: req.user._id,
@@ -55,13 +59,12 @@ articleRouter.post('/', isLoggedIn,  articleUploadMiddleware, async (req: Reques
   }
 });
 
-articleRouter.get('/userid/:userId/page/:page', async (req: Request, res: Response, next: NextFunction) => {
+articleRouter.get('/user/:userId/page/:page', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId, page } = req.params;
     const articles = await articleController.getArticlesByUserId(userId, parseInt(page, 10));
-
-    return res.send(articles);
-    // return res.render('user-articles', { user: req.user, articles });
+    
+    return res.render('components/userpage/article-list', { user: req.user, articles });
   } catch (error) {
     createError(500);
     next(error);
@@ -72,7 +75,6 @@ articleRouter.get('/page/:page', async (req: Request, res: Response, next: NextF
   try {
     const articles = await articleController.getArticles(parseInt(req.params.page, 10));
 
-    // return res.send(articles);
     return res.render('components/index-list', { user: req.user, articles});
   } catch (error) {
     createError(500);
