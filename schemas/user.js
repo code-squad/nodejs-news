@@ -25,10 +25,7 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
-    posts: {
-        type: Array,
-        default: [],
-    },
+    articles: Array,
     comments: {
         type: Array,
         default: [],
