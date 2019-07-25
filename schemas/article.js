@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const { Types: { ObjectId } } = Schema;
-const articleSchma = new articleSchma({
+const articleSchema = new articleSchma({
     writer: {
         type: ObjectId,
         required: true,
@@ -24,5 +24,11 @@ const articleSchma = new articleSchma({
     comments: {
         type: Array,
         default: [],
-    }
-})
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+});
+
+module.exports = monggose.model('Article', articleSchema);
