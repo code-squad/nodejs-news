@@ -7,7 +7,7 @@ import logger from '../util/logger';
 
 const articleRouter = Router();
 
-function markdownUploadMiddleware(req: Request, res: Response, next: NextFunction) {
+function articleUploadMiddleware(req: Request, res: Response, next: NextFunction) {
   markdownUpload.fields([
     { name: 'markdown', maxCount: 1 },
     { name: 'heroimage', maxCount: 1},
@@ -35,7 +35,7 @@ articleRouter.get('/:articleId', async (req: Request, res: Response, next: NextF
   }
 });
 
-articleRouter.post('/', isLoggedIn,  markdownUploadMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+articleRouter.post('/', isLoggedIn,  articleUploadMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     await articleController.createArticle({
       writerId: req.user._id,

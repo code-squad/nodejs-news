@@ -10,10 +10,10 @@ interface ICreateUserInput {
 
 interface IPatchUserInput {
   _id              : IUser['_id'];
-  email?           : string;
-  password?        : string;
-  privilege?       : number;
-  profileImageUrl? : string;
+  email?           : IUser['email'];
+  password?        : IUser['password'];
+  privilege?       : IUser['privilege'];
+  profileImageUrl? : IUser['profileImageUrl'];
 }
 
 async function CreateUser({
