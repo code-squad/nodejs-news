@@ -19,7 +19,7 @@ if twoArticles[1]
   - var date = new Date(twoArticles[0].createdAt);
   - var formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   div.uk-card.uk-width-3-5
-    div(uk-scrollspy='cls: uk-animation-slide-left; repeat: false')
+    div(uk-scrollspy='cls: uk-animation-slide-right; repeat: false')
       img.list-img(src=twoArticles[1].heroImageUrl uk-img).grid-card-constraint
       a(href="/article/" + twoArticles[1]._id)
         .overlay-primary.uk-position-cover
