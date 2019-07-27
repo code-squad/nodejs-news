@@ -1,7 +1,19 @@
 extends ../index
 
 block article
-  - const joinTitleWithHtml = `<h1>${article.title}</h1>\n${article.rawHtml}`
+  - const joinTitleWithHtml = `<h1>${article.title}</h1>\n${rawHtml}`
+  - const profileUrl = writer.profileImageUrl || '/image/avatar.png';
+  - const subscriptionBtnClass = writer._id == user._id ? 'uk-button-disable' : 'uk-button-danger';
+
+  .userpage-header-container(style='width: 100%; background-color: #FAFAFA; margin-top: 20px; overflow: hidden')  
+    .userpage-header.uk-flex.uk-flex-between.uk-flex-middle(style='width:70%; padding: 16px 0; margin: auto;')
+      .userpage-header-left.uk-flex.uk-flex-middle
+        img#big-profile.uk-comment-avatar(src=profileUrl, width='150px', alt='', style='border-radius: 50%;')
+        .user-info(style='margin-left: 24px; display: inline-block')
+          p(style='color: black; font-size: 1.5em; margin: 0')= writer.email.split('@')[0]
+          p(style='color: black; font-size: 1.1em; margin: 0') 140명
+      .userpage-head-right
+        button#subscription-button.uk-button(class=subscriptionBtnClass) 구독
   .container
     article.markdown-body.
       !{joinTitleWithHtml}

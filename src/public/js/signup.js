@@ -32,7 +32,7 @@ setEventIfElementExist(signUpButton, 'click', async e => {
     return;
   }
 
-  signUpButton.setAttribute('disabled', 'true');
+  signUpButton.setAttribute('disabled', '');
 
   try {
     const res = await sendData('POST', '/auth/signup', {email, password});
@@ -42,11 +42,12 @@ setEventIfElementExist(signUpButton, 'click', async e => {
     } else {
       const resBody = await res.json();
       UIkit.notification(resBody.message || '서버에서 오류가 발생했습니다.', {status: 'danger'});
-      signUpButton.setAttribute('disabled', 'false');
     }
   } catch (error) {
     console.error(error);
     UIkit.notification('예기치 않은 오류가 발생했습니다.', {status: 'danger'});
-    signUpButton.setAttribute('disabled', 'false');
+  } finally {
+    emailInput.value = passwordInput.value = passwordConfirmInput.value = '';
+    signUpButton.removeAttribute('disabled');
   }
 });

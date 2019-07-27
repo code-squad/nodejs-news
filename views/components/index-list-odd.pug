@@ -12,12 +12,10 @@ div.uk-card.uk-width-3-5
           img.list-user-img(src=profileImage)
           .white-font(style='display: inline-block; margin-left: 10px;')
             p(style='margin: 0; font-size: 0.9em') #{twoArticles[0].writerId.email.split('@')[0]}
-            p(style='margin: 0; font-size: 0.7em')= formattedDate
+            p(style='margin: 0; font-size: 0.7em')= twoArticles[0].createdAt.toString().split(' ').slice(1,4).join('-')
 
 if twoArticles[1]
   - var profileImage = twoArticles[1].writerId.profileImageUrl || '/image/avatar.png';
-  - var date = new Date(twoArticles[0].createdAt);
-  - var formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   div.uk-card.uk-width-2-5
     div(uk-scrollspy='cls: uk-animation-slide-right; repeat: false')
       img.list-img(src=twoArticles[1].heroImageUrl uk-img).grid-card-constraint
@@ -29,4 +27,4 @@ if twoArticles[1]
             img.list-user-img(src=profileImage)
             .white-font(style='display: inline-block; margin-left: 10px;')
               p(style='margin: 0; font-size: 0.9em') #{twoArticles[1].writerId.email.split('@')[0]}
-              p(style='margin: 0; font-size: 0.7em')= formattedDate
+              p(style='margin: 0; font-size: 0.7em')= twoArticles[1].createdAt.toString().split(' ').slice(1,4).join('-')
