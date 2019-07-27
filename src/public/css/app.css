@@ -40,7 +40,7 @@ body {
 }
 
 #signin-form>form {
-  width: 300px;
+  width: 350px;
 }
 
 #image-upload-form>form, #markdown-upload-form>form {
@@ -111,6 +111,10 @@ body {
 }
 
 .black-font {
+  color: black;
+}
+
+.black-font:hover {
   color: black;
 }
 
