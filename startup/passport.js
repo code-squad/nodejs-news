@@ -1,7 +1,6 @@
 const passport = require('passport');
 const passportConfig = require('../passport');
 const session = require('express-session');
-const flash = require('connect-flash');
 
 module.exports = (app) => {
     passportConfig(passport);

@@ -7,10 +7,7 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const winston = require('winston');
 const favicon = require("serve-favicon");
-const passport = require('passport');
-const passportConfig = require('./passport');
-const session = require('express-session');
-const flash = require('connect-flash');
+
 const methodOverride = require('method-override');
 
 const authRouter = require('./routes/auth');
@@ -31,27 +28,13 @@ process.on('uncaughtException', (ex) => {
 winston.configure({transports: [new winston.transports.File({ filename: 'logfile.log'})]});
 require('./startup/db')();
 require('./startup/passport')(app);
+require('./startup/flash')(app);
 
-app.use(flash());
-
-// Global Vars for flash message and user info
-app.use((req,res,next) =>  {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-    res.locals.user = req.user || null;
-    next();
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug', {defaultEngine: 'main'});
 app.use(favicon(path.join(__dirname, "public", "ico", "favicon.ico")));
-
-app.use( (req, res, next) => {
-    app.locals.pretty = true;
-    next();
-});
 
 app.use(logger('dev'));
 app.use(express.json());
