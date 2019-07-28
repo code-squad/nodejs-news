@@ -9,7 +9,6 @@ router.get('/add', (req, res, next) => {
 });
 
 router.get('/:field', isLoggedIn, asyncMiddleware(async (req, res) => {
-    throw new Error('something wrong');
     const articles = await Article.find({field: req.params.field});
     if (articles) {
         res.render('articles/index', {
