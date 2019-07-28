@@ -9,16 +9,18 @@ const helmet = require('helmet');
 const winston = require('winston');
 const favicon = require("serve-favicon");
 const session = require('express-session');
-const mongoose = require('mongoose');
+
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const methodOverride = require('method-override');
-const db = require('./config/database');
+
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
 const articlesRouter = require('./routes/articles');
 const app = express();
+
+// require('./startup/routes')(app);
 
 process.on('uncaughtException', (ex) => {
     console.log('We got an uncaught exception');
@@ -29,9 +31,7 @@ app.use(helmet());
 winston.configure({transports: [new winston.transports.File({ filename: 'logfile.log'})]});
 passportConfig(passport);
 
-mongoose.connect(db.mongoURI, {useNewUrlParser: true })
-    .then(() => console.log('Connected to MongoDB...'))
-    .catch(err => console.error('Could not connect to MongoDB...'));
+require('./startup/db')();
 
 // ----- Passport config ----
 app.use(session({
@@ -56,7 +56,6 @@ app.use((req,res,next) =>  {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug', {defaultEngine: 'main'});
-
 app.use(favicon(path.join(__dirname, "public", "ico", "favicon.ico")));
 
 app.use( (req, res, next) => {
@@ -69,7 +68,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(methodOverride('_method'));
 
 app.use("/", indexRouter);
