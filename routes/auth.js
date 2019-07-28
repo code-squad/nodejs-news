@@ -3,8 +3,8 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const {isLoggedIn, isNotLoggedIn} = require('./middlewares');
 const User = require('../model/user');
-
 const router = express.Router();
+const asyncMiddleware = require('../middleware/async');
 
 // github login
 router.get("/github-login", passport.authenticate('github'));
@@ -32,7 +32,7 @@ router.get("/signup", isNotLoggedIn, (req, res) => {
     res.render("layouts/signup");
 });
 
-router.post('/signup', isNotLoggedIn, async (req, res, next) => {
+router.post('/signup', isNotLoggedIn, asyncMiddleware(async (req, res) => {
     const {email, name, password, password2} = req.body;
     if (!email || !name || !password || !password2) {
         req.flash('error_msg', '모든 필드에 정보를 입력해주세요');
@@ -47,30 +47,24 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
         return res.redirect("signup");
     }
 
-    try {
-        const exUser = await User.findOne({email: email});
-        if (exUser) {
-            req.flash('signUpError', '이미 가입된 이메일입니다.');
-            return res.render("layouts/signup", {signUpError: req.flash('signUpError')});
-        } else {
-            const hash = await bcrypt.hash(password, 12);
-            let user = new User({
-                email   : email,
-                name    : name,
-                password: hash,
-            });
-            user = await user.save();
-            if (user) {
-                req.flash('success_msg', '회원가입이 완료되었습니다. 로그인 해주세요 :)');
-                return res.redirect('signin');
-            }
+    const exUser = await User.findOne({email: email});
+    if (exUser) {
+        req.flash('signUpError', '이미 가입된 이메일입니다.');
+        return res.render("layouts/signup", {signUpError: req.flash('signUpError')});
+    } else {
+        const hash = await bcrypt.hash(password, 12);
+        let user = new User({
+            email   : email,
+            name    : name,
+            password: hash,
+        });
+        user = await user.save();
+        if (user) {
+            req.flash('success_msg', '회원가입이 완료되었습니다. 로그인 해주세요 :)');
+            return res.redirect('signin');
         }
-
-    } catch (error) {
-        console.error(error);
-        return next(error);
     }
-});
+}));
 
 
 router.post('/signin', isNotLoggedIn, (req, res, next) => {
