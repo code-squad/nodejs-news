@@ -4,18 +4,19 @@ html
   body
     include components/header.pug
 
+    //- 메인 페이지 기사 목록
     block article-list
 
-    //- 기사 조회 시에만 불러옴
+    //- 기사 조회 시 사용
     block article
 
     //- 사용자 페이지 조회할 때만 불러옴
     block userpage
     block userpage-list
 
+    //- 글 관리에 사용
     block manage
 
-      div= user
     if !user
       include components/signinform.pug
     if user

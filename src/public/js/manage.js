@@ -98,13 +98,20 @@ document.getElementById('article-modify-form').addEventListener('click', async e
     const articleId = targetArticleIdInput.value;
     let res;
     if(e.task === TITLE_MODIFY_TASK) {
+      if(!titleInput.value){
+        UIkit.notification('제목을 입력하세요.', {status: 'danger'});
+        return ;
+      }
       res = await fetch(`/article/${articleId}/title`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({title: titleInput.value })
       });
-      statusCode = res.status;
     } else if (e.task === MARKDOWN_MODIFY_TASK) {
+      if(!mdFileInput.files.length){
+        UIkit.notification('마크다운 파일을 선택한 다음 진행해주세요.', {status: 'danger'});
+        return ;
+      }
       const data = new FormData();
       data.append('markdown', mdFileInput.files[0]);
       res = await fetch(`/article/${articleId}/markdown`, {
@@ -113,6 +120,10 @@ document.getElementById('article-modify-form').addEventListener('click', async e
         body: data,
       });
     } else if (e.task === HERO_IMAGE_MODIFY_TASK) {
+      if(!heroImageInput.files.length){
+        UIkit.notification('이미지를 선택한 다음 진행해주세요.', {status: 'danger'});
+        return ;
+      }
       const data = new FormData();
       data.append('heroimage', heroImageInput.files[0]);
       res = await fetch(`/article/${articleId}/heroimage`, {
@@ -125,7 +136,7 @@ document.getElementById('article-modify-form').addEventListener('click', async e
     
     if(res.status === 200) {
       location.reload();
-    } else {r
+    } else {
       const json = await res.json();
       UIkit.notification(json.message, {status: 'danger'});
     }
