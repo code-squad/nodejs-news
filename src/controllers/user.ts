@@ -24,7 +24,7 @@ async function CreateUser({
     const data: IUser = await User.create({
       email,
       password,
-      privilege: UserPrivilege.USER,
+      privilege: UserPrivilege.WRITER,
       signUpDate: new Date(),
       status: UserStatus.NORMAL,
     });
