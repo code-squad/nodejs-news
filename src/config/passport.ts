@@ -8,11 +8,13 @@ const LocalStrategy = passportLocal.Strategy;
 
 export const passportConfig = (passport: PassportStatic) => {
   passport.serializeUser<any, any>((user, done) => {
-    done(undefined, user);
+    done(undefined, user.id);
   });
 
-  passport.deserializeUser((user, done) => {
-    done(undefined, user);
+  passport.deserializeUser((id, done) => {
+    User.findById(id, ('-password'), (err, user) => {
+      done(err, user);
+    });
   });
 
   passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
