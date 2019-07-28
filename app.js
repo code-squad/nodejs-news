@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
+const winston = require('winston');
 const favicon = require("serve-favicon");
 const session = require('express-session');
 const mongoose = require('mongoose');
@@ -20,6 +21,7 @@ const articlesRouter = require('./routes/articles');
 
 const app = express();
 app.use(helmet());
+winston.configure({transports: [new winston.transports.File({ filename: 'logfile.log'})]});
 passportConfig(passport);
 
 mongoose.connect(db.mongoURI, {useNewUrlParser: true })
@@ -80,6 +82,7 @@ app.use( (err, req, res, next) => {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+    winston.error(err.message, err);
     // render the error page
     res.status(err.status || 500);
     res.render('error');
