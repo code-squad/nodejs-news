@@ -18,8 +18,13 @@ const db = require('./config/database');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes/index');
 const articlesRouter = require('./routes/articles');
-
 const app = express();
+
+process.on('uncaughtException', (ex) => {
+    console.log('We got an uncaught exception');
+    winston.error(ex.message, ex);
+});
+
 app.use(helmet());
 winston.configure({transports: [new winston.transports.File({ filename: 'logfile.log'})]});
 passportConfig(passport);
