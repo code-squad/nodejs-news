@@ -24,6 +24,9 @@ const infScroll = new InfiniteScroll('.container', {
 });
 
 infScroll.on('scrollThreshold', async (e) => {
+  // 이미 실행된 이벤트가 있을 때 막아주는 역할
+  if(!infScroll.options.loadOnScroll) return;
+
   try {
     const loadingAnimation = container.appendChild(getLoadingAnimation().body.childNodes[0]);
     infScroll.option({loadOnScroll: false});
