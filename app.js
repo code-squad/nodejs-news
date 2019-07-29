@@ -16,7 +16,7 @@ require('./startup/db')();
 require('./startup/passport')(app);
 require('./startup/flash')(app);
 
-// require('./startup/view')(app);
+// set view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug', {defaultEngine: 'main'});
 app.use(favicon(path.join(__dirname, "public", "ico", "favicon.ico")));

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../model/articles');
-const {isLoggedIn, isNotLoggedIn} = require('./middlewares');
+const {isLoggedIn, isNotLoggedIn} = require('../middleware/auth');
 const asyncMiddleware = require('../middleware/async');
 
 router.get('/add', (req, res, next) => {
