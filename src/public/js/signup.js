@@ -19,7 +19,7 @@ setEventIfElementExist(signUpButton, 'click', async e => {
   }
 
   if (!validatePassword(password)) {
-    UIkit.notification('최소 한 글자의 대소문자와 특수문자를 포함하면서, 여덟 글자 이상이어야 합니다.', {status: 'danger'});
+    UIkit.notification('최소 한 글자의 대소문자와 숫자, 특수문자를 포함하면서, 여덟 글자 이상이어야 합니다.', {status: 'danger'});
     passwordInput.value = '';
     passwordInput.focus;
     return;
