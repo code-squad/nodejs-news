@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    header(class="body-header")
+        div(class="title")= title
+        form(action="/auth/login", method="get", class="form")
+            input(type="submit", value="Log In", class="button")
+    main
+        form(action="/auth/signup", method="post", class= "auth-form")
+            header(class="header")
+                span Wellcome
+                div= message
+            div(class="content")
+                input(type="text", name="id", placeholder = "User ID", class="input")
+                input(type="password", name="pw", placeholder = "Password", class="input")
+            footer(class="footer")
+                input(type="submit", value="Sign up", class="button")
