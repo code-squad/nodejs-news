@@ -1,13 +1,12 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
+require('dotenv').config();
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const pageRouter = require('./routes/page');
 const connect = require('./schemas');
 
 const app = express();
@@ -21,18 +20,25 @@ app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
-
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.COOKIE_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+  },
 }));
 app.use(flash());
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', pageRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handler

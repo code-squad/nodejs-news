@@ -12,10 +12,11 @@ const articleSchema = new articleSchma({
         type: Number,
         required: true,
     },
-    // content: {
-    //     type: String,
-
-    // },
+    content: {
+        type: String,
+        required: true,
+        default: "",
+    },
     like: {
         type: Number,
         required: true,
