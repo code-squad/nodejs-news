@@ -31,11 +31,7 @@ Node.js 의 Express 프레임워크를 이용한 사이트입니다.
 
 **계정**
 
-<<<<<<< HEAD
-
-- # 사용자의 계정은 OAuth 방식만을 사용합니다.
 - 사용자의 계정은 ID/PASSWORD 와 OAuth 방식을 사용합니다.
-  > > > > > > > 6b01ca4374e36d2e584397e76fbd99bfef0aa174
 
 ## :page_with_curl: Page
 
@@ -72,16 +68,9 @@ Node.js 의 Express 프레임워크를 이용한 사이트입니다.
 
 **User Collection**
 
-<<<<<<< HEAD
-| 고유값 | 토큰 | 아이디 | 비밀번호 | 점수 | 등수 |
-| :----: | :--------: | :-----: | :-----------: | :--------: | :----------: |
-| \_id | user_token | user_id | user_password | user_score | user_ranking |
-=======
-| 고유값 | 아이디 | 비밀번호 | 권한 | 점수 | 등수 |
+| 고유값 | 아이디  |   비밀번호    |   권한    |    점수    |     등수     |
 | :----: | :-----: | :-----------: | :-------: | :--------: | :----------: |
-| \_id | user_id | user_password | user_auth | user_score | user_ranking |
-
-> > > > > > > 6b01ca4374e36d2e584397e76fbd99bfef0aa174
+|  \_id  | user_id | user_password | user_auth | user_score | user_ranking |
 
 **Post Collection**
 
