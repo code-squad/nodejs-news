@@ -11,7 +11,7 @@ authRouter.get('/signup', isNotLoggedIn, async (req: Request, res: Response, nex
   try {
     return res.render('signup');
   } catch (error) {
-    next(createError(404));
+    next(createError(500));
   }
 });
 

@@ -1,9 +1,9 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
 
 const homeRouter = Router();
 
-homeRouter.get('/', async (req: Request, res: Response, next) => {
+homeRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     return res.render('block/article-list', { user: req.user });
   } catch (error) {

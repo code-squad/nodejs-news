@@ -16,7 +16,6 @@ import { addHours } from './util/datehelper';
 import logger from './util/logger';
 import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
 
-
 const MongoStore = mongo(session);
 const mongoUrl = MONGODB_URI;
 
@@ -41,6 +40,7 @@ app.use(session({
   })
 }));
 
+// Set cookie expires
 app.use((req: Request, res: Response, next: NextFunction) => {
   req.session.cookie.expires = addHours(24);
   req.session.cookie.maxAge = 3600000 * 24;
@@ -68,7 +68,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
 });
 
-// General error handlder
+// General error handler
 app.use((err, req: Request, res: Response, next: NextFunction) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
