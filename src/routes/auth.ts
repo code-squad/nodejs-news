@@ -20,7 +20,6 @@ authRouter.post('/signup', isNotLoggedIn,  async (req: Request, res: Response, n
   try {
     const exUser = await userController.GetUserByEmail(email);
     if (exUser) {
-      req.flash('signupError', '이미 ');
       return res.send({message: '이미 가입된 이메일입니다.'});
     }
     const hash = await bcrypt.hash(password, 12);
