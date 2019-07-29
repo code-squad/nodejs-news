@@ -24,4 +24,4 @@ const articleSchema: Schema = new Schema({
   deletedAt    : { type: Schema.Types.Date },
 });
 
-export default mongoose.model<IArticle>('Article', articleSchema, 'articles');
+export default mongoose.model<IArticle>('Article', articleSchema);

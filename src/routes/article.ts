@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
 import { RequestS3 } from '../config/multer';
 import articleController from '../controllers/article';
+import { checkArticleOwner } from '../middlewares/article';
 import { isLoggedIn } from '../middlewares/auth';
 import { articleUploadMiddleware, heroImageUploadMiddleware, markdownUploadMiddleware } from '../middlewares/upload';
 import logger from '../util/logger';
@@ -11,16 +12,15 @@ const articleRouter = Router();
 articleRouter.get('/:articleId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const articleId = req.params.articleId;
-
     const articleInfo = await articleController.getRawArticleById(articleId);
 
-    return res.render('block/article', { user: req.user,
+    return res.render('block/article', {
+      user: req.user,
       article: articleInfo.article,
       rawHtml: articleInfo.rawHtml,
       writer: articleInfo.writer,
     });
   } catch (error) {
-    console.error(error);
     next(createError(500));
   }
 });
@@ -34,7 +34,7 @@ articleRouter.post('/', isLoggedIn, articleUploadMiddleware,
         // tslint:disable-next-line: no-string-literal
         markdownKey: req.files['markdown'][0].key,
         // tslint:disable-next-line: no-string-literal
-        heroImageUrl: req.files['heroimage'][0].location
+        heroImageUrl: req.files['heroimage'][0].location,
       });
 
       return res.redirect(req.headers.referer);
@@ -92,7 +92,7 @@ articleRouter.delete('/:id', async (req: Request, res: Response, next: NextFunct
   }
 });
 
-articleRouter.patch('/:id/title', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
+articleRouter.patch('/:id/title', isLoggedIn, checkArticleOwner, async (req: Request, res: Response, next: NextFunction) => {
   try {
     await articleController.patchArticleById({_id: req.params.id, title: req.body.title});
 
@@ -103,7 +103,7 @@ articleRouter.patch('/:id/title', isLoggedIn, async (req: Request, res: Response
   }
 });
 
-articleRouter.patch('/:id/markdown', isLoggedIn, markdownUploadMiddleware,
+articleRouter.patch('/:id/markdown', isLoggedIn, markdownUploadMiddleware, checkArticleOwner,
   async (req: RequestS3, res: Response, next: NextFunction) => {
     try {
       await articleController.patchArticleById({ _id: req.params.id, markdownKey: req.file.key });
@@ -114,7 +114,7 @@ articleRouter.patch('/:id/markdown', isLoggedIn, markdownUploadMiddleware,
     }
 });
 
-articleRouter.patch('/:id/heroimage', isLoggedIn, heroImageUploadMiddleware,
+articleRouter.patch('/:id/heroimage', isLoggedIn, heroImageUploadMiddleware, checkArticleOwner,
   async (req: RequestS3, res: Response, next: NextFunction) => {
     try {
       await articleController.patchArticleById({ _id: req.params.id, heroImageUrl: req.file.location });
