@@ -83,7 +83,7 @@ router.post('/comment/:id', asyncMiddleware(async (req, res) => {
             commentUser: req.user.id
         };
         // Add to comments array
-        article.comments.unshift(newComment);
+        article.comments.push(newComment);
 
         const isSaved = article.save();
         if (isSaved) {
