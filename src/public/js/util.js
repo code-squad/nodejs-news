@@ -25,8 +25,34 @@ export async function sendData(method = 'POST', url = '', data = {}) {
   } 
 }
 
+export async function sendGetOrHead(method = 'GET', url = '') {
+  try {
+    const res = await fetch(url, { method,
+        mode: 'cors', 
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'follow', 
+    });
+
+    return res;
+  } catch (error) {
+    throw error;
+  } 
+}
+
+
 export function setEventIfElementExist(element, eventName, callback) {
   if (element) {
     element.addEventListener(eventName, callback);
   }
 }
+
+export const domParser = new DOMParser();
+const loadingAnimationStr = `<div class="loader-ellips">
+<span class="loader-ellips__dot"></span>
+<span class="loader-ellips__dot"></span>
+<span class="loader-ellips__dot"></span>
+<span class="loader-ellips__dot"></span>
+</div>`;
+export const getLoadingAnimation = () => domParser.parseFromString(loadingAnimationStr, 'text/html');

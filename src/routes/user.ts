@@ -1,16 +1,32 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
+import { profileUpload } from '../config/multer';
 import UserController from '../controllers/user';
+import { isLoggedIn } from '../middlewares/auth';
 
 const userRouter = Router();
 
-userRouter.get('/:id', async (req: Request, res: Response, next) => {
+const uploadErrorMessage = '프로필 이미지 업로드에 실패했습니다. 파일 크기(1MB 미만)나 네트워크 회선을 점검해주세요.';
+
+function profileUploadMiddleware(req, res, next) {
+  profileUpload.single('profileimg')(req, res, err => {
+    if (err) {
+      createError(500);
+      req.flash('flashMessage', uploadErrorMessage);
+      res.redirect('/');
+    } else {
+      next();
+    }
+  });
+}
+
+userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await UserController.GetUserByObjectId({
+    const targetUser = await UserController.GetUserById({
       _id: req.params.id,
     });
 
-    return res.send({ user });
+    return res.render('block/userpage', { user: req.user, targetUser });
   } catch (error) {
     createError(500);
     next(error);
@@ -19,7 +35,7 @@ userRouter.get('/:id', async (req: Request, res: Response, next) => {
 
 userRouter.delete('/:id', async (req: Request, res: Response, next) => {
   try {
-    const user = await UserController.DeleteUserByObjectId({
+    const user = await UserController.DeleteUserById({
       _id: req.params.id,
     });
 
@@ -32,7 +48,7 @@ userRouter.delete('/:id', async (req: Request, res: Response, next) => {
 
 userRouter.put('/:id', async (req: Request, res: Response, next) => {
   try {
-    const user = await UserController.PutUserByObjectId({
+    const user = await UserController.PatchUserById({
       _id: req.params.id,
       email: req.body.email,
       password: req.body.password,
@@ -44,6 +60,21 @@ userRouter.put('/:id', async (req: Request, res: Response, next) => {
   } catch (error) {
     createError(500);
     next(error);
+  }
+});
+
+userRouter.post('/profile', isLoggedIn, profileUploadMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await UserController.PatchUserById({
+        _id: req.user._id,
+        // tslint:disable-next-line: no-string-literal
+        profileImageUrl: req.file['location'],
+    });
+    return res.redirect('/');
+  } catch (error) {
+    createError(500);
+    req.flash('flashMessage', uploadErrorMessage);
+    res.redirect('/');
   }
 });
 

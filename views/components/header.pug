@@ -2,7 +2,7 @@
   .logo.uk-flex.uk-flex-left.uk-margin-xlarge-left.uk-text-lead TechNews
   .header-btn.uk-flex.uk-flex-right.uk-margin-right
     if user
-      button#signout-btn.uk-button.uk-button-primary 로그아웃
+      include usermenu
     else
       button.uk-button.uk-button-default.uk-margin-small-right(uk-toggle="target: #signin-form") 로그인
-      a.uk-button.uk-button-primary(href="auth/signup") 회원가입
+      a.uk-button.uk-button-primary(href="/auth/signup") 회원가입

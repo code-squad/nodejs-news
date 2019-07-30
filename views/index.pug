@@ -3,10 +3,34 @@ html
   include components/head.pug
   body
     include components/header.pug
-    .container
+
+    //- 메인 페이지 기사 목록
+    block article-list
+
+    //- 기사 조회 시 사용
+    block article
+
+    //- 사용자 페이지 조회할 때만 불러옴
+    block userpage
+    block userpage-list
+
+    //- 글 관리에 사용
+    block manage
 
     if !user
       include components/signinform.pug
+    if user
+      include components/imageuploadform.pug
+    if user && user.privilege > 0
+      include components/mduploadform.pug
 
     include scripts/vendor.pug
-    script(type='module' src='js/auth.js')
+    script(type='module' src='/js/auth.js')
+    script.
+      document.querySelector('.logo').addEventListener('click', e => {
+        location.href = '/';
+      });
+    if flashMessage != ''
+      script.
+        UIkit.notification('#{flashMessage}', {status: 'danger'});
+

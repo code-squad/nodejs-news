@@ -1,11 +1,19 @@
 import User, { IUser, IUserForClient } from '../models/user.model';
-import { addHours } from '../util/datehelper';
 import { UserPrivilege, UserStatus } from '../types/enums';
-import { removeNullFields } from '../util/fieldset';
+import { addHours } from '../util/datehelper';
+import { removeUndefinedFields } from '../util/fieldset';
 
 interface ICreateUserInput {
   email    : IUser['email'];
   password : IUser['password'];
+}
+
+interface IPatchUserInput {
+  _id              : IUser['_id'];
+  email?           : IUser['email'];
+  password?        : IUser['password'];
+  privilege?       : IUser['privilege'];
+  profileImageUrl? : IUser['profileImageUrl'];
 }
 
 async function CreateUser({
@@ -16,56 +24,60 @@ async function CreateUser({
     const data: IUser = await User.create({
       email,
       password,
-      privilege: UserPrivilege.USER,
+      privilege: UserPrivilege.WRITER,
       signUpDate: new Date(),
       status: UserStatus.NORMAL,
-});
+    });
     return data;
   } catch (error) {
     throw error;
   }
 }
 
-async function GetUserByObjectId({
+async function GetUserById({
   _id,
 }): Promise<IUserForClient> {
   try {
-    const user: IUserForClient = await User.findById({ _id });
+    const user: IUserForClient = await User.findOne({ _id,  deletedAt: { $exists: false } }, '-password');
     return user;
   } catch (error) {
     throw error;
   }
 }
 
-async function GetUserByQuery(query): Promise<IUserForClient> {
+async function GetUserByEmail(email): Promise<IUserForClient> {
   try {
-    const user: IUserForClient = await User.findOne(query);
+    const user: IUserForClient = await User.findOne({ email,  deletedAt: { $exists: false } }, '-password');
     return user;
   } catch (error) {
     throw error;
   }
 }
 
-async function DeleteUserByObjectId({
+async function DeleteUserById({
   _id,
 }): Promise<{}> {
   try {
-    const result: {} = await User.deleteOne({ _id });
+    const result: {} = await User.updateOne({ _id, deletedAt: { $exists: false } }, { deletedAt: new Date() });
     return result;
   } catch (error) {
     throw error;
   }
 }
 
-async function PutUserByObjectId({
+async function PatchUserById({
   _id,
   email,
   password,
   privilege,
   profileImageUrl,
-}): Promise<IUser> {
+}: IPatchUserInput): Promise<any> {
   try {
-    const result = await User.updateOne({ _id }, removeNullFields({email, password, privilege, profileImageUrl}));
+    console.log(_id, profileImageUrl);
+    const result = await User.updateOne({
+      _id,
+      deletedAt: { $exists: false }
+    }, removeUndefinedFields({email, password, privilege, profileImageUrl}));
     return result;
   } catch (error) {
     throw error;
@@ -85,7 +97,7 @@ async function banUser({
       status: UserStatus.BANNED_FOREVER,
     };
     const result = await User.updateOne(
-      { _id },
+      { _id, deletedAt: { $exists: false }},
       modifyFieldSet,
     );
 
@@ -97,9 +109,9 @@ async function banUser({
 
 export default {
   CreateUser,
-  DeleteUserByObjectId,
-  GetUserByObjectId,
-  GetUserByQuery,
-  PutUserByObjectId,
+  DeleteUserById,
+  GetUserById,
+  GetUserByEmail,
+  PatchUserById,
   banUser,
 };

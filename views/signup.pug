@@ -7,3 +7,7 @@ html(style='height: 100%')
 
     include scripts/vendor.pug
     script(type='module' src='/js/signup.js')
+    script.
+      document.querySelector('.big-logo').addEventListener('click', e => {
+        location.href = '/';
+      });

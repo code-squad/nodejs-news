@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
+import passport from 'passport';
 import userController from '../controllers/user';
 import { isLoggedIn, isNotLoggedIn } from '../middlewares/auth';
-import passport = require('passport');
 
 const authRouter = Router();
 
@@ -11,14 +11,14 @@ authRouter.get('/signup', isNotLoggedIn, async (req: Request, res: Response, nex
   try {
     return res.render('signup');
   } catch (error) {
-    next(createError(404));
+    next(createError(500));
   }
 });
 
 authRouter.post('/signup', isNotLoggedIn,  async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   try {
-    const exUser = await userController.GetUserByQuery({ email });
+    const exUser = await userController.GetUserByEmail(email);
     if (exUser) {
       return res.send({message: '이미 가입된 이메일입니다.'});
     }
@@ -35,8 +35,8 @@ authRouter.post('/signin', isNotLoggedIn, async (req: Request, res: Response, ne
     if (authError) {
       return next(authError);
     }
-    if (!user) {
-      return res.send({ message: '일치하는 정보가 없습니다.'});
+    if (info) {
+      return res.send(info);
     }
     return req.login(user, (loginError) => {
       if (loginError) {
