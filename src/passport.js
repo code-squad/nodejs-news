@@ -1,35 +1,36 @@
 module.exports = (app) => {
-    const passport = require('passport')
-    , LocalStrategy = require('passport-local').Strategy;
-
+    const passport = require('passport');
+    const jwtController = require('../src/jwt-controller');
+    const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+    const googleCredentials = require('../configs/google-config');
     const User = require('../model/user');
 
     app.use(passport.initialize());
-    app.use(passport.session());
 
     passport.serializeUser((user, done) => done(null, user));
 
-    passport.deserializeUser((user, done) => done(null, user));
-
-    passport.use(new LocalStrategy(
-        {
-            usernameField: 'email',
-            passwordField: 'password'
+    passport.use('google', new GoogleStrategy({
+            clientID: googleCredentials.web.client_id,
+            clientSecret: googleCredentials.web.client_secret,
+            callbackURL: googleCredentials.web.redirect_uris[0]
         },
-
-        async (email, password, done) => {
-            const user = await User.findOneByEmail(email)
-            if(!user) {
-                return done(null, false, { "message": "Incorrect Email"});
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+                let user = await User.findOneAndUpdate({ "id": profile.emails[0].value }, { $set:{"accessToken":accessToken } },{ new:true });
+                if (user) {
+                    user.token = await jwtController.makeToken(user);;
+                } else {
+                    const randomInt = +new Date();
+                    const randomPassword = randomInt.toString();
+                    [ id, password, nickname, provider ] = [ profile.emails[0].value, randomPassword, profile.displayName, 'google' ];
+                    user = await User.create({ id, password, nickname, accessToken, provider });
+                    await user.save();
+                    user.token = await jwtController.makeToken(user);;
+                }
+                done(null, user);
+            } catch (error) {
+                console.log(error);
             }
-
-            if(!user.verify(password)) {
-                return done(null, false, { "message": "Incorrect Password"});
-            }
-
-            done(null, user);
-        }
-    ));
-
+        }));
     return passport;
 }

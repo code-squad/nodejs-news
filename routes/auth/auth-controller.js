@@ -1,42 +1,53 @@
 const User = require('../../model/user');
+const jwtController = require('../../src/jwt-controller');
 
 module.exports = {
-    register : (request, response) => {
-        const onError = (error) => {
-            if (typeof(error) === "string") {
-                response.status(409);
-                response.send(error);
-            } else if (error.errmsg) {
-                response.status(409).send(error.errmsg);
-            } else {
-                console.log(error);
-                response.status(503).send(error);
-            }
+    register : async (request, response, next) => {
+        try {
+            const { id, password, nickname } = request.body;
+            if (!id || !password || !nickname) throw Error("id, password and nickname is required");
+            const provider = 'local';
+            const user = await User.create( { id, password, nickname, provider } );
+            await user.save();
+            return response.redirect('/');
+        } catch(error) {
+            next(error);
         }
-
-        const create = () => {
-                let { email, password, nickname } = request.body;
-                if (!email || !password || !nickname) {
-                    return Promise.reject("email, password and nickname is required");
-                }
-                const user = User.create( email, password, nickname )
-                return user;
-        }
-
-        const respond = () => response.redirect('/');
-
-        return create()
-        .then(respond)
-        .catch(onError)
     },
 
-    authenticate : (passport) => {
-            return passport.authenticate('local', { successRedirect: '/',
-                                    failureRedirect: '/login' });
+    login : async (request, response, next) => {
+        try {
+            let token;
+            const { id, password } = request.body;
+            const user = await User.findOneById(id);
+            if (!user) throw Error("Invalided id!");
+            if(user.verify(password)) {
+                token = await jwtController.makeToken(user);
+            }
+            response.cookie('jwt', token);
+            return response.json({
+                message:"login success"
+            });
+        } catch(error) {
+            next(error);
+        }
     },
 
     logout : (request, response) => {
-        request.logout();
+        response.clearCookie('jwt');
+        return response.status(200).redirect('/login.html');   
+    },
+
+    googleAuthenticate : (passport) => {
+        return passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] })
+    },
+
+    googleCallbackAuthenticate : (passport) => {
+        return passport.authenticate('google', { failureRedirect: '/login.html' });
+    },
+
+    setTokenToCookie: (request, response) => {
+        response.cookie('jwt', request.user.token);
         response.redirect('/');
     }
 }

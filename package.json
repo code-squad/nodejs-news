@@ -18,14 +18,14 @@
   "homepage": "https://github.com/gminiy/nodejs-news#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "connect-mongo": "^3.0.0",
+    "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
-    "express-session": "^1.16.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.5",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "passport-google-oauth": "^2.0.0",
+    "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
     "jest": "^24.8.0"

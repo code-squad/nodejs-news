@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 const { secret } = require('../configs/config')
 const Schema = mongoose.Schema;
+mongoose.set('useCreateIndex', true);
 
 const User = new Schema({
-    email: { 
+    id: { 
         type: String,
         required: true,
         unique: true
@@ -21,22 +22,28 @@ const User = new Schema({
     authority: {
         type: String,
         default: 'member'
+    },
+    accessToken: {
+        type: String,
+        dafault: null
+    },
+    provider: {
+        type: String,
+        dafault: null
     }
 });
 
-User.statics.create = function (email, password, nickname) {
-    const encrypted = crypto.createHmac('sha1', secret)
-    .update(password)
-    .digest('base64');
-
-    const user = new this({ email, password: encrypted, nickname });
-    
-    return user.save();
+User.statics.create = async function ({ id, password, nickname, accessToken, provider }) {
+        accessToken = accessToken || null;
+        const encrypted = crypto.createHmac('sha1', secret)
+        .update(password)
+        .digest('base64');
+        return user = new this({ id, password: encrypted, nickname, accessToken, provider });
 }
 
-User.statics.findOneByEmail = function(email) {
+User.statics.findOneById = function(id) {
     return this.findOne({
-        email
+        id
     }).exec()
 }
 
@@ -47,5 +54,5 @@ User.methods.verify = function(password) {
 
     return this.password === encrypted
 }
-
+ 
 module.exports = mongoose.model('User', User);
