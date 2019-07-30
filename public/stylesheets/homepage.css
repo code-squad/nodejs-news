@@ -1,0 +1,32 @@
+.jumbotron {
+	color: #284738;
+	background: #dce2df;
+}
+
+.flex {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.card-deck {
+	margin-left: 50px;
+	margin-right: 50px;
+	display: grid;
+	grid-gap: 10px;
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.icons {
+	float: right;
+	font-size: 20px;
+}
+
+.icon_color {
+	color: inherit;
+	text-decoration: none;
+	float: right;
+}
+.btnheart {
+	padding: 0px;
+	border: none;
+}

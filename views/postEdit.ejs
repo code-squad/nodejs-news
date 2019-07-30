@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Document</title>
+	</head>
+	<body>
+		<!DOCTYPE html>
+		<html lang="en">
+			<head>
+				<meta charset="UTF-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+				<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+				<link
+					rel="stylesheet"
+					href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+					integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+					crossorigin="anonymous"
+				/>
+
+				<title>Create Blog Post</title>
+			</head>
+			<body>
+				<!-- Page Header -->
+				<div class="container">
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<h1>Create post</h1>
+
+							<form action="/post/edit/<%= post._id %>" method="POST" encType="multipart/form-data">
+								<div class="form-group">
+									<label>Username</label>
+									<input type="text" class="form-control" name="username" placeholder="<%= post.username %>" />
+								</div>
+
+								<div class="form-group">
+									<label>Title</label>
+									<input type="text" class="form-control" name="title" placeholder="<%= post.title %>" />
+								</div>
+
+								<div class="form-group">
+									<label>Description</label>
+									<input type="text" class="form-control" name="description" placeholder="<%= post.description %>" />
+								</div>
+
+								<div class="form-group">
+									<label>Content</label>
+									<textarea name="content" placeholder="Content ..." cols="30" rows="10" class="form-control">
+									<%= post.content %></textarea
+									>
+								</div>
+
+								<div class="form-group">
+									<input type="file" name="image" class="form-control-file" src="<%= post.image %>" />
+								</div>
+
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary">
+										Create
+									</button>
+									<button class="btn btn-default">
+										Cancel
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</body>
+		</html>
+	</body>
+</html>

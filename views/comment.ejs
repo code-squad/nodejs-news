@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="stylesheet" href="/stylesheets/comment.css" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+		/>
+
+		<title>Comment</title>
+	</head>
+	<body>
+		<!-- Contenedor Principal -->
+
+		<a href="/"><h1>Home</h1></a>
+
+		<div class="comments-container">
+			<h1>Comments</h1>
+			<div class="input_comment">
+				<form action="/post/comment/<%= user %>" method="POST">
+					<input type="text" name="comment" placeholder="Join the conversation.." />
+					<input class="btn btn-primary" type="submit" value="Submit" />
+				</form>
+			</div>
+			<ul id="comments-list" class="comments-list">
+				<% Comment.forEach(function(addComment) { %>
+				<li>
+					<div class="comment-main-level">
+						<!-- Avatar -->
+						<div class="comment-avatar">
+							<img
+								src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfxxCr_-MOmn7bLgH6uoYQpzxdzeeJbUG5jqMieWc2Z4_xQpXZnQ"
+								alt=""
+							/>
+						</div>
+						<div class="comment-box">
+							<div class="comment-head">
+								<h6 class="comment-name by-author">
+									<a href="http://creaticode.com/blog"><%= addComment.commenter %></a>
+								</h6>
+								<span><%= addComment.createdAt.toDateString() %></span>
+								<a href="/post/comment/delete/<%= addComment._id %>" class="btn btn-info deleteBtn" role="button">X</a>
+								<a href="/post/comment/reply/<%= addComment._id %>" class="btn btn-info deleteBtn" role="button"
+									>Reply</a
+								>
+
+								<i class="fa fa-reply"></i>
+								<i class="fa fa-heart"></i>
+							</div>
+							<div class="comment-content">
+								<%= addComment.content %>
+							</div>
+						</div>
+					</div>
+				</li>
+				<% }) %>
+			</ul>
+		</div>
+	</body>
+</html>
