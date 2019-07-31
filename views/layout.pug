@@ -10,6 +10,7 @@ html
         form#search-form
           input(placeholder='뉴스 검색')
           button(type='submit') 검 색
+        if user && user.email
         button#login-btn 로그인
     nav
       ul#main-nav
@@ -27,4 +28,8 @@ html
 
     footer footer
     
-    script(src="/javascripts/main.js")
+    script. 
+      const loginBtn = document.getElementById('login-btn');
+      loginBtn.addEventListener('click', () => {
+        location.href = '/login'
+      });

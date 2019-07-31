@@ -4,3 +4,5 @@ block content
   #contents
     section 메인페이지 section 
     aside 메인페이지 aside
+      if user && user.email
+        .welcome-msg= '안녕하세요! ' + user.nickname + '님'

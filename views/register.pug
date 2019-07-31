@@ -4,17 +4,17 @@ block content
   .register-page
     .form
       form.register-form(action='/auth/register', method='post')
-        input#email(type="text", placeholder="e-mail")
-        input#password1(type="password", placeholder="password")
-        input#password2(type='password', placeholder="password")
-        input#uname(type="text", placeholder="name")
-        input#nicname(type="text", placeholder="nicname")
+        input#email(type="email" name="email", placeholder="email" required autofocus)
+        input#password(type="password" name="password" placeholder="password" required)
+        input#password1(type='password' placeholder="password" required)
+        input#nickname(type="text", name="nickname" placeholder="nickname" required)
         label 일반회원
           input(type="radio", name="userType", value="reader" checked="checked") 
         label 기자
-          input(type="radio", name="userType", value="writer") 
+          input(type="radio", name="userType", value="writer")
+        if registerError
+          .error-message= registerError 
         button#register-btn(type="submit") SINGUP
         p.message ID가 이미 있으신가요? 
           a(href="/login") 로 그 인
-  script. 
-    
+      
