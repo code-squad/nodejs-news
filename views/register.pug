@@ -1,4 +1,20 @@
 extends layout
 
 block content
-  p 회원가입 페이지 입니다
+  .register-page
+    .form
+      form.register-form(action='/auth/register', method='post')
+        input#email(type="text", placeholder="e-mail")
+        input#password1(type="password", placeholder="password")
+        input#password2(type='password', placeholder="password")
+        input#uname(type="text", placeholder="name")
+        input#nicname(type="text", placeholder="nicname")
+        label 일반회원
+          input(type="radio", name="userType", value="reader" checked="checked") 
+        label 기자
+          input(type="radio", name="userType", value="writer") 
+        button#register-btn(type="submit") SINGUP
+        p.message ID가 이미 있으신가요? 
+          a(href="/login") 로 그 인
+  script. 
+    

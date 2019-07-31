@@ -1,4 +1,12 @@
 extends layout
 
 block content
-  p 로그인 페이지입니다.
+  .login-page
+    .form
+      form.login-form
+        input(type="text", placeholder="e-mail")
+        input(type="password", placeholder="password")
+        button(type="submit") LOGIN
+        p.message ID가 없으신가요? 
+          a(href="/register") 회 원 가 입 
+  

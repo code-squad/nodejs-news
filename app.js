@@ -4,13 +4,16 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
 require('dotenv').config();
 
 const pageRouter = require('./routes/page');
 const connect = require('./schemas');
+const passportConfig = require('./passport');
 
 const app = express();
 connect();
+passportConfig(passport);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +34,8 @@ app.use(session({
   },
 }));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passprot.session());
 
 app.use('/', pageRouter);
 

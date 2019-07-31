@@ -11,11 +11,6 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    provider: {
-        type: String,
-        required: true,
-        default: 'local',
-    },
     name: {
         type: String,
         required: true,
@@ -25,14 +20,23 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
-    articles: Array,
+    userType: {
+        type: String,
+        required: true,
+    },
+    
+    articles: {
+        type: Array,
+        default: [],
+    },
     comments: {
         type: Array,
         default: [],
     },
-    auth: {
+    provider: {
         type: String,
         required: true,
+        default: 'local',
     },
     createdAt: {
         type: Date,
