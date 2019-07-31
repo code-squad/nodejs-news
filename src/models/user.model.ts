@@ -7,34 +7,32 @@ export interface IUser extends Document {
   password        : string;
   privilege       : number;
   profileImageUrl : string;
-  provider        : string;
   signUpDate      : Date;
   status          : number;
   bannedExpires   : Date;
   deletedAt       : Date;
-  subscribers     : [Schema.Types.ObjectId];
-  subscriptions   : [Schema.Types.ObjectId];
+}
+
+export interface IUserForClient extends Document {
+  _id             : IUser['_id'];
+  email           : IUser['email'];
+  privilege       : IUser['privilege'];
+  profileImageUrl : IUser['profileImageUrl'];
 }
 
 const UserSchema: Schema = new Schema({
   email           : { type: String, required: true, unique: true },
-  password        : { type: String },
+  password        : { type: String, required: true },
   privilege       : { type: Number, required: true },
   profileImageUrl : { type: String },
   signUpDate      : { type: Date, required: true },
   status          : { type: Number, required: true },
-  provider        : { type: String, required: true },
   bannedExpires   : { type: Date },
   deletedAt       : { type: Date },
-  subscribers     : { type: Array, default: [], ref: 'User' },
-  subscriptions   : { type: Array, default: [], ref: 'User'},
 });
 
 export interface IUserScheme extends IUser {
-  comparePassword(
-    candidatePassword: IUser['password'],
-    callback: (err: mongoose.Error, isMatch: boolean) => void
-  );
+  comparePassword(candidatePassword: IUser['password'], callback: (err: mongoose.Error, isMatch: boolean) => void);
 }
 
 const comparePassword = function (candidatePassword, cb) {
@@ -44,5 +42,6 @@ const comparePassword = function (candidatePassword, cb) {
 };
 
 UserSchema.methods.comparePassword = comparePassword;
+
 
 export default mongoose.model<IUser>('User', UserSchema);
