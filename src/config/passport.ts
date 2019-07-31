@@ -30,6 +30,7 @@ export const passportConfig = (passport: PassportStatic) => {
     });
   }));
 
+<<<<<<< HEAD
   // 매 요청마다 실행
   passport.use(new JWTStrategy(JWTOptions, (jwtPayload, done) => {
     User.findOne({ email: jwtPayload.email }, (err, user: IUser) => {
@@ -43,4 +44,26 @@ export const passportConfig = (passport: PassportStatic) => {
       }
     });
   }));
+||||||| merged common ancestors
+export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+=======
+  // 매 요청마다 실행
+  passport.use(new JWTStrategy(JWTOptions, (jwtPayload, done) => {
+    User.findOne({ email: jwtPayload.email }, (err, user: IUser) => {
+      if (err) {
+        console.error(err);
+        return done(err, false);
+      }
+      if (user) {
+        return done(undefined, user);
+      } else {
+        return done(undefined, false);
+      }
+    });
+  }));
+>>>>>>> refactor: Local 로그인 인증 방식 변경
 };

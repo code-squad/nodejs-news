@@ -30,6 +30,7 @@ const UserSchema: Schema = new Schema({
   subscriptions   : { type: Array, default: [], ref: 'User'},
 });
 
+<<<<<<< HEAD
 export interface IUserScheme extends IUser {
   comparePassword(
     candidatePassword: IUser['password'],
@@ -37,6 +38,13 @@ export interface IUserScheme extends IUser {
   );
 }
 
+||||||| merged common ancestors
+=======
+export interface IUserScheme extends IUser {
+  comparePassword(candidatePassword: IUser['password'], callback: (err: mongoose.Error, isMatch: boolean) => void);
+}
+
+>>>>>>> refactor: Local 로그인 인증 방식 변경
 const comparePassword = function (candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
     cb(err, isMatch);
