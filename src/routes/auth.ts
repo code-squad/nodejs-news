@@ -1,9 +1,12 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
+import JWT from 'jsonwebtoken';
 import passport from 'passport';
 import userController from '../controllers/user';
 import { isLoggedIn, isNotLoggedIn } from '../middlewares/auth';
+import { IUser } from '../models/user.model';
+import { JWT_SECRET } from '../util/secrets';
 
 const authRouter = Router();
 
@@ -31,34 +34,30 @@ authRouter.post('/signup', isNotLoggedIn,  async (req: Request, res: Response, n
 });
 
 authRouter.post('/signin', isNotLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
-  passport.authenticate('local', (authError, user, info) => {
+  passport.authenticate('local', { session: false }, (authError, user: IUser, info) => {
     if (authError) {
       return next(authError);
     }
     if (info) {
       return res.send(info);
     }
-    return req.login(user, (loginError) => {
-      if (loginError) {
-        return next(loginError);
-      } else {
-        return res.redirect('/');
-      }
+    const token = JWT.sign({
+      id: user.id,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
+      privilege: user.privilege,
+    }, JWT_SECRET, {
+      expiresIn: '1h',
     });
+    res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+    return res.redirect(req.headers.referer);
   })(req, res, next);
 });
 
 authRouter.post('/signout', isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
   try {
-    let destroyResult;
-    req.logout();
-    req.session.destroy(err => destroyResult = err);
-
-    if (destroyResult) {
-      throw destroyResult;
-    }
-
-    return res.redirect('/');
+    res.cookie('token', '', { maxAge: 0 });
+    return res.redirect(req.headers.referer);
   } catch (err) {
     next(err);
   }

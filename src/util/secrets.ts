@@ -10,6 +10,7 @@ export const ENVIRONMENT = process.env.NODE_ENV;
 const prod = ENVIRONMENT === 'production';
 
 export const SESSION_SECRET = process.env.SESSION_SECRET;
+export const JWT_SECRET = process.env.JWT_SECRET;
 export const MONGODB_URI = process.env.MONGODB_URI;
 
 export const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID;

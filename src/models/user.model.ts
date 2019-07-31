@@ -31,6 +31,10 @@ const UserSchema: Schema = new Schema({
   deletedAt       : { type: Date },
 });
 
+export interface IUserScheme extends IUser {
+  comparePassword(candidatePassword: IUser['password'], callback: (err: mongoose.Error, isMatch: boolean) => void);
+}
+
 const comparePassword = function (candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
     cb(err, isMatch);
