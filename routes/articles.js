@@ -60,6 +60,7 @@ router.put('/:id', asyncMiddleware(async (req, res) => {
         article.title = req.body.title;
         article.body = req.body.body;
         article.field = req.body.field;
+        article.image = req.body.image;
         const isSaved = await article.save();
         if (isSaved) {
             res.redirect('/articles/' + req.body.field);
