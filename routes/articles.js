@@ -17,7 +17,7 @@ router.get('/:field', isLoggedIn, asyncMiddleware(async (req, res) => {
     }
 }));
 
-router.get('/show/:id', asyncMiddleware(async (req, res) => {
+router.get('/show/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
     const article = await Article.findOne({
         _id: req.params.id
     }).populate('comments.commentUser');
@@ -28,7 +28,7 @@ router.get('/show/:id', asyncMiddleware(async (req, res) => {
     }
 }));
 
-router.post('/add', asyncMiddleware(async (req, res) => {
+router.post('/add', isLoggedIn, asyncMiddleware(async (req, res) => {
     console.log(req.body);
     const newArticle = {
         title: req.body.title,
@@ -43,7 +43,7 @@ router.post('/add', asyncMiddleware(async (req, res) => {
     }
 }));
 
-router.get('/edit/:id', asyncMiddleware(async (req, res) => {
+router.get('/edit/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
     const article = await Article.findOne({
         _id: req.params.id
     });
@@ -54,7 +54,7 @@ router.get('/edit/:id', asyncMiddleware(async (req, res) => {
     }
 }));
 
-router.put('/:id', asyncMiddleware(async (req, res) => {
+router.put('/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
     const article = await Article.findOne({_id: req.params.id});
     if (article) {
         article.title = req.body.title;
@@ -68,7 +68,7 @@ router.put('/:id', asyncMiddleware(async (req, res) => {
     }
 }));
 
-router.delete('/:id', asyncMiddleware(async (req, res) => {
+router.delete('/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
     const isDeleted = await Article.remove({_id: req.params.id});
     if (isDeleted) {
         res.redirect('/articles/' + req.body.field);
@@ -76,7 +76,7 @@ router.delete('/:id', asyncMiddleware(async (req, res) => {
 
 }));
 
-router.post('/comment/:id', asyncMiddleware(async (req, res) => {
+router.post('/comment/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
     const article = await Article.findOne({_id: req.params.id});
     if (article) {
         const newComment = {
@@ -93,7 +93,7 @@ router.post('/comment/:id', asyncMiddleware(async (req, res) => {
     }
 }));
 
-router.delete('/comment/:id', asyncMiddleware(async (req, res) => {
+router.delete('/comment/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
     const [articleId, commentId] = req.params.id.split('&');
     const isDeleted = await Article.updateOne({_id: articleId}, {$pull: {'comments': {_id: commentId}}});
 
@@ -103,7 +103,7 @@ router.delete('/comment/:id', asyncMiddleware(async (req, res) => {
 
 }));
 
-router.post('/:id/act', asyncMiddleware(async (req, res) => {
+router.post('/:id/act', isLoggedIn, asyncMiddleware(async (req, res) => {
     const action = req.body.action;
     const counter = action === 'Like' ? 1 : -1;
     const likesStatusUpdated = await Article.updateOne({_id: req.params.id}, {$inc: {likes_count: counter}}, {});
