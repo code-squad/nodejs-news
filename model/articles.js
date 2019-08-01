@@ -14,6 +14,10 @@ const ArticleSchema = mongoose.model('articles', new mongoose.Schema({
     field      : {
         type: String,
     },
+    image      : {
+        type: String,
+        default: 'http://placehold.it/900x300'
+    },
     comments   : [{
         commentBody: {
             type    : String,

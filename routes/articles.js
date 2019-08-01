@@ -30,11 +30,11 @@ router.get('/show/:id', asyncMiddleware(async (req, res) => {
 
 router.post('/add', asyncMiddleware(async (req, res) => {
     console.log(req.body);
-
     const newArticle = {
         title: req.body.title,
         body : req.body.body,
         field: req.body.field,
+        image: req.body.image,
         user : req.user.id
     };
     const article = await new Article(newArticle).save();

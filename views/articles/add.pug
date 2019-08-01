@@ -18,6 +18,9 @@ block add-articles
                             option(value='Computing') Computing
                             option(value='Home&Mobile') Home / Mobile
                     .input-field
+                        h3(style='display: inline-block;') Image:
+                        input(type='text', name='image')
+                    .input-field
                         h4 Write Article Contents
                         textarea(name='body')
                     input.btn(type='submit', value='Save')

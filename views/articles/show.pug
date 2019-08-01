@@ -24,7 +24,7 @@ block show-articles
                 p= article.date
                 hr
                 // Preview Image
-                img.img-fluid.rounded(src='http://placehold.it/900x300', alt='')
+                img.img-fluid.rounded(src=article.image, alt='')
                 hr
                 // Post Content
                 p.lead !{article.body}
