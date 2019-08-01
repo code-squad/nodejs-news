@@ -1,11 +1,13 @@
-import User, { IUser, IUserForClient } from '../models/user.model';
+import User, { IUser } from '../models/user.model';
 import { UserPrivilege, UserStatus } from '../types/enums';
 import { addHours } from '../util/datehelper';
 import { removeUndefinedFields } from '../util/fieldset';
 
 interface ICreateUserInput {
-  email    : IUser['email'];
-  password : IUser['password'];
+  email            : IUser['email'];
+  password?        : IUser['password'];
+  provider         : IUser['provider'];
+  profileImageUrl? : IUser['profileImageUrl'];
 }
 
 interface IPatchUserInput {
@@ -19,16 +21,21 @@ interface IPatchUserInput {
 async function CreateUser({
   email,
   password,
+  provider = 'local',
+  profileImageUrl,
 }: ICreateUserInput): Promise<IUser> {
   try {
-    const data: IUser = await User.create({
+    const newUser = new User({
       email,
       password,
       privilege: UserPrivilege.WRITER,
       signUpDate: new Date(),
       status: UserStatus.NORMAL,
+      provider,
+      profileImageUrl,
     });
-    return data;
+    await newUser.save();
+    return newUser;
   } catch (error) {
     throw error;
   }
@@ -36,18 +43,18 @@ async function CreateUser({
 
 async function GetUserById({
   _id,
-}): Promise<IUserForClient> {
+}): Promise<IUser> {
   try {
-    const user: IUserForClient = await User.findOne({ _id,  deletedAt: { $exists: false } }, '-password');
+    const user: IUser = await User.findOne({ _id,  deletedAt: { $exists: false } }, '-password');
     return user;
   } catch (error) {
     throw error;
   }
 }
 
-async function GetUserByEmail(email): Promise<IUserForClient> {
+async function GetUserByEmail(email): Promise<IUser> {
   try {
-    const user: IUserForClient = await User.findOne({ email,  deletedAt: { $exists: false } }, '-password');
+    const user: IUser = await User.findOne({ email,  deletedAt: { $exists: false } }, '-password');
     return user;
   } catch (error) {
     throw error;

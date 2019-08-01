@@ -34,7 +34,6 @@ setEventIfElementExist(signInButton, 'click', async e => {
       location.href = res.url;
     } else {
       const resBody = await res.json();
-      console.log(resBody);
       UIkit.notification(resBody.message || '서버에서 오류가 발생했습니다.', {status: 'danger'});
       signInPasswordInput.value = '';
       signInPasswordInput.focus;

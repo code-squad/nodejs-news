@@ -18,6 +18,10 @@ export const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY;
 export const S3_BUCKET = process.env.S3_BUCKET;
 export const S3_REGION = process.env.S3_REGION;
 
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+export const GOOGLE_REDIRECT_URL = process.env.GOOGLE_REDIRECT_URL;
+
 if (!SESSION_SECRET) {
     logger.error('No client secret. Set SESSION_SECRET environment variable.');
     process.exit(1);

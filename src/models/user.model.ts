@@ -7,6 +7,7 @@ export interface IUser extends Document {
   password        : string;
   privilege       : number;
   profileImageUrl : string;
+  provider        : string;
   signUpDate      : Date;
   status          : number;
   bannedExpires   : Date;
@@ -22,11 +23,12 @@ export interface IUserForClient extends Document {
 
 const UserSchema: Schema = new Schema({
   email           : { type: String, required: true, unique: true },
-  password        : { type: String, required: true },
+  password        : { type: String },
   privilege       : { type: Number, required: true },
   profileImageUrl : { type: String },
   signUpDate      : { type: Date, required: true },
   status          : { type: Number, required: true },
+  provider        : { type: String, required: true },
   bannedExpires   : { type: Date },
   deletedAt       : { type: Date },
 });
