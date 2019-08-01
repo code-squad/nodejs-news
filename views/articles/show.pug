@@ -62,7 +62,6 @@ block show-articles
                                 p= comment.commentBody
                                 // Edit, Delete buttons
                                 if user.id === comment.commentUser.id
-                                    a.btn.btn-info(type='button', href='/articles/comment/' + comment.id) Edit
                                     form.col.s12(action='/articles/comment/' +article.id +'&'+ comment.id + '?_method=DELETE', method='post', style='display: inline-block;')
                                         input(type='hidden', name='_method', value='DELETE')
                                         input(type='hidden', name='field', value=article.field)
