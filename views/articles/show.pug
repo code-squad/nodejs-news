@@ -29,13 +29,12 @@ block show-articles
                 // Post Content
                 p.lead !{article.body}
                 hr
-                .row
-                    button(id='likes-button', onclick='actOnPost(event);', data-post-id= article.id )
-                        if article.likesUser.filter((e) => e === user.id).length
-                            | Unlike
-                        else
-                            | Like
-                    span(id=`likes-count-` + article.id) #{article.likes_count}
+                button(id='likes-button', onclick='actOnPost(event);', data-post-id= article.id)
+                    if article.likesUser.filter((e) => e === user.id).length
+                        | Unlike
+                    else
+                        | Like
+                span(id=`likes-count-` + article.id) #{article.likes_count}
                 hr
                 // Comments Form
                 .card.my-4
