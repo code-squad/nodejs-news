@@ -12,7 +12,5 @@ block index-article
             each value in articles
                 .div
                     h2= value.title
-                    div#article-preview
-                        | !{value.body}
                     p
                         a.btn(href='/articles/show/' + value.id) View details »
