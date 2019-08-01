@@ -83,9 +83,9 @@ router.post('/comment/:id', asyncMiddleware(async (req, res) => {
             commentUser: req.user.id
         };
         // Add to comments array
-        article.comments.push(newComment);
+        article.comments.unshift(newComment);
 
-        const isSaved = article.save();
+        const isSaved = await article.save();
         if (isSaved) {
             res.redirect('/articles/show/' + article.id)
         }
@@ -105,7 +105,16 @@ router.delete('/comment/:id', asyncMiddleware(async (req, res) => {
 router.post('/:id/act', asyncMiddleware(async (req, res) => {
     const action = req.body.action;
     const counter = action === 'Like' ? 1 : -1;
-    const likesStatusUpdated = await Article.update({_id: req.params.id}, {$inc: {likes_count: counter}}, {});
+    const likesStatusUpdated = await Article.updateOne({_id: req.params.id}, {$inc: {likes_count: counter}}, {});
+    const article = await Article.findOne({_id: req.params.id});
+    const userId = req.user.id;
+    const alreadyLiked = article.likesUser.filter((e) => e === userId).length;
+    if (alreadyLiked) {
+        article.likesUser.remove(userId);
+    } else {
+        article.likesUser.push(userId);
+    }
+    await article.save();
 
     if (likesStatusUpdated) {
         res.redirect('/articles/show/' + req.params.id);

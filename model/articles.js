@@ -3,44 +3,47 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const ArticleSchema = mongoose.model('articles', new mongoose.Schema({
-    title:{
-        type:String,
+    title      : {
+        type    : String,
         required: true
     },
-    body:{
-        type: String,
+    body       : {
+        type    : String,
         required: true
     },
-    field: {
+    field      : {
         type: String,
     },
-    comments: [{
+    comments   : [{
         commentBody: {
-            type: String,
+            type    : String,
             required: true
         },
-        commentDate:{
-            type: Date,
+        commentDate: {
+            type   : Date,
             default: Date.now
         },
-        commentUser:{
+        commentUser: {
             type: Schema.Types.ObjectId,
-            ref:'users'
+            ref : 'users'
         }
     }],
-    user:{
+    user       : {
         type: Schema.Types.ObjectId,
-        ref:'users'
+        ref : 'users'
     },
-    date:{
-        type: Date,
+    date       : {
+        type   : Date,
         default: Date.now
     },
-    likes_count:{
-        type: Number,
+    likes_count: {
+        type   : Number,
         default: 0
+    },
+    likesUser  : {
+        type   : Array,
+        default: []
     }
-
 }));
 
 // Create collection and add schema

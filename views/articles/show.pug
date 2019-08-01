@@ -31,7 +31,10 @@ block show-articles
                 hr
                 .row
                     button(id='likes-button', onclick='actOnPost(event);', data-post-id= article.id )
-                        | Like
+                        if article.likesUser.filter((e) => e === user.id).length
+                            | Unlike
+                        else
+                            | Like
                     span(id=`likes-count-` + article.id) #{article.likes_count}
                 hr
                 // Comments Form
