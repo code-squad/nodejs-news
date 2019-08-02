@@ -55,7 +55,6 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
   passport.use(new JWTStrategy(JWTOptions, (jwtPayload, done) => {
     User.findOne({ email: jwtPayload.email }, (err, user: IUser) => {
       if (err) {
-        console.error(err);
         return done(err, false);
       }
       if (user) {
