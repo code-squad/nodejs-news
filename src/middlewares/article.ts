@@ -8,7 +8,6 @@ export const checkArticleOwner = (req: Request, res: Response, next: NextFunctio
     deletedAt: { $exists: false },
   },
     (err, article) => {
-      console.log(article);
       if (err) {
         next(err);
       } else if (!article) {

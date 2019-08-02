@@ -16,4 +16,3 @@ export const googleAuthUrl = oauth2Client.generateAuthUrl({
   access_type: 'offline',
   scope: scopes,
 });
-

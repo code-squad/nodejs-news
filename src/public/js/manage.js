@@ -32,7 +32,7 @@ document.querySelector('#manage-tbody').childNodes.forEach(
         targetArticleIdInput.value = id;
       }
     } catch (error) {
-      console.error(error);
+      UIkit.notification('서버에 문제가 발생했습니다. 잠시 후 다시 실행해주세요.');
     }
   })
 );
@@ -141,7 +141,6 @@ document.getElementById('article-modify-form').addEventListener('click', async e
       UIkit.notification(json.message, {status: 'danger'});
     }
   } catch (error) {
-    console.error(error);
     UIkit.notification('서버에 문제가 발생하여 업데이트하지 못했습니다.', {status: 'danger'});
   }
 });

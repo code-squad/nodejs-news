@@ -40,7 +40,6 @@ setEventIfElementExist(signInButton, 'click', async e => {
     }
 
   } catch (error) {
-    console.error(error);
     signInButton.setAttribute('disabled', 'false');
   }
 });
@@ -58,13 +57,11 @@ setEventIfElementExist(signOutButton, 'click', async e => {
 
   try {
     const res = await sendData('POST', '/auth/signout');
-    console.log(res);
     if (res.redirected) {
       location.href = res.url;
     }
 
   } catch (error) {
-    console.error(error);
     signOutButton.setAttribute('disabled', 'false');
   }
 });

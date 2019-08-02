@@ -42,7 +42,6 @@ infScroll.on('scrollThreshold', async (e) => {
       infScroll.destroy();
     }
   } catch (error) {
-    console.error(error);
     container.removeChild(loadingAnimation);
     infScroll.destroy();
   }
@@ -54,7 +53,6 @@ infScroll.on('scrollThreshold', async (e) => {
     const rawHtml = await getUserArticleList(userId);
     appendElements(container, rawHtml);
   } catch (error) {
-    console.error(error);
     infScroll.destroy();
   }
 })();
