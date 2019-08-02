@@ -1,10 +1,10 @@
 import AWS from 'aws-sdk';
-import { S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY } from '../util/secrets';
+import { S3_ACCESS_KEY_ID, S3_REGION, S3_SECRET_ACCESS_KEY } from '../util/secrets';
 
 AWS.config.update({
   accessKeyId: S3_ACCESS_KEY_ID,
   secretAccessKey: S3_SECRET_ACCESS_KEY,
-  region: 'ap-northeast-2',
+  region: S3_REGION,
 });
 
 const s3 = new AWS.S3();
