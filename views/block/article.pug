@@ -1,7 +1,6 @@
 extends ../index
 
 block article
-  //- - const joinTitleWithHtml = `<h1>${article.title}</h1>\n${rawHtml}`
   - const profileUrl = writer.profileImageUrl || '/image/avatar.png';
   - const subscriptionBtnClass = user && writer._id == user._id ? 'uk-button-disable' : 'uk-button-danger';
 
@@ -13,7 +12,6 @@ block article
         .user-info(style='margin-left: 24px; display: inline-block')
           p.uk-flex.uk-flex.middle(style='color: black; font-size: 15px; margin: 0')
             a.black-font(href='/user/' + writer._id)= writer.email.split('@')[0]
-            button#subscription-btn.uk-label.black-font(style='margin-left: 8px; font-size: 15px; background-color: white;') 구독
           p(style='color: black; font-size: 0.8em; margin: 0')= article.createdAt.toString().split(' ').slice(1,4).join('-')
   div(style="width: 100%")
     img(src= article.heroImageUrl)
