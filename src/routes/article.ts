@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
 import { RequestS3 } from '../config/multer';
+import { googleAuthUrl } from '../config/oauth';
 import articleController from '../controllers/article';
 import { checkArticleOwner } from '../middlewares/article';
 import { isLoggedIn } from '../middlewares/auth';
@@ -19,6 +20,7 @@ articleRouter.get('/:articleId', async (req: Request, res: Response, next: NextF
       article: articleInfo.article,
       rawHtml: articleInfo.rawHtml,
       writer: articleInfo.writer,
+      googleAuthUrl,
     });
   } catch (error) {
     next(createError(500));

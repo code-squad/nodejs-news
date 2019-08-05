@@ -237,3 +237,11 @@ a.disabled {
   animation-name: reveal;
   animation-direction: reverse;
 }
+
+.toggle-on {
+  opacity: 1.0;
+}
+
+.toggle-off {
+  opacity: 0.8;
+}
