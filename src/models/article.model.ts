@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { commentSchema, IComment } from './comment.model';
 import { IUser } from './user.model';
 
 export interface IArticle extends Document {
@@ -13,7 +12,6 @@ export interface IArticle extends Document {
   modifiedAt   : Date;
   deletedAt    : Date;
   likeUsers    : [Schema.Types.ObjectId];
-  comments     : [IComment];
 }
 
 const articleSchema: Schema = new Schema({
@@ -25,8 +23,7 @@ const articleSchema: Schema = new Schema({
   createdAt    : { type: Schema.Types.Date, required: true },
   modifiedAt   : { type: Schema.Types.Date },
   deletedAt    : { type: Schema.Types.Date },
-  likeUsers    : { type: Array, default: [], ref: 'User' },
-  comments     : { type: [commentSchema] , default: [] },
+  likeUsers    : { type: Array, ref: 'User'},
 });
 
 export default mongoose.model<IArticle>('Article', articleSchema);

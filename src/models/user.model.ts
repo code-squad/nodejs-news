@@ -26,12 +26,15 @@ const UserSchema: Schema = new Schema({
   provider        : { type: String, required: true },
   bannedExpires   : { type: Date },
   deletedAt       : { type: Date },
-  subscribers     : { type: Array },
-  subscriptions   : { type: Array },
+  subscribers     : { type: Array, ref: 'User' },
+  subscriptions   : { type: Array, ref: 'User'},
 });
 
 export interface IUserScheme extends IUser {
-  comparePassword(candidatePassword: IUser['password'], callback: (err: mongoose.Error, isMatch: boolean) => void);
+  comparePassword(
+    candidatePassword: IUser['password'],
+    callback: (err: mongoose.Error, isMatch: boolean) => void
+  );
 }
 
 const comparePassword = function (candidatePassword, cb) {
@@ -41,6 +44,5 @@ const comparePassword = function (candidatePassword, cb) {
 };
 
 UserSchema.methods.comparePassword = comparePassword;
-
 
 export default mongoose.model<IUser>('User', UserSchema);
