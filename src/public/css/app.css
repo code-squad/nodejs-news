@@ -245,3 +245,23 @@ a.disabled {
 .toggle-off {
   opacity: 0.8;
 }
+
+.like-toggle-on {
+  color: black;
+}
+
+.like-toggle-on:hover {
+  cursor: pointer;  
+}
+
+.like-toggle-off {
+  color: red;
+}
+
+.like-toggle-off:hover {
+  cursor: pointer;
+}
+
+.disabled-click {
+  pointer-events: none;
+}

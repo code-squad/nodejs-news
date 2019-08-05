@@ -18,6 +18,11 @@ interface IPatchArticleInput {
   heroImageUrl? : IArticle['heroImageUrl'];
 }
 
+interface IArticleLikeInput {
+  articleId  : IArticle['_id'];
+  likeUserId : IUser['_id'];
+}
+
 async function getRawArticleById(articleId: IArticle['_id']): Promise<IArticleInfo> {
   try {
     const article: IArticle = await Article.findOneAndUpdate(
@@ -105,6 +110,50 @@ async function patchArticleById({
   }
 }
 
+async function likeArticle({
+  articleId,
+  likeUserId,
+}: IArticleLikeInput): Promise<void> {
+  try {
+    await Article.updateOne(
+      { _id: articleId, deletedAt: { $exists: false } },
+      { $addToSet: { likeUsers: likeUserId }}
+    );
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function retractLikeArticle({
+  articleId,
+  likeUserId,
+}: IArticleLikeInput): Promise<void> {
+  try {
+    await Article.updateOne(
+      { _id: articleId, deletedAt: { $exists: false } },
+      { $pull: { likeUsers: likeUserId }}
+    );
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function checkLikeArticle({
+  articleId,
+  likeUserId,
+}: IArticleLikeInput): Promise<boolean> {
+  try {
+    const result = await Article.findOne({
+      _id: articleId,
+      likeUsers: { $in: likeUserId },
+      deletedAt: { $exists: false },
+    });
+    return result ? true : false;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getRawArticleById,
   createArticle,
@@ -112,4 +161,7 @@ export default {
   getArticles,
   deleteArticle,
   patchArticleById,
+  likeArticle,
+  retractLikeArticle,
+  checkLikeArticle,
 };

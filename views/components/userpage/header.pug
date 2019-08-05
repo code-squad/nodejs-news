@@ -8,7 +8,7 @@
         p#subscribers(style='color: black; font-size: 1.1em; margin: 0')= targetUser.subscribers + '명'
     .userpage-head-right
       if !user
-        button#subscription-button.uk-button.uk-button-danger(disabled='') 구독
+        button.uk-button.uk-button-danger(disabled='') 구독
       else 
         if subscribed
           button#subscription-button.uk-button.uk-button-danger.toggle-off 구독 해지

@@ -11,6 +11,7 @@ export interface IArticle extends Document {
   createdAt    : Date;
   modifiedAt   : Date;
   deletedAt    : Date;
+  likeUsers    : [Schema.Types.ObjectId];
 }
 
 const articleSchema: Schema = new Schema({
@@ -22,6 +23,7 @@ const articleSchema: Schema = new Schema({
   createdAt    : { type: Schema.Types.Date, required: true },
   modifiedAt   : { type: Schema.Types.Date },
   deletedAt    : { type: Schema.Types.Date },
+  likeUsers    : { type: Array, ref: 'User'},
 });
 
 export default mongoose.model<IArticle>('Article', articleSchema);

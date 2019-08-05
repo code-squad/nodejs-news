@@ -115,7 +115,7 @@ async function PatchUserById({
   }
 }
 
-async function checkSubscribed(userId: IUser['_id'], writerId: IUser['_id']) {
+async function checkSubscribed(userId: IUser['_id'], writerId: IUser['_id']): Promise<boolean> {
   try {
     const result = await User.findOne({
       _id: userId,
@@ -129,7 +129,7 @@ async function checkSubscribed(userId: IUser['_id'], writerId: IUser['_id']) {
   }
 }
 
-async function subscribeUser({subscriberId, writerId}: ISubscribeInput): Promise<any> {
+async function subscribeUser({subscriberId, writerId}: ISubscribeInput): Promise<void> {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
@@ -157,7 +157,7 @@ async function subscribeUser({subscriberId, writerId}: ISubscribeInput): Promise
   }
 }
 
-async function unsubscribeUser({subscriberId, writerId}: ISubscribeInput): Promise<any> {
+async function unsubscribeUser({subscriberId, writerId}: ISubscribeInput): Promise<void> {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
