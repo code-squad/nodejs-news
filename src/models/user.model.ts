@@ -12,13 +12,8 @@ export interface IUser extends Document {
   status          : number;
   bannedExpires   : Date;
   deletedAt       : Date;
-}
-
-export interface IUserForClient extends Document {
-  _id             : IUser['_id'];
-  email           : IUser['email'];
-  privilege       : IUser['privilege'];
-  profileImageUrl : IUser['profileImageUrl'];
+  subscribers     : [Schema.Types.ObjectId];
+  subscriptions   : [Schema.Types.ObjectId];
 }
 
 const UserSchema: Schema = new Schema({
@@ -31,6 +26,8 @@ const UserSchema: Schema = new Schema({
   provider        : { type: String, required: true },
   bannedExpires   : { type: Date },
   deletedAt       : { type: Date },
+  subscribers     : { type: Array },
+  subscriptions   : { type: Array },
 });
 
 export interface IUserScheme extends IUser {
