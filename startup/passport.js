@@ -9,6 +9,7 @@ module.exports = (app) => {
         secret           : 'sony news!',
         resave           : false,
         saveUninitialized: true,
+        cookie           : {maxAge: 1000 * 60 * 60}
     }));
     app.use(passport.initialize());
     app.use(passport.session());
