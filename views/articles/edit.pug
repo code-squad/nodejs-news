@@ -11,6 +11,13 @@ block edit-articles
                         h3(style='display: inline-block;') Title:
                         input(type='text', name='title' value= article.title)
                     .input-field
+                        h3(style='display: inline-block;') Press:
+                        select(name='press')
+                            option(value='Bloter', selected='') Bloter
+                            option(value='ZDNet') ZDNet
+                            option(value='DigitalDaily') DigitalDaily
+                            option(value='DigitalTimes') DigitalTimes
+                    .input-field
                         h3(style='display: inline-block;') Field:
                         select(name='field')
                             option(value='Broadcasting&Communication', selected='') Broadcasting / Communication

@@ -70,6 +70,7 @@ router.put('/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
         article.title = req.body.title;
         article.body = req.body.body;
         article.field = req.body.field;
+        article.press = req.body.press;
         article.image = req.body.image;
         const isSaved = await article.save();
         if (isSaved) {
