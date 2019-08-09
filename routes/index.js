@@ -12,4 +12,12 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+router.get('/about', (req,res,next)=>{
+    res.render('partials/about');
+});
+
+router.get('/contact', (req,res,next)=>{
+    res.render('partials/contact');
+});
+
 module.exports = router;
