@@ -1,10 +1,11 @@
 # IT 뉴스 사이트
 
+> https://vert-baguette-43552.herokuapp.com/
 ---
 
 #### 메인 페이지
 
-![](https://user-images.githubusercontent.com/34808501/60937212-8487bf00-a30a-11e9-81be-dc8cbfd7a7f3.png)
+![](https://user-images.githubusercontent.com/34808501/62785789-4c87bd80-bafc-11e9-8c92-f63e02615d99.png)
 
 ### IT 분야별 뉴스 제공
 
