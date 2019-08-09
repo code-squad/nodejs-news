@@ -17,6 +17,15 @@ router.get('/:field', isLoggedIn, asyncMiddleware(async (req, res) => {
     }
 }));
 
+router.get('/press/:press', isLoggedIn, asyncMiddleware(async (req, res) => {
+    const articles = await Article.find({press: req.params.press});
+    if (articles) {
+        res.render('articles/index', {
+            articles: articles
+        })
+    }
+}));
+
 router.get('/show/:id', isLoggedIn, asyncMiddleware(async (req, res) => {
     const article = await Article.findOne({
         _id: req.params.id
@@ -33,6 +42,7 @@ router.post('/add', isLoggedIn, asyncMiddleware(async (req, res) => {
     const newArticle = {
         title: req.body.title,
         body : req.body.body,
+        press : req.body.press,
         field: req.body.field,
         image: req.body.image,
         user : req.user.id

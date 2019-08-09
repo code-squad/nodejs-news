@@ -14,22 +14,22 @@ const User = mongoose.model('users', new mongoose.Schema({
         minlength: 2,
     },
     date: {
-      type: Date,
-      default: Date.now
+        type: Date,
+        default: Date.now
     },
-    github:{
+    github: {
         id: String,
         token: String,
         name: String,
         image: String,
     },
-    google:{
+    google: {
         id: String,
         email: String,
         name: String,
         image: String,
     },
-    admin:{
+    admin: {
         type: Boolean,
         default: false
     }

@@ -15,11 +15,9 @@ block show-articles
                             input(type='hidden', name='_method', value='DELETE')
                             input(type='hidden', name='field', value=article.field)
                             button.btn.btn-danger(type='submit') Delete
-                // Author
-                p.lead
-                    | by
-                    a(href='#') Admin
                 hr
+                // Author
+                h3= article.press
                 // Date/Time
                 p= article.date
                 hr
