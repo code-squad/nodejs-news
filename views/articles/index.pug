@@ -9,7 +9,7 @@ block index-article
             p
                 a.btn.btn-primary.btn-large Learn more »
         .grid-container
-            each value in articles
+            each value in articles.reverse()
                 .div
                     h2= value.title
                     p
