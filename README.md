@@ -28,7 +28,7 @@
 
 ## 주요 기능
 
-- 중요 정보는 `.env` 파일에 관리
+- **중요 정보**는 `.env` 파일에 관리
     - `GITHUB_CLIENT_ID`
     - `GITHUB_CLIENT_SECRET`
     - `GOOGLE_CLIENT_ID`
@@ -36,6 +36,9 @@
       
 
 - **회원가입**
+    - 사용 모듈: `bcrypt, connect-flash`
+    - bcrypt로 비밀번호 암호화
+    - 회원 가입 입력 정보 불충분 시 flash 메시지로 알림 (아이디 중복, 비밀번호 확인 불일치, 글자수 제한 등)  
     - 회원가입: `POST /auth/signup`
 
 - **로그인**
