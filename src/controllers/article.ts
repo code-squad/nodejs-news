@@ -232,7 +232,6 @@ async function getArticleShortInfo(articleId): Promise<IArticle> {
     ]);
 
     const article = aggregateResult[0];
-    console.log(article);
     await Article.populate(article, { path: 'writerId' });
 
     return article;

@@ -208,6 +208,97 @@ async function banUser({
   }
 }
 
+async function getSubscriptions (userId): Promise<IUser[]> {
+  try {
+    const aggregateResult = await User.aggregate([
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId(userId),
+          deletedAt: {
+            $exists: false
+          }
+        }
+      }, {
+        $project: {
+          subscriptions: {
+            $map: {
+              input: {
+                $ifNull: [
+                  '$subscriptions', []
+                ]
+              },
+              as: 'subscriptions',
+              in: {
+                $convert: {
+                  input: '$$subscriptions',
+                  to: 'objectId'
+                }
+              }
+            }
+          }
+        }
+      }, {
+        $unwind: {
+          path: '$subscriptions'
+        }
+      }, {
+        $lookup: {
+          from: 'users',
+          localField: 'subscriptions',
+          foreignField: '_id',
+          as: 'subscriptions'
+        }
+      }, {
+        $unwind: {
+          path: '$subscriptions'
+        }
+      }, {
+        $project: {
+          'subscriptions._id': 1,
+          'subscriptions.email': 1,
+          'subscriptions.signUpDate': 1,
+          'subscriptions.profileImageUrl': 1,
+          'subscriptions.subscribers': {
+            $size: {
+              $ifNull: [
+                '$subscriptions.subscribers', []
+              ]
+            }
+          },
+          'subscriptions.status': 1
+        }
+      }, {
+        $match: {
+          $expr: {
+            $or: [
+              {
+                $eq: [
+                  '$subscriptions.status', 0
+                ]
+              }, {
+                $eq: [
+                  '$subscriptions.status', 1
+                ]
+              }
+            ]
+          }
+        }
+      }, {
+        $group: {
+          _id: '$_id',
+          subscriptions: {
+            $push: '$subscriptions'
+          }
+        }
+      }
+    ]);
+
+    return aggregateResult[0].subscriptions;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   CreateUser,
   DeleteUserById,
@@ -218,4 +309,5 @@ export default {
   subscribeUser,
   unsubscribeUser,
   checkSubscribed,
+  getSubscriptions,
 };

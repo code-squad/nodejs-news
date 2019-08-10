@@ -121,12 +121,14 @@ userRouter.delete('/subscriptions/:id', isLoggedIn,
     }
 });
 
-// userRouter.get('/subscriptions', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
-//   try {
+userRouter.get('/:id/subscriptions/list', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await UserController.getSubscriptions(req.user.id);
 
-//   } catch (error) {
-
-//   }
-// });
+    res.render('block/subscription', { user: req.user, googleAuthUrl, users });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default userRouter;

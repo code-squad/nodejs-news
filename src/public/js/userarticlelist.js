@@ -23,7 +23,7 @@ function appendElements(target, rawHtml) {
 
 
 const infScroll = new InfiniteScroll('.container', {
-  path: () => '.',
+  path: () => 'https://',
 });
 
 infScroll.on('scrollThreshold', async (e) => {
