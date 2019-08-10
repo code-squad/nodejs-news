@@ -26,8 +26,8 @@ const UserSchema: Schema = new Schema({
   provider        : { type: String, required: true },
   bannedExpires   : { type: Date },
   deletedAt       : { type: Date },
-  subscribers     : { type: Array, ref: 'User' },
-  subscriptions   : { type: Array, ref: 'User'},
+  subscribers     : { type: Array, default: [], ref: 'User' },
+  subscriptions   : { type: Array, default: [], ref: 'User'},
 });
 
 export interface IUserScheme extends IUser {
