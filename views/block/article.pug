@@ -24,7 +24,8 @@ block article
   div(style="width: 100%")
     img(src= article.heroImageUrl)
   .container
-    article.markdown-body.
-      !{rawHtml}
+    article.markdown-body !{rawHtml}
+      .uk-margin-medium-top
+      a.uk-button.uk-button-default.uk-width-1-1.green-elem(href=`/article/${article._id}/comments/show`)= `댓글 보기(${article.comments})`
     script(src='/js/vendor/prism.js')
     script(src='/js/likearticle.js' type='module')

@@ -28,7 +28,7 @@ function appendElements(target, rawHtml) {
 
 
 const infScroll = new InfiniteScroll('#comment-area', {
-  path: () => 'https://',
+  path: () => 'show',
 });
 
 infScroll.on('scrollThreshold', async (e) => {
