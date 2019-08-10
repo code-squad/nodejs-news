@@ -3,7 +3,10 @@ import { sendData } from "./util.js";
 const writerId = window.location.pathname.split('/')[2];
 const subscribersElem = document.getElementById('subscribers');
 const subscriptionBtn = document.getElementById('subscription-button');
-const subscribers = parseInt(subscribersElem.innerText.slice(0, -1) ,10);
+
+function getSubscribers() {
+  return parseInt(subscribersElem.innerText.slice(0, -1) ,10);
+}
 
 subscriptionBtn.addEventListener('click', e => {
   if (subscriptionBtn.classList.contains('toggle-on')) {
@@ -19,7 +22,8 @@ async function subscription(e) {
     const res = await sendData('POST', `/user/subscriptions/${writerId}`);
 
     if(res.status === 200) {
-      subscribersElem.innerText = `${subscribers+1} 명`;
+      const subscribers = getSubscribers();
+      subscribersElem.innerText = `${subscribers+1}명`;
       subscriptionBtn.classList.add('toggle-off');
       subscriptionBtn.classList.remove('toggle-on');
       subscriptionBtn.innerText = '구독 취소';
@@ -40,7 +44,8 @@ async function unsubscription(e) {
     const res = await sendData('DELETE', `/user/subscriptions/${writerId}`);
 
     if(res.status === 200) {
-      subscribersElem.innerText = `${subscribers} 명`;
+      const subscribers = getSubscribers();
+      subscribersElem.innerText = `${subscribers - 1}명`;
       subscriptionBtn.classList.add('toggle-on');
       subscriptionBtn.classList.remove('toggle-off');
       subscriptionBtn.innerText = '구독';
