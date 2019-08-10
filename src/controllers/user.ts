@@ -20,11 +20,6 @@ interface IPatchUserInput {
   profileImageUrl? : IUser['profileImageUrl'];
 }
 
-interface ISubscribeInput {
-  subscriberId : IUser['_id'];
-  writerId     : IUser['_id'];
-}
-
 async function CreateUser({
   email,
   password,
@@ -115,11 +110,11 @@ async function PatchUserById({
   }
 }
 
-async function checkSubscribed(userId: IUser['_id'], writerId: IUser['_id']): Promise<boolean> {
+async function checkSubscribed(userId, writerId): Promise<boolean> {
   try {
     const result = await User.findOne({
       _id: userId,
-      subscriptions: { $in: writerId },
+      subscriptions: { $in: mongoose.Types.ObjectId(writerId) },
       deletedAt: { $exists: false },
     });
 
@@ -129,19 +124,19 @@ async function checkSubscribed(userId: IUser['_id'], writerId: IUser['_id']): Pr
   }
 }
 
-async function subscribeUser({subscriberId, writerId}: ISubscribeInput): Promise<void> {
+async function subscribeUser({subscriberId, writerId}): Promise<void> {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
 
     await User.updateOne(
       { _id: subscriberId, deletedAt: { $exists: false } },
-      { $addToSet: { subscriptions: writerId }}
+      { $addToSet: { subscriptions: mongoose.Types.ObjectId(writerId) }}
     );
 
     await User.updateOne(
       { _id: writerId, deletedAt: { $exists: false } },
-      { $addToSet: { subscribers: subscriberId }}
+      { $addToSet: { subscribers: mongoose.Types.ObjectId(subscriberId) }}
     );
 
     session.commitTransaction();
@@ -157,19 +152,19 @@ async function subscribeUser({subscriberId, writerId}: ISubscribeInput): Promise
   }
 }
 
-async function unsubscribeUser({subscriberId, writerId}: ISubscribeInput): Promise<void> {
+async function unsubscribeUser({subscriberId, writerId}): Promise<void> {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
 
     await User.updateOne(
       { _id: subscriberId, deletedAt: { $exists: false } },
-      { $pull: { subscriptions: writerId }}
+      { $pull: { subscriptions: mongoose.Types.ObjectId(writerId) }}
     );
 
     await User.updateOne(
       { _id: writerId, deletedAt: { $exists: false } },
-      { $pull: { subscribers: subscriberId }}
+      { $pull: { subscribers: mongoose.Types.ObjectId(subscriberId) }}
     );
 
     session.commitTransaction();
@@ -220,22 +215,7 @@ async function getSubscriptions (userId): Promise<IUser[]> {
         }
       }, {
         $project: {
-          subscriptions: {
-            $map: {
-              input: {
-                $ifNull: [
-                  '$subscriptions', []
-                ]
-              },
-              as: 'subscriptions',
-              in: {
-                $convert: {
-                  input: '$$subscriptions',
-                  to: 'objectId'
-                }
-              }
-            }
-          }
+          subscriptions: 1
         }
       }, {
         $unwind: {
@@ -293,7 +273,7 @@ async function getSubscriptions (userId): Promise<IUser[]> {
       }
     ]);
 
-    return aggregateResult[0].subscriptions;
+    return aggregateResult[0] ? aggregateResult[0].subscriptions : [];
   } catch (error) {
     throw error;
   }

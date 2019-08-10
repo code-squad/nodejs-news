@@ -99,10 +99,6 @@ async function getArticles(page = 1, pageSize = 8): Promise<IArticle[]> {
 
 async function getArticlesByUserId(userId: string, page: number, pageSize = 9): Promise<IArticle[]> {
   try {
-    // return await Article.find(
-    //   { writerId: userId, deletedAt: { $exists: false } },
-    //   undefined,
-    //   { skip: (page - 1) * pageSize, limit: pageSize }).sort('-createdAt');
     return await Article.aggregate([
       {
         $match: {
@@ -204,10 +200,6 @@ async function checkLikeArticle({
 
 async function getArticleShortInfo(articleId): Promise<IArticle> {
   try {
-    // const article = await Article.findOne({
-    //   _id: articleId,
-    //   deletedAt: { $exists: false },
-    // }, '-likeUsers -comments').populate('writerId');
     const aggregateResult: IArticle[] = await Article.aggregate([
       {
         $match: {
@@ -232,7 +224,7 @@ async function getArticleShortInfo(articleId): Promise<IArticle> {
     ]);
 
     const article = aggregateResult[0];
-    await Article.populate(article, { path: 'writerId' });
+    if (article) await Article.populate(article, { path: 'writerId' });
 
     return article;
   } catch (error) {
@@ -270,12 +262,14 @@ async function getComments({
 
     let comments = await Article.aggregate(aggregateQuery);
 
-    comments = await Article.populate(comments, {
-      path: 'comments.writerId',
-      model: 'User',
-    });
+    if (comments) {
+      comments = await Article.populate(comments, {
+        path: 'comments.writerId',
+        model: 'User',
+      });
+    }
 
-    return comments[0];
+    return comments[0] || { comments: [], likedComment: [] };
   } catch (error) {
     throw error;
   }
