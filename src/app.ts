@@ -90,7 +90,11 @@ app.use((err, req: Request, res: Response, next: NextFunction) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  logger.error(err.message);
+  if (res.statusCode === 404) {
+    logger.error(`Error message: ${err.message}`);
+  } else {
+    logger.error(`Error message: ${err.message}\nStacktrace: ${err.stack}`);
+  }
 
   res.status(err.status || 500);
   res.render('error', {
