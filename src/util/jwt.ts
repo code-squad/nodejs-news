@@ -10,9 +10,9 @@ export function issueToken(res: Response, user: IUser) {
     profileImageUrl: user.profileImageUrl,
     privilege: user.privilege,
   }, JWT_SECRET, {
-    expiresIn: '1h',
+    expiresIn: '24h',
   });
-  res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+  res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 });
 }
 
 export function removeToken(res: Response) {
