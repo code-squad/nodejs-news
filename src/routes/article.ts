@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import { RequestS3 } from '../config/multer';
 import { googleAuthUrl } from '../config/oauth';
 import articleController from '../controllers/article';
-import { checkArticleOwner } from '../middlewares/article';
+import { checkArticleOwner, checkCommentOwner } from '../middlewares/article';
 import { isLoggedIn } from '../middlewares/auth';
 import { articleUploadMiddleware, heroImageUploadMiddleware, markdownUploadMiddleware } from '../middlewares/upload';
 import logger from '../util/logger';
@@ -157,5 +157,88 @@ articleRouter.delete('/likes/:id', isLoggedIn, async (req: Request, res: Respons
     res.status(500).send({message: '좋아요 취소 처리에 실패했습니다.'});
   }
 });
+
+articleRouter.get('/:id/comments/show', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const articleId = req.params.id, page = req.query.page || 0, userId = req.user ? req.user.id : undefined;
+    const article = await articleController.getArticleShortInfo(articleId);
+    const { comments, likedComment } = await articleController.getComments({articleId, userId, page});
+
+    return res.render('block/comment', {
+      user: req.user,
+      googleAuthUrl,
+      article,
+      comments,
+      likedComment,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+articleRouter.get('/:id/comments', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const articleId = req.params.id, page = req.query.page || 0, userId = req.user ? req.user.id : undefined;
+    const { comments, likedComment }  = await articleController.getComments({articleId, userId, page});
+
+    return res.render('components/comment/comment-card', {
+      comments,
+      likedComment,
+    });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).send({message: '댓글 조회에 실패했습니다.'});
+  }
+});
+
+articleRouter.post('/:id/comments', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const articleId = req.params.id, userId = req.user.id, content = req.body.comment;
+    await articleController.createComment({articleId, userId, content});
+
+    res.redirect(req.headers.referer);
+  } catch (error) {
+    next(error);
+  }
+});
+
+articleRouter.delete('/:articleId/comments/:commentId', isLoggedIn, checkCommentOwner,
+  async (req: Request, res: Response) => {
+    try {
+      const { articleId, commentId } = req.params;
+      await articleController.removeComment({articleId, commentId});
+
+      res.send();
+    } catch (error) {
+      logger.error(`Error message: ${error.message}\nStacktrace: ${error.stack}`);
+      res.status(500).send({message: '댓글 삭제 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.'});
+    }
+  });
+
+articleRouter.post('/:articleId/comments/:commentId/like', isLoggedIn,
+  async (req: Request, res: Response) => {
+    try {
+      const { articleId, commentId } = req.params;
+      await articleController.likeComment({ articleId, commentId, userId: req.user.id });
+
+      res.send();
+    } catch (error) {
+      logger.error(`Error message: ${error.message}\nStacktrace: ${error.stack}`);
+      res.status(500).send({message: '요청 처리 중 에러가 발생했습니다.'});
+    }
+  });
+
+articleRouter.delete('/:articleId/comments/:commentId/like', isLoggedIn,
+  async (req: Request, res: Response) => {
+    try {
+      const { articleId, commentId } = req.params;
+      await articleController.retractLikeComment({ articleId, commentId, userId: req.user.id });
+
+      res.send();
+    } catch (error) {
+      logger.error(`Error message: ${error.message}\nStacktrace: ${error.stack}`);
+      res.status(500).send({message: '요청 처리 중 에러가 발생했습니다.'});
+    }
+  });
 
 export default articleRouter;

@@ -121,4 +121,12 @@ userRouter.delete('/subscriptions/:id', isLoggedIn,
     }
 });
 
+// userRouter.get('/subscriptions', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+
+//   } catch (error) {
+
+//   }
+// });
+
 export default userRouter;

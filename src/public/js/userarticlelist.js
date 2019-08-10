@@ -29,8 +29,8 @@ const infScroll = new InfiniteScroll('.container', {
 infScroll.on('scrollThreshold', async (e) => {
   if(!infScroll.options.loadOnScroll) return
 
+  const loadingAnimation = container.appendChild(getLoadingAnimation().body.childNodes[0]);
   try {
-    const loadingAnimation = container.appendChild(getLoadingAnimation().body.childNodes[0]);
     infScroll.option({loadOnScroll: false});
     const rawHtml = await getUserArticleList(userId);
     if (rawHtml) {

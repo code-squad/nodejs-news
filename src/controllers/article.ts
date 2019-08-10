@@ -1,7 +1,8 @@
+import mongoose from 'mongoose';
 import s3 from '../config/aws';
 import converter from '../config/converter';
 import Article, { IArticle } from '../models/article.model';
-import { IUser } from '../models/user.model';
+import Comment from '../models/comment.model';
 import { removeUndefinedFields } from '../util/fieldset';
 import { S3_BUCKET } from '../util/secrets';
 
@@ -20,28 +21,50 @@ interface IPatchArticleInput {
 
 interface IArticleLikeInput {
   articleId  : IArticle['_id'];
-  likeUserId : IUser['_id'];
+  likeUserId : string;
 }
 
-async function getRawArticleById(articleId: IArticle['_id']): Promise<IArticleInfo> {
+async function getRawArticleById(articleId): Promise<IArticleInfo> {
   try {
-    const article: IArticle = await Article.findOneAndUpdate(
-      { _id: articleId, deletedAt: { $exists: false } },
-      { $inc: { hits: 1 } },
-      { new: true }
-    ).populate('writerId');
+    await Article.updateOne({
+      _id: articleId,
+      deletedAt: { $exists: false },
+    },
+    { $inc: { hits: 1 }});
+
+    const articles = await Article.aggregate([
+      { $match: {
+          _id: mongoose.Types.ObjectId(articleId),
+          deletedAt: { $exists: false },
+        }
+      },
+      { $project: {
+        title        : true,
+        markdownKey  : true,
+        heroImageUrl : true,
+        writerId     : true,
+        hits         : true,
+        createdAt    : true,
+        modifiedAt   : true,
+        deletedAt    : true,
+        likeUsers    : { $size: { $ifNull: [ '$likeUsers', [] ] }},
+        comments     : { $size: { $ifNull: [ '$comments', [] ] }},
+      }},
+    ]);
+
+    await Article.populate(articles[0], { path: 'writerId'});
 
     const articleRawHtml = await (s3.getObject({
       Bucket: S3_BUCKET,
-      Key: article.markdownKey,
+      Key: articles[0].markdownKey,
     }).promise());
 
     const rawMarkdown = await articleRawHtml.Body.toString('utf-8');
 
     return {
-      article,
+      article: articles[0],
       rawHtml: converter.makeHtml(rawMarkdown),
-      writer: article.writerId,
+      writer: articles[0].writerId,
     };
   } catch (error) {
     throw error;
@@ -74,12 +97,37 @@ async function getArticles(page = 1, pageSize = 8): Promise<IArticle[]> {
   }
 }
 
-async function getArticlesByUserId(userId: IUser['_id'], page: number, pageSize = 9): Promise<IArticle[]> {
+async function getArticlesByUserId(userId: string, page: number, pageSize = 9): Promise<IArticle[]> {
   try {
-    return await Article.find(
-      { writerId: userId, deletedAt: { $exists: false } },
-      undefined,
-      { skip: (page - 1) * pageSize, limit: pageSize }).sort('-createdAt');
+    // return await Article.find(
+    //   { writerId: userId, deletedAt: { $exists: false } },
+    //   undefined,
+    //   { skip: (page - 1) * pageSize, limit: pageSize }).sort('-createdAt');
+    return await Article.aggregate([
+      {
+        $match: {
+          writerId: mongoose.Types.ObjectId(userId),
+          deletedAt: { $exists: false },
+        }
+      },
+      { $sort: { createdAt: -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          writerId: 1,
+          markdownKey: 1,
+          heroImageUrl: 1,
+          hits: 1,
+          createdAt: 1,
+          modifiedAt: 1,
+          comments: { $size: { $ifNull: [ '$comments', [] ] } },
+          likeUsers: { $size: { $ifNull: [ '$likeUsers', [] ] } },
+        }
+      }
+    ]);
   } catch (error) {
     throw error;
   }
@@ -117,7 +165,7 @@ async function likeArticle({
   try {
     await Article.updateOne(
       { _id: articleId, deletedAt: { $exists: false } },
-      { $addToSet: { likeUsers: likeUserId }}
+      { $addToSet: { likeUsers: mongoose.Types.ObjectId(likeUserId) }}
     );
   } catch (error) {
     throw error;
@@ -154,6 +202,168 @@ async function checkLikeArticle({
   }
 }
 
+async function getArticleShortInfo(articleId): Promise<IArticle> {
+  try {
+    // const article = await Article.findOne({
+    //   _id: articleId,
+    //   deletedAt: { $exists: false },
+    // }, '-likeUsers -comments').populate('writerId');
+    const aggregateResult: IArticle[] = await Article.aggregate([
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId(articleId),
+          deletedAt: { $exists: false },
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          writerId: 1,
+          markdownKey: 1,
+          heroImageUrl: 1,
+          hits: 1,
+          createdAt: 1,
+          modifiedAt: 1,
+          comments: { $size: { $ifNull: [ '$comments', [] ] } },
+          likeUsers: { $size: { $ifNull: [ '$likeUsers', [] ] } },
+        }
+      }
+    ]);
+
+    const article = aggregateResult[0];
+    console.log(article);
+    await Article.populate(article, { path: 'writerId' });
+
+    return article;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getComments({
+  articleId,
+  userId,
+  page,
+}): Promise<any> {
+  try {
+    const addFieldsQuery = userId ? { $addFields: {
+        likedComment: {
+          $map: {
+            input: '$comments.likeUsers',
+            as: 'likeUsers',
+            in: { $in: [mongoose.Types.ObjectId(userId), '$$likeUsers']}
+          }
+        }
+      }
+    } : undefined;
+
+    const aggregateQuery: any[] = [
+      { $match: { _id: mongoose.Types.ObjectId(articleId), deletedAt: { $exists: false } } },
+      { $project: { comments: 1 } },
+      { $unwind: { path: '$comments' } },
+      { $sort: { 'comments.createdAt': -1 } },
+      { $group: { _id: '$_id', comments: { $push: '$comments' } } },
+      { $project: { comments: { $slice: [ '$comments', page * 25, 25 ] } } },
+    ];
+
+    if (addFieldsQuery) aggregateQuery.push(addFieldsQuery);
+
+    let comments = await Article.aggregate(aggregateQuery);
+
+    comments = await Article.populate(comments, {
+      path: 'comments.writerId',
+      model: 'User',
+    });
+
+    return comments[0];
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createComment({
+  articleId,
+  userId,
+  content,
+}): Promise<void> {
+  try {
+    const newComment = new Comment({
+      writerId: userId,
+      content,
+      createdAt: new Date(),
+    });
+
+    await Article.updateOne({
+      _id: articleId,
+      deletedAt: { $exists: false },
+    },
+    { $push: { comments: newComment }}
+    );
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function removeComment({
+  articleId,
+  commentId,
+}): Promise<void> {
+  try {
+    await Article.updateOne(
+      { _id: articleId, deletedAt: { $exists: false } },
+      { $pull: { comments: { _id: mongoose.Types.ObjectId(commentId) } } }
+    );
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function likeComment({
+  articleId,
+  commentId,
+  userId,
+}): Promise<void> {
+  try {
+    await Article.updateOne({
+        '_id': articleId,
+        'deletedAt': { $exists: false },
+        'comments._id': commentId
+      },
+      { $addToSet: {
+          'comments.$.likeUsers': mongoose.Types.ObjectId(userId),
+        }
+      },
+    );
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function retractLikeComment ({
+  articleId,
+  commentId,
+  userId,
+}): Promise<void> {
+  try {
+    await Article.updateOne({
+      '_id': articleId,
+      'deletedAt': { $exists: false },
+      'comments._id': commentId
+    },
+    { $pull: {
+        'comments.$.likeUsers': mongoose.Types.ObjectId(userId),
+      }
+    },
+  );
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getRawArticleById,
   createArticle,
@@ -164,4 +374,10 @@ export default {
   likeArticle,
   retractLikeArticle,
   checkLikeArticle,
+  getArticleShortInfo,
+  getComments,
+  createComment,
+  removeComment,
+  likeComment,
+  retractLikeComment,
 };
