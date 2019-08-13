@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  .login-page
+    .form
+      form.login-form(action='/auth/login', method='post')
+        input#email(type="text" name="email" placeholder="e-mail" required autofocus)
+        input#password(type="password" name="password" placeholder="password" required)
+        if loginError
+          .error-message= loginError
+        button(type="submit") LOGIN
+        p.message ID가 없으신가요? 
+          a(href="/register") 회 원 가 입 
+  

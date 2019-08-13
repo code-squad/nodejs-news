@@ -1,0 +1,127 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, 
+big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, 
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, 
+canvas, details, embed,  figure, figcaption, footer, header, hgroup,  menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0; padding: 0; border: 0;
+    font-size: 100%; font: inherit;
+    vertical-align: baseline;
+}
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+header {
+  width: 100%; 
+  background-color: #95bcd3;
+}
+#header-bar {
+  overflow: hidden;
+  width: 1200px; height: 50px;
+  line-height: 50px;
+  margin: 0 auto;
+}
+#header-bar h1 {
+  float: left;
+  margin-right: 150px;
+}
+#search-form {
+  float: left;
+  margin-right: 100px;
+}
+#search-form input {
+  width: 600px;
+  margin-right: 10px; 
+}
+#login-btn {
+  float: right;
+  margin-left: 100px; margin-right: 50px;
+  margin-top: 13px;
+}
+
+nav {
+  width: 100%;
+  background-color: #ffffff;
+}
+#main-nav {
+  overflow: hidden; 
+  width: 1200px; height: 30px; 
+  line-height: 30px; 
+  margin: 0 auto;
+}
+#main-nav li {
+  float: left; 
+  list-style: none; 
+  margin-left: 70px; 
+  font-size: .9em;
+}
+#main-nav a {
+  color: #00B7FF;
+  text-decoration: none;
+}
+#contents {
+  overflow: hidden;
+  width: 1200px;
+  margin: 0 auto;
+}
+section {
+  float: left;
+  width: 850px;
+}
+aside {
+  float: left;
+  width: 350px;
+}
+footer {
+  width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.login-page {
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+.form {
+  position: relative;  z-index: 1;
+  background: #FFFFFF;  max-width: 360px;
+  margin: 0 auto 100px;  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.form input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;  background: #f2f2f2;
+  width: 100%;  border: 0;
+  margin: 0 0 15px;  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.form button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;  background: #4CAF50;
+  width: 100%;  border: 0;
+  padding: 15px;  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.form button:hover,.form button:active,.form button:focus {
+  background: #43A047;
+}
+.form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+.form .message a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+.register-page {
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+

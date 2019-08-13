@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    header
+      div#header-bar
+        h1 NEWS SITE
+        form#search-form
+          input(placeholder='뉴스 검색')
+          button(type='submit') 검 색
+        if !(user && user.email)
+          button#join-btn 로그인
+        else
+          button#join-btn 로그아웃
+    nav
+      ul#main-nav
+        li: a(href='#') 뉴스 홈
+        li: a(href='#') 속 보
+        li: a(href='#') 정 치
+        li: a(href='#') 경 제
+        li: a(href='#') 사 회
+        li: a(href='#') 문화
+        li: a(href='#') 세 계
+        li: a(href='#') IT/과학
+        li: a(href='#') 사 설
+        li: a(href='#') 랭킹뉴스
+    block content
+
+    footer footer
+    
+    script. 
+      const join = document.getElementById('join-btn');
+      const text = join.textContent;
+
+      join.addEventListener('click', () => {
+        if (text === '로그인') location.href = '/login';
+        else location.href = '/auth/logout';
+      });
