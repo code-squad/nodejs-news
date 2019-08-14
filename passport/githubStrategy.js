@@ -10,10 +10,13 @@ module.exports = (passport) => {
                 if (user) done(null, user);
                 else {
                     // if there is no user found with github id, create new one
+                    const image = profile.photos[0].value;
+
                     let user = new User();
                     user.github.id = profile.id;
                     user.github.token = accessToken;
                     user.github.name = profile.displayName;
+                    user.github.image = image;
                     if (typeof profile.emails != 'undefined' && profile.emails.length > 0) {
                         user.github.email = profile.emails[0].value;
                     }

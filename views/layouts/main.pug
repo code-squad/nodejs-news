@@ -12,10 +12,28 @@ html(lang='en')
                 padding-top: 60px;
                 padding-bottom: 40px;
             }
-
             .sidebar-nav {
                 padding: 9px 0;
             }
+            #article-preview {
+                height: 50px;
+                margin-bottom: 10px;
+            }
+            .grid-container {
+                display: grid;
+                grid-template-columns: 330px 330px 330px;
+                grid-gap: 10px;
+                padding: 10px;
+            }
+            .grid-container > div {
+                text-align: center;
+                padding: 20px 0;
+                font-size: 20px;
+            }
+            .rounded-circle{
+                width: 60px
+            }
+
         link(href='/css/bootstrap-responsive.css', rel='stylesheet')
         link(rel='apple-touch-icon-precomposed', sizes='144x144', href='/ico/apple-touch-icon-144-precomposed.png')
         link(rel='apple-touch-icon-precomposed', sizes='114x114', href='/ico/apple-touch-icon-114-precomposed.png')
@@ -33,9 +51,12 @@ html(lang='en')
                 .span3
                     include ../partials/sidebar
                 block index
-                block add-articles
                 block index-article
                 block show-articles
+                block add-articles
+                block edit-articles
+                block about
+                block contact
             hr
             footer
                 include ../partials/sticky-footer

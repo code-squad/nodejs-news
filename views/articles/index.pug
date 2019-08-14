@@ -3,15 +3,14 @@ extends ../layouts/main
 block index-article
     .span9
         .hero-unit
-            h1 Hello, world!
+            h1 Welcome, Sony's NewsRoom!
             p
-                | This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
+                | Trusted, and Targeted News Can Make Your Day.
             p
                 a.btn.btn-primary.btn-large Learn more »
-        .row-fluid
-            each value in articles
-                .span4
+        .grid-container
+            each value in articles.reverse()
+                .div
                     h2= value.title
-                    p !{value.body}
                     p
                         a.btn(href='/articles/show/' + value.id) View details »

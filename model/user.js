@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User', new mongoose.Schema({
+const User = mongoose.model('users', new mongoose.Schema({
     email: {
         type: String,
         minlength: 2,
@@ -14,19 +14,24 @@ const User = mongoose.model('User', new mongoose.Schema({
         minlength: 2,
     },
     date: {
-      type: Date,
-      default: Date.now
+        type: Date,
+        default: Date.now
     },
-    github:{
+    github: {
         id: String,
         token: String,
-        name: String
+        name: String,
+        image: String,
     },
-    google:{
+    google: {
         id: String,
         email: String,
         name: String,
-        image: String
+        image: String,
+    },
+    admin: {
+        type: Boolean,
+        default: false
     }
 }));
 

@@ -2,39 +2,56 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create Schema
-const ArticleSchema = mongoose.model('Articles', new mongoose.Schema({
-    title:{
-        type:String,
+const ArticleSchema = mongoose.model('articles', new mongoose.Schema({
+    title: {
+        type: String,
         required: true
     },
-    body:{
+    body: {
         type: String,
         required: true
     },
     field: {
         type: String,
+        required: true
+    },
+    press: {
+        type: String,
+        required: true
+    },
+    image: {
+        type: String,
+        default: 'http://placehold.it/900x300'
     },
     comments: [{
         commentBody: {
             type: String,
             required: true
         },
-        commentDate:{
+        commentDate: {
             type: Date,
             default: Date.now
         },
-        commentUser:{
+        commentUser: {
             type: Schema.Types.ObjectId,
-            ref:'users'
+            ref: 'users'
         }
     }],
-    user:{
+    user: {
         type: Schema.Types.ObjectId,
-        ref:'users'
+        ref: 'users'
     },
-    date:{
+    date: {
         type: Date,
         default: Date.now
+    },
+    likes_count: {
+        type: Number,
+        default: 0
+    },
+    likesUser: {
+        type: Array,
+        default: []
     }
 }));
 

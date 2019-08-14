@@ -1,14 +1,15 @@
 extends ../layouts/main
 
-block add-articles
+block edit-articles
     .container
-        h1 Add Story
+        h1 Edit Story
         .row
-            form.col.s12(action='/articles/add', method='post')
+            form.col.s12(action='/articles/'+article.id+'?_method=PUT', method='post')
+                input(type='hidden', name='_method', value='PUT')
                 .row
                     .input-field
                         h3(style='display: inline-block;') Title:
-                        input(type='text', name='title')
+                        input(type='text', name='title' value= article.title)
                     .input-field
                         h3(style='display: inline-block;') Press:
                         select(name='press')
@@ -26,10 +27,10 @@ block add-articles
                             option(value='Home&Mobile') Home / Mobile
                     .input-field
                         h3(style='display: inline-block;') Image:
-                        input(type='text', name='image')
+                        input(type='text', name='image' value= article.image)
                     .input-field
                         h4 Write Article Contents
-                        textarea(name='body')
+                        textarea(name='body') #{article.body}
                     input.btn(type='submit', value='Save')
 
 
