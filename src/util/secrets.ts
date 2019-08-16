@@ -10,12 +10,17 @@ export const ENVIRONMENT = process.env.NODE_ENV;
 const prod = ENVIRONMENT === 'production';
 
 export const SESSION_SECRET = process.env.SESSION_SECRET;
+export const JWT_SECRET = process.env.JWT_SECRET;
 export const MONGODB_URI = process.env.MONGODB_URI;
 
 export const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID;
 export const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY;
 export const S3_BUCKET = process.env.S3_BUCKET;
 export const S3_REGION = process.env.S3_REGION;
+
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+export const GOOGLE_REDIRECT_URL = process.env.GOOGLE_REDIRECT_URL;
 
 if (!SESSION_SECRET) {
     logger.error('No client secret. Set SESSION_SECRET environment variable.');

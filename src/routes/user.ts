@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import createError from 'http-errors';
 import { profileUpload } from '../config/multer';
+import { googleAuthUrl } from '../config/oauth';
 import UserController from '../controllers/user';
 import { isLoggedIn } from '../middlewares/auth';
 
@@ -26,14 +27,20 @@ userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =
       _id: req.params.id,
     });
 
-    return res.render('block/userpage', { user: req.user, targetUser });
+    let subscribed = true;
+
+    if (req.user) {
+     subscribed = await UserController.checkSubscribed(req.user.id, req.params.id);
+    }
+
+    return res.render('block/userpage', { user: req.user, targetUser, subscribed, googleAuthUrl });
   } catch (error) {
     createError(500);
     next(error);
   }
 });
 
-userRouter.delete('/:id', async (req: Request, res: Response, next) => {
+userRouter.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await UserController.DeleteUserById({
       _id: req.params.id,
@@ -46,7 +53,7 @@ userRouter.delete('/:id', async (req: Request, res: Response, next) => {
   }
 });
 
-userRouter.put('/:id', async (req: Request, res: Response, next) => {
+userRouter.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await UserController.PatchUserById({
       _id: req.params.id,
@@ -78,7 +85,7 @@ userRouter.post('/profile', isLoggedIn, profileUploadMiddleware, async (req: Req
   }
 });
 
-userRouter.patch('/ban/:id', async (req: Request, res: Response, next) => {
+userRouter.patch('/ban/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = UserController.banUser({
       _id: req.params.id,
@@ -89,6 +96,38 @@ userRouter.patch('/ban/:id', async (req: Request, res: Response, next) => {
     return res.send({ result });
   } catch (error) {
     next(createError(500));
+  }
+});
+
+userRouter.post('/subscriptions/:id', isLoggedIn,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await UserController.subscribeUser({subscriberId: req.user.id, writerId: req.params.id});
+
+      res.send();
+    } catch (error) {
+      res.status(500).send({message: '구독에 실패했습니다.'});
+    }
+});
+
+userRouter.delete('/subscriptions/:id', isLoggedIn,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await UserController.unsubscribeUser({subscriberId: req.user.id, writerId: req.params.id});
+
+      res.send();
+    } catch (error) {
+      res.status(500).send({message: '구독 취소에 실패했습니다.'});
+    }
+});
+
+userRouter.get('/:id/subscriptions/list', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await UserController.getSubscriptions(req.user.id);
+
+    res.render('block/subscription', { user: req.user, googleAuthUrl, users });
+  } catch (error) {
+    next(error);
   }
 });
 

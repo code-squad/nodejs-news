@@ -44,7 +44,6 @@ setEventIfElementExist(signUpButton, 'click', async e => {
       UIkit.notification(resBody.message || '서버에서 오류가 발생했습니다.', {status: 'danger'});
     }
   } catch (error) {
-    console.error(error);
     UIkit.notification('예기치 않은 오류가 발생했습니다.', {status: 'danger'});
   } finally {
     emailInput.value = passwordInput.value = passwordConfirmInput.value = '';

@@ -23,14 +23,14 @@ function appendElements(target, rawHtml) {
 
 
 const infScroll = new InfiniteScroll('.container', {
-  path: () => '.',
+  path: () => 'https://',
 });
 
 infScroll.on('scrollThreshold', async (e) => {
   if(!infScroll.options.loadOnScroll) return
 
+  const loadingAnimation = container.appendChild(getLoadingAnimation().body.childNodes[0]);
   try {
-    const loadingAnimation = container.appendChild(getLoadingAnimation().body.childNodes[0]);
     infScroll.option({loadOnScroll: false});
     const rawHtml = await getUserArticleList(userId);
     if (rawHtml) {
@@ -42,7 +42,6 @@ infScroll.on('scrollThreshold', async (e) => {
       infScroll.destroy();
     }
   } catch (error) {
-    console.error(error);
     container.removeChild(loadingAnimation);
     infScroll.destroy();
   }
@@ -54,7 +53,6 @@ infScroll.on('scrollThreshold', async (e) => {
     const rawHtml = await getUserArticleList(userId);
     appendElements(container, rawHtml);
   } catch (error) {
-    console.error(error);
     infScroll.destroy();
   }
 })();

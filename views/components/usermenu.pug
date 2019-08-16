@@ -7,7 +7,7 @@ div(uk-dropdown='mode: click')
     .uk-margin-left.user-name
       a.black-font(href=`/user/${user._id}`)= user.email.split('@')[0]
   .uk-flex.uk-margin-small-top
-    button#subscription-list-btn.uk-button.uk-button-default.uk-width-1-1 구독 목록
+    a#subscription-list-btn.uk-button.uk-button-default.uk-width-1-1(href=`/user/${user.id}/subscriptions/list`) 구독 목록
   if user.privilege > 0
     .uk-flex.uk-margin-small-top
       button#write-btn.uk-button.uk-button-default.uk-width-1-1(uk-toggle="target: #markdown-upload-form") 글쓰기

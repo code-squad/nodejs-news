@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import createError from 'http-errors';
+import { TokenExpiredError } from 'jsonwebtoken';
 import passport from 'passport';
 import path from 'path';
 import { passportConfig } from './config/passport';
@@ -47,9 +48,25 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(cookieParser());
+app.use(passport.initialize());
+
+// deserialize 역할을 대신하는 미들웨어
+app.use((req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    // 토큰이 만료되었거나, 가지고 있지 않아도 서비스 제공
+    if (info instanceof TokenExpiredError || !req.cookies.token) {
+      res.cookie('token', '', { maxAge: 0 });
+      next();
+    } else if (err) {
+      next(err);
+    } else {
+      req.user = user;
+      next();
+    }
+  })(req, res, next);
+});
+
 app.use(express.static(path.join(__dirname, '../../src/public')));
 
 // Set flashMessage
@@ -59,8 +76,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/', indexRouter);
-app.use('/user', userRouter);
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
 app.use('/article', articleRouter);
 
 // 404 Handler
@@ -73,7 +90,11 @@ app.use((err, req: Request, res: Response, next: NextFunction) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  logger.error(err.message);
+  if (res.statusCode === 404) {
+    logger.error(`Error message: ${err.message}`);
+  } else {
+    logger.error(`Error message: ${err.message}\nStacktrace: ${err.stack}`);
+  }
 
   res.status(err.status || 500);
   res.render('error', {

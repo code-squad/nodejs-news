@@ -5,6 +5,12 @@
       img#big-profile.uk-comment-avatar(src=profileUrl, width='150px', alt='', style='border-radius: 50%;')
       .user-info(style='margin-left: 24px; display: inline-block')
         p(style='color: black; font-size: 1.5em; margin: 0')= targetUser.email.split('@')[0]
-        p(style='color: black; font-size: 1.1em; margin: 0') 140명
+        p#subscribers(style='color: black; font-size: 1.1em; margin: 0')= targetUser.subscribers + '명'
     .userpage-head-right
-      button#subscription-button.uk-button.uk-button-danger 구독
+      if !user
+        button.uk-button.uk-button-danger(disabled='') 구독
+      else 
+        if subscribed
+          button#subscription-button.uk-button.uk-button-danger.toggle-off 구독 해지
+        else
+          button#subscription-button.uk-button.uk-button-danger.toggle-on 구독
