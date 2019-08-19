@@ -1,0 +1,14 @@
+extends main
+
+block content
+  .container
+  .login
+    p#title LOGIN
+    a#out(href="/") x
+    p#error #{err}
+    form#join-form(action='/auth/login' method='post')
+      input#email(placeholder = 'Email' name='email')
+      input#password(type = 'Password' placeholder = 'password' name='password')
+      button#loginButtom(type = 'submit') Login
+      a#joinButton(href = '/join') Sign up
+    block post

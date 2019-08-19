@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/css/main.css')
+    link(rel='stylesheet', href='/css/login.css')
+  body
+    .h1Container
+        h1 
+          img(src="../image/h1_image.png")
+    div#loginSection
+        if data == "login"
+          a#logout(href="/auth/logout") logout
+          div#postButtonDiv
+            a#post(href="/post") post
+        else 
+          a#loginButtomMain(href = '/login') Login
+          a#joinButtonMain(href = '/join') Sign up
+    block content

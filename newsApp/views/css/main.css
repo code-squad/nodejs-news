@@ -1,0 +1,20 @@
+@charset "utf-8"; 
+* {padding : 0px; margin :0px;}
+body{    
+    overflow-y: hidden;
+}
+.h1Container{
+    text-align: center
+}
+h1{    
+    padding: 25px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    /* font-size: 40px; */
+    display: inline-block;
+    width: 90%;
+    padding-bottom: 0px;
+}
+h1 img{
+    width: 342px;
+}
