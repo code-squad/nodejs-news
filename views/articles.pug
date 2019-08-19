@@ -1,16 +1,38 @@
-doctype html
-html
-    head 
-        meta(charset='utf-8')
-        link(rel='stylesheet' href='/css/style.css')
-        title articles
-    body
-        main
-            h1 articles
-            form(action="/auth/logout", method="post")
-                input(type="submit", value="logout")
-            form(action="/auth/login", method="get")
-                input(type="submit", value="login")
-            form(action="/auth/signup", method="get")
-                input(type="submit", value="signup")
-    script(type='text/javascript' src='/js/articles.js')
+extends layout
+
+block content
+    if message
+        script alert(`#{message}`); 
+    header(class="ui fixed inverted menu")
+        div(class="ui container")
+            a(href="/",class="header item")
+                img(class="logo",src="https://user-images.githubusercontent.com/26920620/62207025-0a5cce80-b3ce-11e9-87e7-452c42b51b5c.png",style='margin-right:1.5em')
+                = `NEWS`
+            div(class="right menu")
+                if user
+                    form(id="magic-form",action="/auth/logout", method="post",style="display:none")
+                    a(href="/auth/logout",class="item",
+                    onclick="event.preventDefault();document.getElementById('magic-form').submit();") Log out 
+                else
+                    a(href="/auth/login",class="item") Log in 
+                    a(href="/auth/signup",class="item") Sign up 
+    main
+        div(class="ui container")
+            div(class="ui three column doubling stackable grid",style="margin:100px 100px 50px 100px")
+                each article in articlesInPage
+                    article(class="eight wide column", onclick=`location.href='/articles/${article.number}'`, style="cursor:pointer") 
+                        div(class="ui segment")
+                            img(src=article.img art=article.title, style="width:100%; object-fit:contain; height:250px")
+                            h3(class="ui center aligned header", style="margin-top:5px")= article.title
+        if user
+            if user.authority == 'super'
+                div(class="ui right aligned container", style="margin:50px")
+                    button(onclick="location.href='/articles/form'",class="ui grey basic button") New Post
+        
+        div(class="ui center aligned container",style="margin-bottom:50px")
+            div(class="ui pagination menu")
+                each val in pages
+                    if val == pageNumber
+                        div(class="active item")=val
+                    else    
+                        a(href=`/articles?page=${val}`,class="item")=val

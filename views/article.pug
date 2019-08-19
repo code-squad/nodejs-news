@@ -1,0 +1,55 @@
+extends layout
+
+block content
+    if message
+        script alert(`#{message}`);
+
+    block content
+    header(class="ui fixed inverted menu")
+        div(class="ui container")
+            a(href="/",class="header item")
+                img(class="logo",src="https://user-images.githubusercontent.com/26920620/62207025-0a5cce80-b3ce-11e9-87e7-452c42b51b5c.png",style='margin-right:1.5em')
+                = `NEWS`
+            div(class="right menu")
+                if user
+                    form(id="magic-form",action="/auth/logout", method="post",style="display:none")
+                    a(href="/auth/logout",class="item",
+                    onclick="event.preventDefault();document.getElementById('magic-form').submit();") Log out 
+                else
+                    a(href="/auth/login",class="item") Log in 
+                    a(href="/auth/signup",class="item") Sign up 
+    main
+        div(class="ui main text container",style="margin:100px")
+            article
+                img(src=img alt=articleTitle,style="width:100%")
+                h1(class="ui header")= articleTitle
+                p= mainText
+                form(action=`/articles/like/${number}`,method="post",class="like")
+                    if hasLiked
+                        input(type="image",alt="Submit", src="https://user-images.githubusercontent.com/26920620/62191003-9b6f7d80-b3ad-11e9-9cdb-f0bf0dbdad61.png")
+
+                    else
+                        input(type="image",alt="Submit", src="https://user-images.githubusercontent.com/26920620/62191007-9dd1d780-b3ad-11e9-90b6-4f757a534511.png")
+                        
+                    span= like
+                if user        
+                    if user.authority == 'super'
+                        div(class="ui right aligned container")
+                            button(onclick=`location.href='/articles/form/${number}'`,class="ui grey basic button") Update
+                            button(onclick=`sendDeleteArticleReq(${number})`,class="ui grey basic button") Delete
+            div(class="ui comments",style="padding:0px 0 20px 0")
+                h3(class="ui dividing header") Comments
+                if user
+                    form(action= `/articles/comment/${number}`,method="post",class="ui form",style="padding:0px 0 20px 0")
+                        input(type="text", name="comment", placeholder="댓글을 입력해 주세요")
+                else
+                    form(action='/auth/login',class="ui form",style="padding:0px 0 20px 0")
+                        input(onclick="location.href='/auth/login'",type="text", placeholder="로그인이 필요합니다.",readonly, style="cursor:pointer") 
+                content
+                    if comments
+                        each val in comments
+                            div(class="comment")
+                                div(class="content")
+                                    div(class="author",style="margin: 0 0 5px 0;")= val.user
+                                    div(class="metadata",style="color:#A0A0A0")= val.comment
+    script(src="/js/article.js")
