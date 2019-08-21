@@ -6,12 +6,14 @@ const logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
-const passportConfig = require('./passport');
+const passportConfig = require('./config/index');
+require('dotenv').config();
 const mongodb = require('./models/index');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
+const { verifyToken } = require('./middlewares/verify-token');
 
 mongodb();
 passportConfig(passport);
@@ -37,11 +39,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-	res.locals.user = req.user || null;
-
-	next();
-});
+app.use(verifyToken);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);

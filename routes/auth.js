@@ -2,27 +2,17 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const { isLoggedIn, isNotLoggedIn } = require('../middlewares/login-auth');
+const authController = require('../controllers/auth-controller');
 
-router.get('/', isNotLoggedIn, function(req, res, next) {
-	const flashMessage = req.flash();
-	let message = '';
-
-	if (flashMessage.error) {
-		message = flashMessage.error[0];
-	}
-	res.render('login', { title: 'LOGIN', message });
-});
-
+router.get('/', isNotLoggedIn, authController.getLogInPage);
 router.post(
 	'/',
 	isNotLoggedIn,
-	passport.authenticate('local', { successRedirect: '/', failureRedirect: '/auth', failureFlash: true })
+	passport.authenticate('local', { failureRedirect: '/auth', failureFlash: true }),
+	authController.localLogIn
 );
-
-router.delete('/', isLoggedIn, (req, res) => {
-	req.logout();
-	req.session.destroy();
-	res.send('successLogout');
-});
+router.post('/logout', isLoggedIn, authController.logOut);
+router.get('/google-login', isNotLoggedIn, authController.redirectGoogleLogIn);
+router.get('/google-oauth2', authController.googleLogIn);
 
 module.exports = router;
