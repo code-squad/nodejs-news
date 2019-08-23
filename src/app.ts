@@ -9,9 +9,11 @@ import passport from 'passport';
 import path from 'path';
 import { passportConfig } from './config/passport';
 import connect from './connect';
+import connectRDB from './mysqlConnect';
 import articleRouter from './routes/article';
 import authRouter from './routes/auth';
 import indexRouter from './routes/index';
+import testRouter from './routes/testapi';
 import userRouter from './routes/user';
 import { addHours } from './util/datehelper';
 import logger from './util/logger';
@@ -21,6 +23,7 @@ const MongoStore = mongo(session);
 const mongoUrl = MONGODB_URI;
 
 connect({db: mongoUrl});
+connectRDB();
 passportConfig(passport);
 
 const app = express();
@@ -79,6 +82,7 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/article', articleRouter);
+app.use('/test', testRouter);
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {
