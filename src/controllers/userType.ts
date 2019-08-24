@@ -103,6 +103,18 @@ async function getUserById(id: TypeUser['id']): Promise<TypeUser> {
   }
 }
 
+async function getUserByEmail(email: TypeUser['email']) {
+  try {
+    return await getConnection()
+      .getRepository(TypeUser)
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email, })
+      .getOne();
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function patchUserById(updateValues: IPatchUserInput): Promise<void> {
   try {
     const id = updateValues.id;
