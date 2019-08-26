@@ -13,7 +13,6 @@ import connectRDB from './mysqlConnect';
 import articleRouter from './routes/article';
 import authRouter from './routes/auth';
 import indexRouter from './routes/index';
-import testRouter from './routes/testapi';
 import userRouter from './routes/user';
 import { addHours } from './util/datehelper';
 import logger from './util/logger';
@@ -50,6 +49,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   req.session.cookie.maxAge = 3600000 * 24;
   next();
 });
+app.use(express.static(path.join(__dirname, '../../src/public')));
 
 app.use(cookieParser());
 app.use(passport.initialize());
@@ -70,7 +70,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   })(req, res, next);
 });
 
-app.use(express.static(path.join(__dirname, '../../src/public')));
 
 // Set flashMessage
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -82,7 +81,7 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/article', articleRouter);
-app.use('/test', testRouter);
+// app.use('/test', testRouter);
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {

@@ -1,15 +1,16 @@
 import { getConnection, getManager } from 'typeorm';
-import { TypeComment } from '../entity/comment.entity';
+import { Article } from '../entity/article.entity';
+import { Comment } from '../entity/comment.entity';
 
 async function getComments ({
   articleId,
   userId,
   page = 1,
   pageSize = 25,
-}): Promise<TypeComment[]> {
+}): Promise<Comment[]> {
   try {
     const rootComments = await getConnection()
-      .getRepository(TypeComment)
+      .getRepository(Comment)
       .createQueryBuilder('comment')
       .innerJoinAndSelect('comment.writer', 'user')
       .leftJoinAndSelect('comment.likeUser', 'likeUser', 'likeUser.id = :userId', { userId, })
@@ -27,6 +28,19 @@ async function getComments ({
   }
 }
 
+async function getCommentCountOfArticle(articleId: Article['id']): Promise<number> {
+  try {
+    return await getConnection()
+      .getRepository(Comment)
+      .createQueryBuilder('comment')
+      .where('articleId = :articleId', { articleId, })
+      .andWhere('deletedAt is null')
+      .getCount();
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function createComment({
   articleId,
   writerId,
@@ -34,7 +48,7 @@ async function createComment({
   parentCommentId,
 }): Promise<void> {
   try {
-    const newComment = new TypeComment();
+    const newComment = new Comment();
     newComment.writer = writerId;
     newComment.content = content;
     newComment.article = articleId;
@@ -50,7 +64,7 @@ async function removeComment(commentId): Promise<void> {
   try {
     await getConnection()
       .createQueryBuilder()
-      .update(TypeComment)
+      .update(Comment)
       .set({ deletedAt: new Date() })
       .where('id = :commentId', { commentId, })
       .execute();
@@ -66,7 +80,7 @@ async function likeComment({
   try {
     await getConnection()
       .createQueryBuilder()
-      .relation(TypeComment, 'likeUser')
+      .relation(Comment, 'likeUser')
       .of(commentId)
       .add(userId);
   } catch (error) {
@@ -81,7 +95,7 @@ async function retractLikeComment({
   try {
     await getConnection()
       .createQueryBuilder()
-      .relation(TypeComment, 'likeUser')
+      .relation(Comment, 'likeUser')
       .of(commentId)
       .remove(userId);
   } catch (error) {
@@ -91,6 +105,7 @@ async function retractLikeComment({
 
 export default {
   getComments,
+  getCommentCountOfArticle,
   createComment,
   removeComment,
   likeComment,

@@ -1,8 +1,8 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationCount, UpdateDateColumn } from 'typeorm';
-import { TypeUser } from './user.entity';
+import { User } from './user.entity';
 
 @Entity()
-export class TypeArticle {
+export class Article {
   @PrimaryGeneratedColumn('uuid')
   id : string;
 
@@ -27,19 +27,19 @@ export class TypeArticle {
   @Column({ nullable: true, })
   deletedAt : Date;
 
-  @ManyToOne(type => TypeUser, {
+  @ManyToOne(type => User, user => user.id, {
     onUpdate: 'CASCADE'
   })
   @JoinColumn()
-  writer : string;
+  writer : User;
 
-  @ManyToMany(type => TypeUser, {
+  @ManyToMany(type => User, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinTable({name: 'like_article'})
-  likeUser : TypeUser[];
+  likeUser : User[];
 
-  @RelationCount((article: TypeArticle) => article.likeUser)
+  @RelationCount((article: Article) => article.likeUser)
   likeUserCount : number;
 }

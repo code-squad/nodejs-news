@@ -10,9 +10,9 @@ ul(uk-accordion='')
             h4.uk-comment-title.uk-margin-remove
               span.uk-link-reset(href='#')= username
         .uk-comment-body
-          form#comment-form(action=`/article/${article._id}/comments` method='POST')
+          form#comment-form(action=`/article/${article.id}/comments` method='POST')
             fieldset.uk-fieldset
               .uk-margin
-              textarea#comment-textarea.uk-textarea(rows='5', placeholder='' name='comment')
+              textarea#comment-textarea.uk-textarea(rows='5', placeholder='' name='content')
             .uk-margin
             button#comment-submit.uk-button.uk-button-default.uk-button-small.green-elem(style='padding: 5px !important;') 등록하기

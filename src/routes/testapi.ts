@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response, Router } from 'express';
-import testArticleController from '../controllers/articleType';
-import testCommentController from '../controllers/commentType';
-import testController from '../controllers/userType';
+import testArticleController from '../controllers/article';
+import testCommentController from '../controllers/comment';
+import testController from '../controllers/user';
 
 const router = Router();
 
@@ -115,7 +115,7 @@ router.get('/articles/:id', async (req, res, next) => {
   try {
     const articleId = req.params.id;
 
-    const article = await testArticleController.getRawArticleById(articleId);
+    const article = await testArticleController.getArticleById(articleId);
     return res.send({ message: 'success', article, });
   } catch (error) {
     return res.status(500).send(makeErrorMessage(error));

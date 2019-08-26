@@ -1,10 +1,11 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationCount, Tree, TreeChildren, TreeParent, UpdateDateColumn } from 'typeorm';
-import { TypeArticle } from './article.entity';
-import { TypeUser } from './user.entity';
+import { Article } from './article.entity';
+import { User } from './user.entity';
+
 
 @Entity()
 @Tree('closure-table')
-export class TypeComment {
+export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id : string;
 
@@ -20,25 +21,25 @@ export class TypeComment {
   @Column({ nullable: true, })
   deletedAt : Date;
 
-  @ManyToOne(type => TypeUser, { onUpdate: 'CASCADE' })
+  @ManyToOne(type => User, { onUpdate: 'CASCADE' })
   @JoinColumn()
-  writer : string;
+  writer : User;
 
-  @ManyToOne(type => TypeArticle, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
+  @ManyToOne(type => Article, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn()
-  article : string;
+  article : Article;
 
-  @ManyToMany(type => TypeUser, { onUpdate: 'CASCADE', onDelete: 'CASCADE'})
+  @ManyToMany(type => User, { onUpdate: 'CASCADE', onDelete: 'CASCADE'})
   @JoinTable({name: 'like_comment'})
-  likeUser : TypeUser[];
+  likeUser : User[];
 
-  @RelationCount((comment: TypeComment) => comment.likeUser)
+  @RelationCount((comment: Comment) => comment.likeUser)
   likeUserCount : number;
 
   @TreeChildren()
-  children : TypeComment[];
+  children : Comment[];
 
   @TreeParent()
-  parent : TypeComment;
+  parent : Comment;
 }
 

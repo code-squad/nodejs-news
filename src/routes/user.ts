@@ -23,17 +23,23 @@ function profileUploadMiddleware(req, res, next) {
 
 userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const targetUser = await UserController.GetUserById({
-      _id: req.params.id,
-    });
+    const targetUser = await UserController.getUserById(req.params.id);
 
-    let subscribed = true;
+    let subscribed = false;
 
     if (req.user) {
-     subscribed = await UserController.checkSubscribed(req.user.id, req.params.id);
+     subscribed = await UserController.checkSubscribed({
+       subscribeeId: req.params.id,
+       subscriberId: req.user.id,
+     });
     }
 
-    return res.render('block/userpage', { user: req.user, targetUser, subscribed, googleAuthUrl });
+    return res.render('block/userpage', {
+      user: req.user,
+      targetUser: targetUser.user,
+      subscriberCount: targetUser.subscriberCount,
+      subscribed,
+      googleAuthUrl });
   } catch (error) {
     createError(500);
     next(error);
@@ -42,9 +48,7 @@ userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =
 
 userRouter.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await UserController.DeleteUserById({
-      _id: req.params.id,
-    });
+    const user = await UserController.deleteUserById(req.params.id);
 
     return res.send({ user });
   } catch (error) {
@@ -55,8 +59,8 @@ userRouter.delete('/:id', async (req: Request, res: Response, next: NextFunction
 
 userRouter.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await UserController.PatchUserById({
-      _id: req.params.id,
+    const user = await UserController.patchUserById({
+      id: req.params.id,
       email: req.body.email,
       password: req.body.password,
       privilege: req.body.privilege,
@@ -72,8 +76,8 @@ userRouter.put('/:id', async (req: Request, res: Response, next: NextFunction) =
 
 userRouter.post('/profile', isLoggedIn, profileUploadMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await UserController.PatchUserById({
-        _id: req.user._id,
+    await UserController.patchUserById({
+        id: req.user.id,
         // tslint:disable-next-line: no-string-literal
         profileImageUrl: req.file['location'],
     });
@@ -85,19 +89,19 @@ userRouter.post('/profile', isLoggedIn, profileUploadMiddleware, async (req: Req
   }
 });
 
-userRouter.patch('/ban/:id', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const result = UserController.banUser({
-      _id: req.params.id,
-      isTemporarily: req.body.isTemporarily,
-      hours: req.body.hours,
-    });
+// userRouter.patch('/ban/:id', async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const result = UserController.banUser({
+//       id: req.params.id,
+//       isTemporarily: req.body.isTemporarily,
+//       hours: req.body.hours,
+//     });
 
-    return res.send({ result });
-  } catch (error) {
-    next(createError(500));
-  }
-});
+//     return res.send({ result });
+//   } catch (error) {
+//     next(createError(500));
+//   }
+// });
 
 userRouter.post('/subscriptions/:id', isLoggedIn,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -123,9 +127,9 @@ userRouter.delete('/subscriptions/:id', isLoggedIn,
 
 userRouter.get('/:id/subscriptions/list', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await UserController.getSubscriptions(req.user.id);
+    const subscriptions = await UserController.getSubscriptions(req.user.id);
 
-    res.render('block/subscription', { user: req.user, googleAuthUrl, users });
+    res.render('block/subscription', { user: req.user, googleAuthUrl, subscriptions, });
   } catch (error) {
     next(error);
   }

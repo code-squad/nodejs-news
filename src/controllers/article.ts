@@ -1,74 +1,68 @@
-import mongoose from 'mongoose';
+import { getConnection } from 'typeorm';
 import s3 from '../config/aws';
 import converter from '../config/converter';
-import Article, { IArticle } from '../models/article.model';
-import Comment from '../models/comment.model';
+import { Article } from '../entity/article.entity';
+import { User } from '../entity/user.entity';
 import { removeUndefinedFields } from '../util/fieldset';
 import { S3_BUCKET } from '../util/secrets';
 
-interface IArticleInfo {
-  article : IArticle;
+interface ArticleInfo {
+  article : Article;
   rawHtml : string;
   writer  : {};
 }
 
 interface IPatchArticleInput {
-  _id           : IArticle['_id'];
-  title?        : IArticle['title'];
-  markdownKey?  : IArticle['markdownKey'];
-  heroImageUrl? : IArticle['heroImageUrl'];
+  id           : Article['id'];
+  title?        : Article['title'];
+  markdownKey?  : Article['markdownKey'];
+  heroImageUrl? : Article['heroImageUrl'];
 }
 
-interface IArticleLikeInput {
-  articleId  : IArticle['_id'];
+interface ArticleLikeInput {
+  articleId  : Article['id'];
   likeUserId : string;
 }
 
-async function getRawArticleById(articleId): Promise<IArticleInfo> {
+async function getArticleById(articleId: Article['id'], incrementHits = false): Promise<Article> {
   try {
-    await Article.updateOne({
-      _id: articleId,
-      deletedAt: { $exists: false },
-    },
-    { $inc: { hits: 1 }});
+    const connection = getConnection();
 
-    const articles = await Article.aggregate([
-      { $match: {
-          _id: mongoose.Types.ObjectId(articleId),
-          deletedAt: { $exists: false },
-        }
-      },
-      { $project: {
-        title        : true,
-        markdownKey  : true,
-        heroImageUrl : true,
-        writerId     : true,
-        hits         : true,
-        createdAt    : true,
-        modifiedAt   : true,
-        deletedAt    : true,
-        likeUsers    : { $size: { $ifNull: [ '$likeUsers', [] ] }},
-        comments     : { $size: { $ifNull: [ '$comments', [] ] }},
-      }},
-    ]);
+    if (incrementHits) {
+      await connection
+        .createQueryBuilder()
+        .update(Article)
+        .set({ hits: () => 'hits + 1'})
+        .execute();
+    }
 
-    await Article.populate(articles[0], { path: 'writerId'});
+    const articles = await connection
+      .getRepository(Article)
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.writer', 'User', 'article.id = :articleId', { articleId, })
+      .getOne();
 
-    const articleRawHtml = await (s3.getObject({
-      Bucket: S3_BUCKET,
-      Key: articles[0].markdownKey,
-    }).promise());
-
-    const rawMarkdown = await articleRawHtml.Body.toString('utf-8');
-
-    return {
-      article: articles[0],
-      rawHtml: converter.makeHtml(rawMarkdown),
-      writer: articles[0].writerId,
-    };
+    return articles;
   } catch (error) {
     throw error;
   }
+}
+
+async function getMarkdown(markdownKey: Article['markdownKey']): Promise<string> {
+  try {
+    const markdownBuffer = await (s3.getObject({
+      Bucket: S3_BUCKET,
+      Key: markdownKey,
+    }).promise());
+
+    return await markdownBuffer.Body.toString();
+  } catch (error) {
+    throw error;
+  }
+}
+
+function convertMarkdownToHtml(rawMarkdown: string): string {
+  return converter.makeHtml(rawMarkdown);
 }
 
 async function createArticle({
@@ -76,79 +70,75 @@ async function createArticle({
   title,
   markdownKey,
   heroImageUrl,
-}): Promise<{}> {
+}): Promise<any> {
   try {
-    return await Article.create({ writerId, title, markdownKey, heroImageUrl, createdAt: new Date(), hits: 0 });
+    return await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(Article)
+      .values([
+        { writer: writerId, title, markdownKey, heroImageUrl, }
+      ])
+      .execute();
   } catch (error) {
     throw error;
   }
 }
 
-async function getArticles(page = 1, pageSize = 8): Promise<IArticle[]> {
+async function getArticles(page = 1, pageSize = 8): Promise<Article[]> {
   try {
-    return await Article.find(
-      { deletedAt: { $exists: false } },
-      undefined,
-      { skip: (page - 1) * pageSize, limit: pageSize }
-    ).sort('-createdAt')
-      .populate('writerId');
+    return await getConnection()
+      .getRepository(Article)
+      .createQueryBuilder('article')
+      .innerJoinAndSelect('article.writer', 'user')
+      .where('article.deletedAt is null')
+      .skip((page - 1) & pageSize)
+      .take(pageSize)
+      .getMany();
   } catch (error) {
     throw error;
   }
 }
 
-async function getArticlesByUserId(userId: string, page: number, pageSize = 9): Promise<IArticle[]> {
+async function getArticlesByUserId(userId: User['id'], page = 1, pageSize = 9) {
   try {
-    return await Article.aggregate([
-      {
-        $match: {
-          writerId: mongoose.Types.ObjectId(userId),
-          deletedAt: { $exists: false },
-        }
-      },
-      { $sort: { createdAt: -1 } },
-      { $skip: (page - 1) * pageSize },
-      { $limit: pageSize },
-      {
-        $project: {
-          _id: 1,
-          title: 1,
-          writerId: 1,
-          markdownKey: 1,
-          heroImageUrl: 1,
-          hits: 1,
-          createdAt: 1,
-          modifiedAt: 1,
-          comments: { $size: { $ifNull: [ '$comments', [] ] } },
-          likeUsers: { $size: { $ifNull: [ '$likeUsers', [] ] } },
-        }
-      }
-    ]);
+    return await getConnection()
+      .getRepository(Article)
+      .createQueryBuilder('article')
+      .where('writerId = :userId and deletedAt is null', { userId, })
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getMany();
   } catch (error) {
     throw error;
   }
 }
 
-async function deleteArticle(articleId: IArticle['_id']): Promise<{}> {
+async function deleteArticle(articleId: Article['id']): Promise<void> {
   try {
-    return await Article.updateOne({ _id: articleId }, { deletedAt: new Date() });
+    await getConnection()
+      .createQueryBuilder()
+      .update(Article)
+      .set({ deletedAt: new Date() })
+      .where('id = :articleId', { articleId, })
+      .execute();
   } catch (error) {
     throw error;
   }
 }
 
-async function patchArticleById({
-  _id,
-  title,
-  markdownKey,
-  heroImageUrl,
-}: IPatchArticleInput): Promise<{}> {
+async function patchArticleById(patchList): Promise<void> {
   try {
-    const result = await Article.updateOne({
-      _id,
-      deletedAt: { $exists: false }
-    }, removeUndefinedFields({title, markdownKey, heroImageUrl, modifiedAt: new Date() }));
-    return result;
+    const refinedPatchList = removeUndefinedFields(patchList);
+    // tslint:disable-next-line: no-string-literal
+    delete refinedPatchList['id'];
+
+    await getConnection()
+      .createQueryBuilder()
+      .update(Article)
+      .set({ ...refinedPatchList })
+      .where('id = :id', { id: patchList.id })
+      .execute();
   } catch (error) {
     throw error;
   }
@@ -157,12 +147,13 @@ async function patchArticleById({
 async function likeArticle({
   articleId,
   likeUserId,
-}: IArticleLikeInput): Promise<void> {
+}): Promise<void> {
   try {
-    await Article.updateOne(
-      { _id: articleId, deletedAt: { $exists: false } },
-      { $addToSet: { likeUsers: mongoose.Types.ObjectId(likeUserId) }}
-    );
+    await getConnection()
+      .createQueryBuilder()
+      .relation(Article, 'likeUser')
+      .of(articleId)
+      .add(likeUserId);
   } catch (error) {
     throw error;
   }
@@ -171,12 +162,13 @@ async function likeArticle({
 async function retractLikeArticle({
   articleId,
   likeUserId,
-}: IArticleLikeInput): Promise<void> {
+}): Promise<void> {
   try {
-    await Article.updateOne(
-      { _id: articleId, deletedAt: { $exists: false } },
-      { $pull: { likeUsers: likeUserId }}
-    );
+    await getConnection()
+      .createQueryBuilder()
+      .relation(Article, 'likeUser')
+      .of(articleId)
+      .remove(likeUserId);
   } catch (error) {
     throw error;
   }
@@ -185,192 +177,34 @@ async function retractLikeArticle({
 async function checkLikeArticle({
   articleId,
   likeUserId,
-}: IArticleLikeInput): Promise<boolean> {
+}): Promise<boolean> {
   try {
-    const result = await Article.findOne({
-      _id: articleId,
-      likeUsers: { $in: likeUserId },
-      deletedAt: { $exists: false },
-    });
-    return result ? true : false;
-  } catch (error) {
-    throw error;
-  }
-}
+    const findLike = await getConnection()
+      .getRepository(Article)
+      .createQueryBuilder('article')
+      .innerJoinAndSelect(
+        'article.likeUser',
+        'user',
+        'article.id = :articleId and user.id = :likeUserId',
+        { articleId, likeUserId })
+      .getOne();
 
-async function getArticleShortInfo(articleId): Promise<IArticle> {
-  try {
-    const aggregateResult: IArticle[] = await Article.aggregate([
-      {
-        $match: {
-          _id: mongoose.Types.ObjectId(articleId),
-          deletedAt: { $exists: false },
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          title: 1,
-          writerId: 1,
-          markdownKey: 1,
-          heroImageUrl: 1,
-          hits: 1,
-          createdAt: 1,
-          modifiedAt: 1,
-          comments: { $size: { $ifNull: [ '$comments', [] ] } },
-          likeUsers: { $size: { $ifNull: [ '$likeUsers', [] ] } },
-        }
-      }
-    ]);
-
-    const article = aggregateResult[0];
-    if (article) await Article.populate(article, { path: 'writerId' });
-
-    return article;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function getComments({
-  articleId,
-  userId,
-  page,
-}): Promise<any> {
-  try {
-    const addFieldsQuery = userId ? { $addFields: {
-        likedComment: {
-          $map: {
-            input: '$comments.likeUsers',
-            as: 'likeUsers',
-            in: { $in: [mongoose.Types.ObjectId(userId), '$$likeUsers']}
-          }
-        }
-      }
-    } : undefined;
-
-    const aggregateQuery: any[] = [
-      { $match: { _id: mongoose.Types.ObjectId(articleId), deletedAt: { $exists: false } } },
-      { $project: { comments: 1 } },
-      { $unwind: { path: '$comments' } },
-      { $sort: { 'comments.createdAt': -1 } },
-      { $group: { _id: '$_id', comments: { $push: '$comments' } } },
-      { $project: { comments: { $slice: [ '$comments', page * 25, 25 ] } } },
-    ];
-
-    if (addFieldsQuery) aggregateQuery.push(addFieldsQuery);
-
-    let comments = await Article.aggregate(aggregateQuery);
-
-    if (comments) {
-      comments = await Article.populate(comments, {
-        path: 'comments.writerId',
-        model: 'User',
-      });
-    }
-
-    return comments[0] || { comments: [], likedComment: [] };
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function createComment({
-  articleId,
-  userId,
-  content,
-}): Promise<void> {
-  try {
-    const newComment = new Comment({
-      writerId: userId,
-      content,
-      createdAt: new Date(),
-    });
-
-    await Article.updateOne({
-      _id: articleId,
-      deletedAt: { $exists: false },
-    },
-    { $push: { comments: newComment }}
-    );
-
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function removeComment({
-  articleId,
-  commentId,
-}): Promise<void> {
-  try {
-    await Article.updateOne(
-      { _id: articleId, deletedAt: { $exists: false } },
-      { $pull: { comments: { _id: mongoose.Types.ObjectId(commentId) } } }
-    );
-
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function likeComment({
-  articleId,
-  commentId,
-  userId,
-}): Promise<void> {
-  try {
-    await Article.updateOne({
-        '_id': articleId,
-        'deletedAt': { $exists: false },
-        'comments._id': commentId
-      },
-      { $addToSet: {
-          'comments.$.likeUsers': mongoose.Types.ObjectId(userId),
-        }
-      },
-    );
-
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function retractLikeComment ({
-  articleId,
-  commentId,
-  userId,
-}): Promise<void> {
-  try {
-    await Article.updateOne({
-      '_id': articleId,
-      'deletedAt': { $exists: false },
-      'comments._id': commentId
-    },
-    { $pull: {
-        'comments.$.likeUsers': mongoose.Types.ObjectId(userId),
-      }
-    },
-  );
+    return findLike ? true : false;
   } catch (error) {
     throw error;
   }
 }
 
 export default {
-  getRawArticleById,
+  getArticleById,
+  getMarkdown,
+  convertMarkdownToHtml,
   createArticle,
-  getArticlesByUserId,
   getArticles,
+  getArticlesByUserId,
   deleteArticle,
   patchArticleById,
   likeArticle,
   retractLikeArticle,
   checkLikeArticle,
-  getArticleShortInfo,
-  getComments,
-  createComment,
-  removeComment,
-  likeComment,
-  retractLikeComment,
 };

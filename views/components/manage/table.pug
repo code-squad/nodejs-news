@@ -8,9 +8,9 @@ table#manage-table.uk-table.uk-table-middle.uk-table-divider.uk-table-hover.uk-t
   tbody#manage-tbody
     each article in articles
       tr
-        input.article-id(type='hidden' value=article._id)
+        input.article-id(type='hidden' value=article.id)
         td.article-title(style='text-align: center;')
-          a.black-font(href='/article/' + article._id)= article.title
+          a.black-font(href='/article/' + article.id)= article.title
         td.article-createdAt(style='text-align: center;')= article.createdAt.toString().split(' ').slice(1,4).join('-')
         td(style='text-align: center;')
           button.article-modify-btn.uk-icon-button(uk-icon='pencil' style='color: black' uk-toggle='target: #article-modify-form')
