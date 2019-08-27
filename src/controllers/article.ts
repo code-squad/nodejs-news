@@ -87,12 +87,14 @@ async function createArticle({
 
 async function getArticles(page = 1, pageSize = 8): Promise<Article[]> {
   try {
+    if (page < 1) page = 1;
     return await getConnection()
       .getRepository(Article)
       .createQueryBuilder('article')
       .innerJoinAndSelect('article.writer', 'user')
       .where('article.deletedAt is null')
-      .skip((page - 1) & pageSize)
+      .orderBy('article.createdAt', 'DESC')
+      .skip((page - 1) * pageSize)
       .take(pageSize)
       .getMany();
   } catch (error) {
@@ -102,10 +104,13 @@ async function getArticles(page = 1, pageSize = 8): Promise<Article[]> {
 
 async function getArticlesByUserId(userId: User['id'], page = 1, pageSize = 9) {
   try {
+    if (page < 1) page = 1;
     return await getConnection()
       .getRepository(Article)
       .createQueryBuilder('article')
-      .where('writerId = :userId and deletedAt is null', { userId, })
+      .where('writerId = :userId', { userId, })
+      .andWhere('deletedAt is null')
+      .orderBy('article.createdAt', 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getMany();

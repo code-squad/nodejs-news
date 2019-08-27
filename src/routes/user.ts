@@ -127,7 +127,7 @@ userRouter.delete('/subscriptions/:id', isLoggedIn,
 
 userRouter.get('/:id/subscriptions/list', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const subscriptions = await UserController.getSubscriptions(req.user.id);
+    const subscriptions = await UserController.getSubscriptions(req.user.id, req.query.page, req.query.pageSize);
 
     res.render('block/subscription', { user: req.user, googleAuthUrl, subscriptions, });
   } catch (error) {

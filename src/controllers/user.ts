@@ -201,8 +201,9 @@ async function unsubscribeUser({
   }
 }
 
-async function getSubscriptions(userId: User['id'], page = 0, pageSize = 10) {
+async function getSubscriptions(userId: User['id'], page = 1, pageSize = 10) {
   try {
+    if (page < 1) page = 1;
     return await getConnection()
     .getRepository(Subscription)
     .createQueryBuilder('sub')
@@ -212,7 +213,7 @@ async function getSubscriptions(userId: User['id'], page = 0, pageSize = 10) {
     )
     .where('sub.subscriber = :id', { id: userId, })
     .orderBy('sub.createdAt', 'DESC')
-    .skip(page * pageSize)
+    .skip((page - 1) * pageSize)
     .take(pageSize)
     .getMany();
   } catch (error) {
