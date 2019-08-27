@@ -39,7 +39,7 @@ async function getArticleById(articleId: Article['id'], incrementHits = false): 
     const articles = await connection
       .getRepository(Article)
       .createQueryBuilder('article')
-      .leftJoinAndSelect('article.writer', 'User', 'article.id = :articleId', { articleId, })
+      .innerJoinAndSelect('article.writer', 'user', 'article.id = :articleId', { articleId, })
       .getOne();
 
     return articles;
