@@ -21,7 +21,7 @@ block article
           i#like-btn.like-toggle-on.far.fa-heart.fa-lg 
       else
           i.fas.fa-heart.fa-lg(disabled='' style='color: gray;')
-  div(style="width: 100%")
+  .hero-image-container
     img(src= article.heroImageUrl)
   .container
     article.markdown-body !{rawHtml}
