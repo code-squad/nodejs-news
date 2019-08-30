@@ -25,27 +25,34 @@ const userSchema = new Schema({
 	},
 	user_ranking: {
 		type: Number
+	},
+	auth_provider: {
+		type: String,
+		required: true
 	}
 });
 
 userSchema.statics.signUp = async function(signUpForm) {
-	const { user_id, user_password } = signUpForm;
+	const { user_id, user_password, auth_provider } = signUpForm;
 	const hashPassword = await bcrypt.hash(user_password, 12);
 
-	await this.create({ user_id, user_password: hashPassword, user_auth: 'user', user_score: 0, user_ranking: 0 });
+	await this.create({
+		user_id,
+		user_password: hashPassword,
+		user_auth: 'user',
+		user_score: 0,
+		user_ranking: 0,
+		auth_provider
+	});
 };
 
-userSchema.statics.checkDuplicatedId = async function(user_id) {
-	try {
-		const user = await this.findOne({ user_id });
+userSchema.statics.checkDuplicatedId = async function(user_id, auth_provider) {
+	const user = await this.findOne({ user_id, auth_provider });
 
-		if (user) {
-			return true;
-		}
-		return false;
-	} catch (error) {
-		console.error(error);
+	if (user) {
+		return true;
 	}
+	return false;
 };
 
 userSchema.statics.getUserInfo = async function(user_id) {
