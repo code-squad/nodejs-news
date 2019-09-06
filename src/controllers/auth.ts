@@ -1,4 +1,4 @@
-import { GaxiosResponse } from "gaxios";
+import { GaxiosResponse } from 'gaxios';
 import { google, oauth2_v2 } from 'googleapis';
 import { oauth2Client } from '../config/oauth';
 

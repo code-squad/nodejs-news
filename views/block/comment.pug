@@ -12,11 +12,11 @@ block comment
             i.fas.fa-eye
               span.uk-margin-small-left= article.hits
             i.fas.fa-comments.uk-margin-small-left
-              spam.uk-margin-small-left= article.comments
+              spam.uk-margin-small-left= commentCount || 0
         div
-          a.uk-card-title.uk-heading-medium(href=`/article/${article._id}`)= article.title
+          a.uk-card-title.uk-heading-medium(href=`/article/${article.id}`)= article.title
           .uk-margin-small
-            a.black-font(href=`/user/${article.writerId._id}` style='font-size= 1.1em').writer= article.writerId.email.split('@')[0]
+            a.black-font(href=`/user/${article.writer.id}` style='font-size= 1.1em').writer= article.writer.email.split('@')[0]
 
   #comment-area.comment-container
     include ../components/comment/comment-form

@@ -22,6 +22,9 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 export const GOOGLE_REDIRECT_URL = process.env.GOOGLE_REDIRECT_URL;
 
+export const JAWSDB_URL = process.env.JAWSDB_URL;
+export const JAWSDB_SCHEME = process.env.JAWSDB_SCHEME;
+
 if (!SESSION_SECRET) {
     logger.error('No client secret. Set SESSION_SECRET environment variable.');
     process.exit(1);

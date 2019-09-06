@@ -295,3 +295,13 @@ a.disabled {
   cursor: pointer;
 }
 
+.hero-image-container {
+  width: 100%;
+  background-color: rgb(216, 216, 216);
+  margin: auto;
+}
+
+.hero-image-container>img {
+  margin: auto;
+  display: block;
+}

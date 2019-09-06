@@ -9,6 +9,7 @@ import passport from 'passport';
 import path from 'path';
 import { passportConfig } from './config/passport';
 import connect from './connect';
+import connectRDB from './mysqlConnect';
 import articleRouter from './routes/article';
 import authRouter from './routes/auth';
 import indexRouter from './routes/index';
@@ -21,6 +22,7 @@ const MongoStore = mongo(session);
 const mongoUrl = MONGODB_URI;
 
 connect({db: mongoUrl});
+connectRDB();
 passportConfig(passport);
 
 const app = express();
@@ -47,6 +49,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   req.session.cookie.maxAge = 3600000 * 24;
   next();
 });
+app.use(express.static(path.join(__dirname, '../../src/public')));
 
 app.use(cookieParser());
 app.use(passport.initialize());
@@ -67,7 +70,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   })(req, res, next);
 });
 
-app.use(express.static(path.join(__dirname, '../../src/public')));
 
 // Set flashMessage
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -79,6 +81,7 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/article', articleRouter);
+// app.use('/test', testRouter);
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {

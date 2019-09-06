@@ -1,9 +1,9 @@
 import { Response } from 'express';
 import JWT from 'jsonwebtoken';
-import { IUser } from '../models/user.model';
+import { User } from '../entity/user.entity';
 import { JWT_SECRET } from './secrets';
 
-export function issueToken(res: Response, user: IUser) {
+export function issueToken(res: Response, user: User) {
    const token = JWT.sign({
     id: user.id,
     email: user.email,

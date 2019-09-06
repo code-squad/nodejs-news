@@ -3,6 +3,8 @@ import createError from 'http-errors';
 import { RequestS3 } from '../config/multer';
 import { googleAuthUrl } from '../config/oauth';
 import articleController from '../controllers/article';
+import commentController from '../controllers/comment';
+import { Article } from '../entity/article.entity';
 import { checkArticleOwner, checkCommentOwner } from '../middlewares/article';
 import { isLoggedIn } from '../middlewares/auth';
 import { articleUploadMiddleware, heroImageUploadMiddleware, markdownUploadMiddleware } from '../middlewares/upload';
@@ -13,7 +15,7 @@ const articleRouter = Router();
 articleRouter.get('/:articleId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const articleId = req.params.articleId;
-    const articleInfo = await articleController.getRawArticleById(articleId);
+    const article: Article = await articleController.getArticleById(articleId, true);
 
     let likedArticle = true;
 
@@ -21,15 +23,21 @@ articleRouter.get('/:articleId', async (req: Request, res: Response, next: NextF
       likedArticle = await articleController.checkLikeArticle({articleId, likeUserId: req.user.id});
     }
 
+    const rawMarkdown = await articleController.getMarkdown(article.markdownKey);
+
+    const commentCount = await commentController.getCommentCountOfArticle(articleId);
+
     return res.render('block/article', {
       user: req.user,
-      article: articleInfo.article,
-      rawHtml: articleInfo.rawHtml,
-      writer: articleInfo.writer,
+      article,
+      rawHtml: articleController.convertMarkdownToHtml(rawMarkdown),
+      writer: article.writer,
       googleAuthUrl,
       likedArticle,
+      commentCount,
     });
   } catch (error) {
+    console.log(error.message);
     next(createError(500));
   }
 });
@@ -38,7 +46,7 @@ articleRouter.post('/', isLoggedIn, articleUploadMiddleware,
   async (req: RequestS3, res: Response, next: NextFunction) => {
     try {
       await articleController.createArticle({
-        writerId: req.user._id,
+        writerId: req.user.id,
         title: req.body.title,
         // tslint:disable-next-line: no-string-literal
         markdownKey: req.files['markdown'][0].key,
@@ -81,7 +89,7 @@ articleRouter.get('/page/:page', async (req: Request, res: Response, next: NextF
 articleRouter.get('/manage/:page', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const page = parseInt(req.params.page, 10);
-    const articles = await articleController.getArticlesByUserId(req.user._id, page, 20);
+    const articles = await articleController.getArticlesByUserId(req.user.id, page, 20);
 
     return res.render('block/manage', { user: req.user, articles, page });
   } catch (error) {
@@ -103,7 +111,7 @@ articleRouter.delete('/:id', async (req: Request, res: Response, next: NextFunct
 
 articleRouter.patch('/:id/title', isLoggedIn, checkArticleOwner, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await articleController.patchArticleById({_id: req.params.id, title: req.body.title});
+    await articleController.patchArticleById({ id: req.params.id, title: req.body.title });
 
     return res.send();
   } catch (error) {
@@ -115,7 +123,7 @@ articleRouter.patch('/:id/title', isLoggedIn, checkArticleOwner, async (req: Req
 articleRouter.patch('/:id/markdown', isLoggedIn, checkArticleOwner, markdownUploadMiddleware,
   async (req: RequestS3, res: Response, next: NextFunction) => {
     try {
-      await articleController.patchArticleById({ _id: req.params.id, markdownKey: req.file.key });
+      await articleController.patchArticleById({ id: req.params.id, markdownKey: req.file.key });
       return res.send();
     } catch (error) {
       createError(500);
@@ -126,7 +134,7 @@ articleRouter.patch('/:id/markdown', isLoggedIn, checkArticleOwner, markdownUplo
 articleRouter.patch('/:id/heroimage', isLoggedIn, checkArticleOwner, heroImageUploadMiddleware,
   async (req: RequestS3, res: Response, next: NextFunction) => {
     try {
-      await articleController.patchArticleById({ _id: req.params.id, heroImageUrl: req.file.location });
+      await articleController.patchArticleById({ id: req.params.id, heroImageUrl: req.file.location });
       return res.send();
     } catch (error) {
       createError(500);
@@ -160,16 +168,19 @@ articleRouter.delete('/likes/:id', isLoggedIn, async (req: Request, res: Respons
 
 articleRouter.get('/:id/comments/show', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const articleId = req.params.id, page = req.query.page || 0, userId = req.user ? req.user.id : undefined;
-    const article = await articleController.getArticleShortInfo(articleId);
-    const { comments, likedComment } = await articleController.getComments({articleId, userId, page});
+    const articleId = req.params.id,
+    page = req.query.page ? parseInt(req.query.page, 10) : 1,
+    userId = req.user ? req.user.id : undefined;
+    const article = await articleController.getArticleById(articleId);
+    const comments = await commentController.getComments({articleId, userId, page});
+    const commentCount = await commentController.getCommentCountOfArticle(articleId);
 
     return res.render('block/comment', {
       user: req.user,
       googleAuthUrl,
       article,
       comments,
-      likedComment,
+      commentCount,
     });
   } catch (error) {
     next(error);
@@ -178,12 +189,13 @@ articleRouter.get('/:id/comments/show', async (req: Request, res: Response, next
 
 articleRouter.get('/:id/comments', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const articleId = req.params.id, page = req.query.page || 0, userId = req.user ? req.user.id : undefined;
-    const { comments, likedComment }  = await articleController.getComments({articleId, userId, page});
+    const articleId = req.params.id,
+    page = req.query.page ? parseInt(req.query.page, 10) : 1,
+    userId = req.user ? req.user.id : undefined;
+    const comments = await commentController.getComments({articleId, userId, page});
 
     return res.render('components/comment/comment-card', {
       comments,
-      likedComment,
     });
   } catch (error) {
     logger.error(error);
@@ -193,8 +205,8 @@ articleRouter.get('/:id/comments', async (req: Request, res: Response, next: Nex
 
 articleRouter.post('/:id/comments', isLoggedIn, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const articleId = req.params.id, userId = req.user.id, content = req.body.comment;
-    await articleController.createComment({articleId, userId, content});
+    const articleId = req.params.id, writerId = req.user.id;
+    await commentController.createComment({articleId, writerId, ...req.body });
 
     res.redirect(req.headers.referer);
   } catch (error) {
@@ -205,8 +217,8 @@ articleRouter.post('/:id/comments', isLoggedIn, async (req: Request, res: Respon
 articleRouter.delete('/:articleId/comments/:commentId', isLoggedIn, checkCommentOwner,
   async (req: Request, res: Response) => {
     try {
-      const { articleId, commentId } = req.params;
-      await articleController.removeComment({articleId, commentId});
+      const { commentId } = req.params;
+      await commentController.removeComment(commentId);
 
       res.send();
     } catch (error) {
@@ -218,8 +230,8 @@ articleRouter.delete('/:articleId/comments/:commentId', isLoggedIn, checkComment
 articleRouter.post('/:articleId/comments/:commentId/like', isLoggedIn,
   async (req: Request, res: Response) => {
     try {
-      const { articleId, commentId } = req.params;
-      await articleController.likeComment({ articleId, commentId, userId: req.user.id });
+      const { commentId } = req.params;
+      await commentController.likeComment({ commentId, userId: req.user.id });
 
       res.send();
     } catch (error) {
@@ -231,8 +243,8 @@ articleRouter.post('/:articleId/comments/:commentId/like', isLoggedIn,
 articleRouter.delete('/:articleId/comments/:commentId/like', isLoggedIn,
   async (req: Request, res: Response) => {
     try {
-      const { articleId, commentId } = req.params;
-      await articleController.retractLikeComment({ articleId, commentId, userId: req.user.id });
+      const { commentId } = req.params;
+      await commentController.retractLikeComment({ commentId, userId: req.user.id });
 
       res.send();
     } catch (error) {
