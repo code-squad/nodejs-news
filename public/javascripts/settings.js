@@ -2,14 +2,15 @@ const SettingsHandler = class {
   constructor() {
     this.completeBtn = document.getElementById('btn-settings');
     this.infoModal = document.getElementById('content-modal');
+
     this.locationInput = document.getElementById('input-location');
-    this.bioInput = document.getElementById('input-bio');
-    this.linkInput = document.getElementById('input-link');
+    this.introductionInput = document.getElementById('input-introduction');
+    this.passwordInput = document.getElementById('input-password');
+
     this.userIdentifier = document.getElementById('input-user-origin-identifier');
     this.previewArea = document.getElementsByClassName('settings-profile-image-preview')[0];
     this.closeModal = document.getElementById('modal-btn-no');
     this.excuteDeleteBtn = document.getElementById('modal-btn-yes');
-
  }
 
  async updateUserInfoEvent(event) {
@@ -17,13 +18,16 @@ const SettingsHandler = class {
   const data = new FormData();
   const image = document.getElementById('post-image-btn').files[0];
   const location = this.locationInput.value;
-  const bio = this.bioInput.value;
-  const link = this.linkInput.value;
+  const introduction = this.introductionInput.value;
+  const password = this.passwordInput.value;
   
   data.set('image', image);
   data.set('location', location);
-  data.set('bio', bio);
-  data.set('link', link);
+  data.set('introduction', introduction);
+
+  if (password !== "") {
+    data.set('password', password);
+  }
 
   const result = await this.ajax().updateUserInfoAjax(data);
   return result;
@@ -74,7 +78,8 @@ const SettingsHandler = class {
     this.completeBtn.addEventListener('click', async (event) => {
       const result = await this.updateUserInfoEvent(event);
       if (result === 'success') {
-        location.href = `/profile/${this.userIdentifier.value}`
+        const username = document.getElementById('input-user-username').value;
+        location.href = `/profile/${username}`
         return;
       }
     })

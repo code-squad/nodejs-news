@@ -15,7 +15,7 @@ const sendEmail = async (address) => {
     requireTLS : true,
     secure: false,
     auth: {
-      user: 'morellospirit@gmail.com', 
+      user: process.env.MAILER_HOST, 
       pass: process.env.MAILER_PASSWORD
     }
   });
@@ -28,7 +28,6 @@ const sendEmail = async (address) => {
   });
 
   console.log("Message sent: %s", info.messageId);
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 module.exports = sendEmail;

@@ -162,3 +162,11 @@
   padding : 7px 0px;
   margin-left: 3px;
 }
+
+.form-label-group {
+  margin-bottom: 0.7rem;
+}
+
+.form-label-group label {
+  font-size: 0.7em;
+}

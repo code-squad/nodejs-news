@@ -4,21 +4,20 @@ p.settings-prifile-content-describe Your username, name, bio and links appear on
 div.settings-prorile-wrapper
   div.settings-profile-image
     div.settings-profile-image-preview
-      img.settings-profile-avatar(src=`${user.profilePhoto}`)
+      img.settings-profile-avatar(src=`${user.photolink}`)
     div#filebox
       label.btn(for='post-image-btn') Upload Avatar
       input#post-image-btn(type='file' name='image' multiple)
   div.settings-profile-content
     form.signin-box-form(action="#")
-      if user.auth.googleId
-        input(type="hidden" id='input-user-origin-identifier' value=`${user.auth.googleId}`)
+      if user
+        input(type="hidden" id='input-user-origin-identifier' value=`${user.authGoogleId}`)
+        input(type="hidden" id='input-user-photolink' value=`${user.photolink}`)
         div.form-label-group
           input(type='text' name='username' id='input-username' placeholder='Enter your username' required='' autofocus='')
           div.message-box#message-username
         div.form-label-group
           input(type='text' name='location' id='input-location' placeholder='Location' )
         div.form-label-group
-          input(type='text' name='bio' id='input-bio' placeholder='Bio' )
-        div.form-label-group
-          input(type='text' name='link' id='input-link' placeholder='Link')
+          input(type='text' name='bio' id='input-bio' placeholder='Introduction' )
         button#btn-settings(type='submit') Complete

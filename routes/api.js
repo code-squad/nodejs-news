@@ -3,17 +3,10 @@ const express = require('express'),
       apiController = require('../controller/api-controller')
       authMiddlewares = require('../middlewares/auth'),
 
-router.post('/forgotpassword', (req, res, next) => {
-  apiController.sendPasswordCheckEmail(req, res, next);
-})
+router.post('/forgotpassword', apiController.sendPasswordCheckEmail);
 
-router.patch('/resetpassword', (req, res, next) => {
-  apiController.resetPassword(req, res, next);
-})
+router.patch('/resetpassword', apiController.resetPassword);
 
-router.patch('/follow/:userId', authMiddlewares.isLoggedInforAjax, (req, res, next) => {
-  apiController.updateFollowStatus(req, res, next);
-})
-
+router.patch('/follow/:userId', authMiddlewares.isLoggedInforAjax, apiController.updateFollowStatus);
 
 module.exports = router;

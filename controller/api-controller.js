@@ -1,6 +1,7 @@
-const User = require('../model/user');
 const emailsendUtil = require('../utils/nodemailer');
 const jwt = require('jsonwebtoken');
+const userHandler = require('../utils/db/user');
+const pool = require('../db/connect-mysql').pool;
 
 const apiController = {
   sendPasswordCheckEmail : async (req, res, next) =>{
@@ -10,7 +11,7 @@ const apiController = {
   },
 
   resetPassword : async (req, res, next) => {
-    const {token, password } = req.body;
+    let {token, password } = req.body;
     let decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     
     if (!decodedToken.address) {
@@ -19,12 +20,18 @@ const apiController = {
     }
 
     try {
-      let user = await User.findOneAndUpdate({email : decodedToken.address}, {password});
+      password = await userHandler.getCryptoPassword(password);
 
-      if(!user) {
-        return res.end('false');
+      const [resultRow] = await pool.query(`
+        UPDATE USERS
+        SET PASSWORD = "${password}"
+        WHERE EMAIL = "${decodedToken.address}"
+      `)
+      
+      if (resultRow.affectedRows !== 1) {
+          return res.end('false');
       }
-
+      
       return res.end('true');
     } catch (error) {
       next(error);
@@ -32,16 +39,38 @@ const apiController = {
   },
 
   updateFollowStatus : async (req, res, next) => {
-    const user = await User.findById(req.user._id);
-    const followTarget = await User.findById(req.params.userId);
 
-    if (user.followings.has(req.params.userId)) {
-      await User.cancelFollow(user, followTarget);
+    try {
+      const followingId = req.params.userId;
+      
+      // follow 상태인지 확인
+      const [followStatusRow] = await pool.query(
+        `
+          SELECT * FROM FOLLOW WHERE FOLLOWER_ID = ${req.user.id} and FOLLOWING_ID = ${followingId};
+        `
+      )
+
+      // follow 상태가 아니라면 insert
+      if (followStatusRow.length === 0) {
+       await pool.query(
+          `
+          INSERT INTO FOLLOW (FOLLOWER_ID, FOLLOWING_ID) VALUES(${req.user.id}, ${followingId});
+          `
+        )
+        return res.end('follow');
+      }
+
+      // follow 상태라면 delete
+      await pool.query(
+        `
+          DELETE FROM FOLLOW WHERE FOLLOWER_ID = ${req.user.id} and FOLLOWING_ID = ${followingId};
+        `
+      )
       return res.end('unfollow');
+      
+    } catch (error) {
+      next(error);
     }
-
-    await User.addFollow(user, followTarget);
-    return res.end('follow');
   },
 }
 

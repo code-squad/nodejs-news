@@ -13,7 +13,8 @@ const CommentHandler = class {
   }
 
   async removeEvent(event) {
-    const result = await this.ajax().removeCommentAjax(event.target.id);
+    const result = await this.ajax().removeCommentAjax(this.contentId, event.target.id);
+
     if (result === 'success') {
       const removeTarget = document.getElementById(`content-reply-${event.target.id}`);
       const replyLine = document.getElementById(`reply-line-${event.target.id}`);
@@ -29,8 +30,9 @@ const CommentHandler = class {
       icon.addEventListener('click', (event) => {
         this.infoModal.style.display = "block";
         this.commentInputArea.value = '';
-        this.addRemoveCommentEvent(event);
+        this.excuteDeleteBtn.id = event.target.id;
       })
+      this.addRemoveCommentEvent(event);
     })
   }
 
@@ -40,8 +42,8 @@ const CommentHandler = class {
     })
   }
 
-  addRemoveCommentEvent(event) {
-    this.excuteDeleteBtn.addEventListener('click', () => {
+  addRemoveCommentEvent() {
+    this.excuteDeleteBtn.addEventListener('click', (event) => {
       this.removeEvent(event);
     })
   }
@@ -92,10 +94,10 @@ const CommentHandler = class {
           </div>
       </div>
       <div class="content-reply-icon-update">
-        <img class="reply-update-icon" src="/images/content/modify.png" id='update-${comment._id}'>
+        <img class="reply-update-icon" src="/images/content/modify.png" id='update-${comment.id}'>
       </div>
       <div class="content-reply-icon-remove">
-        <img class="reply-remove-icon" src="/images/content/delete.png" id=${comment._id}>
+        <img class="reply-remove-icon" src="/images/content/delete.png" id=${comment.id}>
       </div>
       <div class="content-reply-time">
         ${this.calcDate(comment.createdDate)}
@@ -104,12 +106,12 @@ const CommentHandler = class {
 
     const contentReply = document.createElement('div');
     contentReply.className = 'content-reply';
-    contentReply.id = `content-reply-${comment._id}`;
+    contentReply.id = `content-reply-${comment.id}`;
     contentReply.innerHTML = htmlForm;
 
     const replyLine = document.createElement('hr');
     replyLine.className = 'reply-line';
-    replyLine.id = `reply-line-${comment._id}`;
+    replyLine.id = `reply-line-${comment.id}`;
     
     return {
       contentReply,
@@ -181,7 +183,6 @@ const CommentHandler = class {
        const result = await this.ajax().updateCommentAjax(replyId, updatedForm.value);
        if (result === 'success') {
          const originText = originReply.getElementsByClassName('content-reply-comment-text')[0]
-         console.log(updatedForm.value)
          originText.innerHTML = updatedForm.value
          updateForm.style.display = 'none';
          originReply.style.display = 'grid';
@@ -190,12 +191,12 @@ const CommentHandler = class {
   }
 
   ajax() {
-    const removeCommentAjax = async (id) => {
-      const url = `/comments/${id}`;
+    const removeCommentAjax = async (postID, commentId) => {
+      const url = `/comments/${postID}/${commentId}`;
       const response = await fetch(url, {
         method : 'DELETE'
       })
-      return await response.json();
+      return await response.text();
     }
 
     const updateCommentAjax = async (id, updatedReply) => {
@@ -205,7 +206,6 @@ const CommentHandler = class {
         body : JSON.stringify({
           id,
           updatedReply,
-          contentId : this.contentId
         }),
         headers: {
           'Accept': 'application/json',
@@ -238,29 +238,32 @@ const CommentHandler = class {
 
   calcDate(postDate) {
     const nowDate = Date.now();
-    const parsedDate = Date.parse(postDate);
-    const gapByMinute = Math.floor((nowDate - parsedDate)/(1000*60));
+    const gapByMinute = Math.floor((nowDate - postDate)/(1000*60));
 
+    if (gapByMinute < 10) {
+      return `방금`
+    }
     if (gapByMinute < 60) {
-      return `${gapByMinute} m`
+
+      return `${gapByMinute}분`
     }
 
     const gapByHours = Math.floor(gapByMinute / 60);
 
     if (gapByHours < 24) {
-      return `${gapByHours} h`
+      return `${gapByHours}시간`
     }
 
     const gapByDay = Math.floor(gapByHours / 24);
 
     if (gapByDay < 7) {
-      return `${gapByDay} d`
+      return `${gapByDay}일`
     }
 
     const gapByWeek = Math.floor(gapByDay / 7);
 
     if (gapByWeek < 4) {
-      return `${gapByWeek} w` 
+      return `${gapByWeek}주` 
     }
   }
 

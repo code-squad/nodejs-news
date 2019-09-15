@@ -9,19 +9,26 @@ p.settings-prifile-content-describe 멋진 사진과 자세한 소개를 담은 
 div.settings-prorile-wrapper
   div.settings-profile-image
     div.settings-profile-image-preview
-      img(src=`${user.profilePhoto}`)
+      img(src=`${user.photolink}`)
     div#filebox
       label.btn(for='post-image-btn') Upload Avatar
       input#post-image-btn(type='file' name='image' multiple)
   div.settings-profile-content
     if user
-      input(type="hidden" id='input-user-origin-identifier' value=`${user.username}`)
+      input(type="hidden" id='input-user-origin-identifier' value=`${user.id}`)
+      input(type="hidden" id='input-user-username' value=`${user.username}`)
       div.form-label-group
+        label Location
         input(type='text' name='location' id='input-location' placeholder='Location' value=`${user.location || ''}`)
       div.form-label-group
-        input(type='text' name='bio' id='input-bio' placeholder='Bio' value=`${user.bio || ''}`)
+        label Introduction
+        input(type='text' name='introduction' id='input-introduction' placeholder='introduction' value=`${user.introduction || ''}`)
       div.form-label-group
-        input(type='text' name='link' id='input-link' placeholder='Link' value=`${user.link || ''}`)
+        label Password
+        if user.authId
+          input(type='password' name='password' id='input-password' placeholder='this input is disabled' disabled)
+        else
+          input(type='password' name='password' id='input-password' placeholder='password (비밀번호 변경을 원할 경우에만 입력해주세요)' value=null)
       button#btn-settings Complete
 div.settings-prorile-remove
 h1.settings-prifile-content-title Account Deletion

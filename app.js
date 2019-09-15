@@ -1,3 +1,6 @@
+// .env 설정
+require('dotenv').config();
+
 // module
 const express       = require('express'),
       app           = express(),
@@ -11,8 +14,8 @@ const express       = require('express'),
       flash         = require('connect-flash')
 
 // utils
-const connectMongoDb     = require('./db/connect-mongodb'),
-      checkJwtToken      = require('./auth/checkjwttoken');
+const connectMysql  = require('./db/connect-mysql'),
+      checkJwtToken = require('./auth/checkjwttoken');
 
 // routes module
 const indexRouter   = require('./routes/index'),
@@ -21,13 +24,13 @@ const indexRouter   = require('./routes/index'),
       checkRouter   = require('./routes/check'),
       apiRouter     = require('./routes/api'),
       postRouter    = require('./routes/post'),
-      discoverRouter= require('./routes/discover'),
       contentRouter = require('./routes/contents'),
       commentRouter = require('./routes/comments'),
       profileRouter = require('./routes/profile')
 
+
 // DB
-connectMongoDb();
+connectMysql.getMysqlConnection();
 
 // http
 app.use(logger('dev'));
@@ -40,7 +43,7 @@ app.set('view engine', 'pug');
 
 // session for flash
 app.use(session({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -65,7 +68,6 @@ app.use('/auth', authRouter);
 app.use('/check', checkRouter);
 app.use('/api', apiRouter);
 app.use('/post', postRouter);
-app.use('/discover', discoverRouter);
 app.use('/comments', commentRouter);
 app.use('/profile', profileRouter)
 

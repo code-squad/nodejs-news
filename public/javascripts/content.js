@@ -1,3 +1,5 @@
+import calcDate from './utils/calc-date.js';
+
 const ContentsHandler = class {
   constructor() {
     this.deleteIcon = document.getElementById('content-header-icon-delete');
@@ -161,34 +163,6 @@ const ContentsHandler = class {
     })
   }
 
-  calcDate(postDate) {
-    const nowDate = Date.now();
-    const parsedDate = Date.parse(postDate);
-    const gapByMinute = Math.floor((nowDate - parsedDate)/(1000*60));
-
-    if (gapByMinute < 60) {
-      return `${gapByMinute} m`
-    }
-
-    const gapByHours = Math.floor(gapByMinute / 60);
-
-    if (gapByHours < 24) {
-      return `${gapByHours} h`
-    }
-
-    const gapByDay = Math.floor(gapByHours / 24);
-
-    if (gapByDay < 7) {
-      return `${gapByDay} d`
-    }
-
-    const gapByWeek = Math.floor(gapByDay / 7);
-
-    if (gapByWeek < 4) {
-      return `${gapByWeek} w` 
-    }
-  }
-
   displayTime() {
     const gapTimeArr = [];
     
@@ -196,7 +170,7 @@ const ContentsHandler = class {
     const displayDateDomArr = document.getElementsByClassName('content-reply-time');
     
     Array.from(dateDomArr).forEach((dom) => {
-      gapTimeArr.push(this.calcDate(dom.value));
+      gapTimeArr.push(calcDate(dom.value));
     })
 
     Array.from(displayDateDomArr).forEach((dom, index) => {
@@ -300,18 +274,6 @@ const ContentsHandler = class {
         method : 'PATCH'
       })
       return await response.text();
-    }
-
-    const getTrendingPageEvent = async () => {
-      const url = `/discover/trending`;
-      const response = await fetch(url, {
-        method : 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-      })
-      return await response.json();
     }
 
     return {

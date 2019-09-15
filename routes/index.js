@@ -3,17 +3,17 @@ const express         = require('express'),
       indexController = require('../controller/index-controller'),
       authMiddlewares = require('../middlewares/auth')
 
-router.get('/', (req, res) => {
-  indexController.home(req, res);
-});
+router.get('/', indexController.home);
 
-router.get('/signin', (req, res) => {
-  indexController.signin(req, res);
-})
+router.get('/signin', indexController.signin);
 
-router.get('/signup', (req, res) => {
-  indexController.signup(req, res);
-})
+router.get('/signup', indexController.signup);
+
+router.get('/forgotpassword', indexController.forgotpassword);
+
+router.get('/discover', indexController.discover);
+
+router.get('/following', authMiddlewares.isLoggedIn, indexController.following);
 
 router.get('/forgotpassword', (req, res) => {
   indexController.forgotpassword(req, res);

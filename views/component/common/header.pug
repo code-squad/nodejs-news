@@ -9,7 +9,7 @@ nav.navbar
     if user
       li.nav-item#user-profile
         div.user-photo-wrapper
-          img#user-photo(src=`${user.profilePhoto}`)
+          img#user-photo(src= `${user.photolink}`)
         if user
           div.user-drawer-menu#user-drawer-menu
             ul.menu-link
@@ -18,7 +18,7 @@ nav.navbar
               li.menu-item
                 a(href=`/users/${user.username}/likes`) Likes
               li.menu-item
-                a(href=`/users/settings`) Settings
+                a(href=`/users/settings/${user.id}`) Settings
               hr
               li.menu-item#btn-logout
                 a(href='#') Logout

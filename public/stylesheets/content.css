@@ -220,7 +220,7 @@ hr {
   padding: 5px;
   margin-top: 4%;
   display: grid;
-  grid-template-columns: 15% 55% 10% 10% 10%;
+  grid-template-columns: 15% 50% 10% 10% 15%;
   /* grid-template-columns: 20% 70% 10%; */
 }
 

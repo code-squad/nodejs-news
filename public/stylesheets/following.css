@@ -210,3 +210,8 @@ background-size: 1800% 1800%;
   font-size: large;
   text-decoration: underline;
 }
+
+.box-header-id a {
+  text-decoration: none;
+  color: gray;
+}

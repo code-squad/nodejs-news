@@ -6,28 +6,25 @@ const express     = require('express'),
 
       require('../auth/passport').setup()
 
-router.post('/', (req, res, next) => {
-  userController.addUser(req, res, next);
-})
+// local 회원가입
+router.post('/', userController.addUser);
 
-router.patch('/:usernameOrOauthId', upload.array('image', 4), (req, res, next) => {
-  userController.updateUser(req, res, next);
-})
+// Oauth 회원가입
+router.post('/auth', upload.array('image', 4), userController.addAuthUser);
 
-router.get('/settings', auth.isLoggedIn, (req, res) => {
-  userController.getSettingsPage(req, res)
-})
+// user 정보 업데이트
+router.patch('/:userId', auth.isLoggedIn, auth.isSameUser, upload.array('image', 4), userController.updateUser);
 
-router.get('/initSettings', auth.isLoggedIn, (req, res) => {
-  userController.getInitSettingsPage(req, res)
-})
+// user setting 페이지
+router.get('/settings/:userId', auth.isLoggedIn, auth.isSameUser, userController.getSettingsPage);
 
-router.get('/:username/likes', (req, res, next) => {
-  userController.getLikesPage(req, res, next);
-})
+// 최초 회원가입 후 정보 settings 페이지
+router.get('/initSettings', auth.isLoggedIn, userController.getInitSettingsPage);
 
-router.delete('/:username', auth.isLoggedIn, (req, res, next) => {
-  userController.deleteUser(req, res, next);
-})
+// '좋아요'를 누른 목록 보기 페이지
+router.get('/:username/likes', userController.getLikesPage);
+
+// 회원탈퇴를 위한 user 정보 삭제
+router.delete('/:userId', auth.isLoggedIn, auth.isSameUser, userController.deleteUser);
 
 module.exports = router;

@@ -3,16 +3,10 @@ const express         = require('express'),
       commentsController = require('../controller/comments-controller'),
       authMiddlewares = require('../middlewares/auth');
 
-router.post('/', authMiddlewares.isLoggedInforAjax, (req, res, next) => {
-  commentsController.addComment(req, res, next);
-});
+router.post('/', authMiddlewares.isLoggedInforAjax, commentsController.addComment);
 
-router.delete('/:commentId', (req, res, next) => {
-  commentsController.removeComment(req, res, next);
-})
+router.delete('/:postId/:commentId', commentsController.removeComment);
 
-router.patch('/:commentId', (req, res, next) => {
-  commentsController.updateComment(req, res, next);
-})
+router.patch('/:commentId', commentsController.updateComment);
 
 module.exports = router;

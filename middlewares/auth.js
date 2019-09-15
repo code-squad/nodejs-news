@@ -15,4 +15,13 @@ const isLoggedInforAjax = (req, res, next) => {
   return res.end('notLoggedIn');
 }
 
- module.exports = { isLoggedIn, isLoggedInforAjax };
+const isSameUser = (req, res, next) => {
+  if (req.user.id === req.params.userId*1) {
+    return next();
+  }
+
+  req.flash('message', {'warning' : '유효한 요청이 아닙니다'});
+  return res.redirect('/');
+}
+
+ module.exports = { isLoggedIn, isLoggedInforAjax, isSameUser };
