@@ -23,8 +23,8 @@ module.exports = {
         verifyToken: (token) => {
             return new Promise((resolve, reject) => {
                     jwt.verify(token, secret, (error, decoded) => {
-                        if (error) reject(error)
-                        resolve(decoded)
+                        if (error) reject(error);
+                        resolve(decoded);
                     });
                 });
         }

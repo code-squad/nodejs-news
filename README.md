@@ -46,7 +46,7 @@
 
 | Key       | Value           |
 | --------- | --------------- |
-| email        | 사용자 email   |
+| id        | 사용자 id   |
 | password  | 사용자 비밀번호 |
 | nickname        | 사용자 닉네임 |
 | privilege | 사용자 권한     |
@@ -60,11 +60,10 @@
 | registrationDate | 등록 날짜        |
 | publisher        | 출판사           |
 | author           | 도서 저자        |
-| publishedDate    | 발행일           |
+| publicationDate    | 발행일           |
 | description      | 부가 설명        |
 | likes            | 좋아요 개수      |
 | hates            | 싫어요 개수      |
-| category         | 카테고리         |
 
 - Review
 
@@ -92,6 +91,11 @@
 * 회원 가입 요청 : POST /auth/register
 * 로그인 : POST /auth/login
 * 로그아웃 : POST /auth/logout
+* 도서등록 : POST /book
+* 도서수정 : PUT /book
+* 도서삭제 : DELETE /book
+
+
 
 ### 추후 확장
 
